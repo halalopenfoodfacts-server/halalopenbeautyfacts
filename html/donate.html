@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faire un don - Halal Open Beauty Facts</title>
+    <link rel="stylesheet" href="assets/css/style.css?v=20251229">
+    <style>
+        .donation-page {
+            padding: 4rem 0 5rem;
+            background: linear-gradient(145deg, #f8f3ff 0%, #f3fff5 30%, #fff7f0 70%, #f2f7ff 100%);
+        }
+        .donation-hero {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            align-items: stretch;
+            padding: 2.5rem;
+            border-radius: 32px;
+            background: rgba(255, 255, 255, 0.92);
+            box-shadow: 0 40px 120px rgba(52, 28, 78, 0.08);
+        }
+        .donation-hero__content h1 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            margin-bottom: 1rem;
+        }
+        .donation-hero__content p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #3b2f4d;
+        }
+        .donation-card {
+            border-radius: 24px;
+            background: #1d1230;
+            color: #fff;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .donation-card h2 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+        .donation-card dl {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 0.75rem 1.5rem;
+            font-size: 1rem;
+        }
+        .donation-card dt {
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        .donation-card dd {
+            margin: 0;
+            font-family: "Space Grotesk", "IBM Plex Mono", monospace;
+            font-size: 1.05rem;
+            letter-spacing: 0.03em;
+        }
+        .copy-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+        .copy-btn {
+            border: none;
+            padding: 0.85rem 1.5rem;
+            border-radius: 999px;
+            background: #9864ff;
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .copy-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 12px 24px rgba(152, 100, 255, 0.35);
+        }
+        .donation-options {
+            margin-top: 3rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+        }
+        .donation-option {
+            background: #fff;
+            border-radius: 20px;
+            padding: 1.75rem;
+            box-shadow: 0 20px 60px rgba(82, 48, 120, 0.08);
+        }
+        .donation-option h3 {
+            margin-bottom: 0.6rem;
+            font-size: 1.2rem;
+        }
+        .donation-option p {
+            color: #4c3b63;
+            line-height: 1.5;
+        }
+        .transparency-section {
+            margin-top: 4rem;
+            background: #1f0f33;
+            border-radius: 28px;
+            padding: 3rem;
+            color: #f9f5ff;
+        }
+        .transparency-section h2 {
+            margin-bottom: 1rem;
+        }
+        .transparency-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.75rem;
+            margin-top: 2rem;
+        }
+        .transparency-card {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 18px;
+            padding: 1.5rem;
+        }
+        .support-contact {
+            margin-top: 4rem;
+            text-align: center;
+        }
+        .support-contact .ghost-btn {
+            margin-top: 1rem;
+        }
+        .donation-flow {
+            margin-top: 3rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            align-items: start;
+        }
+        .donation-form {
+            background: #fff;
+            border-radius: 28px;
+            padding: 2.5rem;
+            box-shadow: 0 30px 90px rgba(53, 25, 83, 0.18);
+        }
+        .frequency-toggle {
+            display: inline-flex;
+            background: #f2e8ff;
+            border-radius: 999px;
+            padding: 0.35rem;
+            margin-bottom: 1.5rem;
+        }
+        .frequency-btn {
+            border: none;
+            background: transparent;
+            padding: 0.65rem 1.25rem;
+            border-radius: 999px;
+            font-weight: 600;
+            color: #341c4e;
+            cursor: pointer;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+        .frequency-btn.is-active {
+            background: #8d4bff;
+            color: #fff;
+        }
+        .amount-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        .amount-btn {
+            border: 2px solid #ecdffc;
+            border-radius: 16px;
+            padding: 0.9rem 0.4rem;
+            font-weight: 600;
+            font-size: 1rem;
+            background: #fff;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .amount-btn.is-active {
+            border-color: #8d4bff;
+            color: #8d4bff;
+            box-shadow: 0 8px 24px rgba(141, 75, 255, 0.2);
+        }
+        .custom-amount {
+            margin-bottom: 1.5rem;
+        }
+        .custom-amount label {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 0.4rem;
+        }
+        .custom-amount__input {
+            display: flex;
+            align-items: center;
+            border: 2px solid #ecdffc;
+            border-radius: 16px;
+            padding: 0.5rem 0.75rem;
+        }
+        .custom-amount__input span {
+            font-weight: 600;
+            color: #8d4bff;
+            margin-right: 0.5rem;
+        }
+        .custom-amount__input input {
+            border: none;
+            width: 100%;
+            font-size: 1rem;
+            padding: 0.4rem 0;
+        }
+        .custom-amount__input input:focus {
+            outline: none;
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        .form-grid label {
+            display: flex;
+            flex-direction: column;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        .form-grid input,
+        .donation-form textarea {
+            margin-top: 0.35rem;
+            border-radius: 12px;
+            border: 1.5px solid #e6dff2;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+        }
+        .donation-form textarea {
+            min-height: 110px;
+            resize: vertical;
+            margin-bottom: 0.75rem;
+        }
+        .donation-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+            margin-bottom: 0.4rem;
+        }
+        .donation-checkbox input {
+            width: 18px;
+            height: 18px;
+        }
+        .donation-submit {
+            margin-top: 1rem;
+            width: 100%;
+            justify-content: center;
+            font-size: 1.05rem;
+        }
+        .donation-summary-card {
+            border-radius: 28px;
+            background: #1d1230;
+            color: #f5efff;
+            padding: 2rem;
+            box-shadow: 0 30px 90px rgba(15, 4, 33, 0.45);
+            opacity: 0.85;
+            transform: translateY(12px);
+            transition: opacity 0.25s ease, transform 0.25s ease;
+        }
+        .donation-summary-card.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .donation-summary__iban {
+            display: grid;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+        .donation-summary__iban code {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            font-family: "Space Grotesk", "IBM Plex Mono", monospace;
+        }
+        .donation-summary__ref {
+            display: inline-block;
+            margin-top: 0.25rem;
+            font-family: "Space Grotesk", "IBM Plex Mono", monospace;
+            letter-spacing: 0.08em;
+        }
+        .donation-summary__cta {
+            margin-top: 1rem;
+            display: inline-flex;
+        }
+        .form-message {
+            color: #b22626;
+            font-size: 0.95rem;
+            min-height: 1.2rem;
+        }
+        @media (max-width: 640px) {
+            .donation-hero {
+                padding: 1.5rem;
+            }
+            .donation-card dl {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="top-strip">
+        <div class="top-strip__content">
+            <p class="top-strip__notice">Chaque don finance l'analyse cosmétique halal et les outils open source de Halal Open Beauty Facts.</p>
+        </div>
+    </div>
+
+    <header class="site-header">
+        <div class="site-header__inner">
+            <a class="brand brand--hero" href="index.html">
+                <img src="assets/images/h.png" alt="Logo Halal Open Beauty Facts" class="brand__logo">
+                <div class="brand__text">
+                    <span>Halal Open Beauty Facts</span>
+                    <small>Cosmétique halal et transparente</small>
+                </div>
+            </a>
+            <nav class="primary-nav">
+                <a href="index.html#catalogue" class="ghost-btn ghost-btn--dark">Catalogue</a>
+                <a href="add.html" class="outline-btn">Ajouter un produit</a>
+                <a href="signin.html" class="solid-btn">Espace contributeur</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="donation-page">
+        <section class="donation-hero">
+            <div class="donation-hero__content">
+                <p class="eyebrow">Soutenir Halal Open Beauty Facts</p>
+                <h1>Financez la première base cosmétique halal collaborative.</h1>
+                <p>Vos dons couvrent les audits d'ingrédients, l'infrastructure et les outils de scan dédiés aux produits de soin halal. Nous privilégions le virement bancaire afin que l'intégralité de votre soutien arrive sur le compte de l'association E-HALAL.</p>
+                <div class="donation-options">
+                    <div class="donation-option">
+                        <h3>🧪 Contrôles d'ingrédients</h3>
+                        <p>Développement des taxonomies halal (pigments, solvants, gélatines) et vérifications communautaires.</p>
+                    </div>
+                    <div class="donation-option">
+                        <h3>🛠️ Outils open source</h3>
+                        <p>Amélioration des scanners mobiles, hébergement des APIs et traduction des étiquettes.</p>
+                    </div>
+                    <div class="donation-option">
+                        <h3>👥 Programmes bénévoles</h3>
+                        <p>Formation et accompagnement des équipes qui enrichissent la base au quotidien.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="donation-card">
+                <div>
+                    <span class="eyebrow" style="color:#f7b7ff;">Coordonnées bancaires</span>
+                    <h2>Compte principal E-HALAL (Qonto)</h2>
+                </div>
+                <dl>
+                    <dt>IBAN</dt>
+                    <dd id="iban-value">FR76 1695 8000 0131 2903 1069 166</dd>
+                    <dt>BIC / SWIFT</dt>
+                    <dd id="bic-value">QNTOFRP1XXX</dd>
+                    <dt>Titulaire</dt>
+                    <dd>E-HALAL · 165 Avenue de Bretagne · 59000 Lille · France</dd>
+                    <dt>Domiciliation</dt>
+                    <dd>Qonto (Olinda SAS) · 18 rue de Navarin · 75009 Paris · France</dd>
+                </dl>
+                <div class="copy-actions">
+                    <button class="copy-btn" data-copy-target="iban-value">Copier l'IBAN</button>
+                    <button class="copy-btn" data-copy-target="bic-value">Copier le BIC</button>
+                </div>
+                <p style="font-size:0.95rem; color:rgba(255,255,255,0.85);">
+                    Pour un virement international SWIFT, votre banque peut demander le BIC partenaire : <strong>TRWIBEB3XXX</strong>.
+                </p>
+            </div>
+        </section>
+
+        <section class="donation-flow" id="donation-flow">
+            <form id="donation-intent-form" class="donation-form">
+                <div class="frequency-toggle" role="tablist" aria-label="Fréquence du don">
+                    <button type="button" class="frequency-btn is-active" data-frequency="unique">Unique</button>
+                    <button type="button" class="frequency-btn" data-frequency="monthly">Mensuel</button>
+                    <button type="button" class="frequency-btn" data-frequency="yearly">Annuel</button>
+                </div>
+
+                <div class="amount-grid">
+                    <button type="button" class="amount-btn" data-amount="5">5 €</button>
+                    <button type="button" class="amount-btn" data-amount="10">10 €</button>
+                    <button type="button" class="amount-btn is-active" data-amount="30">30 €</button>
+                    <button type="button" class="amount-btn" data-amount="60">60 €</button>
+                    <button type="button" class="amount-btn" data-amount="120">120 €</button>
+                    <button type="button" class="amount-btn" data-amount="200">200 €</button>
+                </div>
+
+                <div class="custom-amount">
+                    <label for="custom-amount">Ou saisissez un montant personnalisé</label>
+                    <div class="custom-amount__input">
+                        <span>€</span>
+                        <input id="custom-amount" type="number" min="1" step="1" placeholder="Ex : 45">
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <label for="donor-name">Nom complet
+                        <input type="text" id="donor-name" placeholder="Sarah N.">
+                    </label>
+                    <label for="donor-email">E-mail
+                        <input type="email" id="donor-email" placeholder="vous@email.com">
+                    </label>
+                </div>
+
+                <label class="donation-checkbox" for="receipt-checkbox">
+                    <input type="checkbox" id="receipt-checkbox"> Je souhaite recevoir un reçu fiscal
+                </label>
+                <label class="donation-checkbox" for="public-checkbox">
+                    <input type="checkbox" id="public-checkbox"> Afficher mon nom sur le mur des donateurs
+                </label>
+
+                <label for="donor-message">Commentaire ou instructions
+                    <textarea id="donor-message" placeholder="Merci de me prévenir pour un reçu..."></textarea>
+                </label>
+
+                <p class="form-message" id="donation-form-error"></p>
+                <button type="submit" class="solid-btn donation-submit">Générer les instructions de virement</button>
+            </form>
+
+            <aside class="donation-summary-card" id="donation-summary-card" aria-live="polite">
+                <h3>Instructions personnalisées</h3>
+                <p id="donation-summary-text">Sélectionnez un montant pour afficher les instructions de virement.</p>
+                <div class="donation-summary__iban">
+                    <p><strong>IBAN</strong> <code>FR76 1695 8000 0131 2903 1069 166</code></p>
+                    <p><strong>BIC</strong> <code>QNTOFRP1XXX</code></p>
+                    <p><strong>BIC partenaire SWIFT</strong> <code>TRWIBEB3XXX</code></p>
+                </div>
+                <p>Référence à indiquer : <span class="donation-summary__ref" id="donation-summary-reference">—</span></p>
+                <a href="mailto:contact@halalopenbeautyfacts.org" class="ghost-btn ghost-btn--dark donation-summary__cta" id="donation-mailto">Préremplir mon e-mail</a>
+            </aside>
+        </section>
+
+        <section class="transparency-section">
+            <p class="eyebrow" style="color:#dfc2ff;">Utilisation des dons</p>
+            <h2>À quoi servent vos contributions ?</h2>
+            <div class="transparency-grid">
+                <article class="transparency-card">
+                    <h3>Base de données</h3>
+                    <p>Serveurs sécurisés, CDN et sauvegardes pour garder les données cosmétiques halal accessibles 24/7.</p>
+                </article>
+                <article class="transparency-card">
+                    <h3>Recherche halal</h3>
+                    <p>Veille sur les matières premières sensibles, traduction des INCI et partenariats avec les écoles d'esthétique.</p>
+                </article>
+                <article class="transparency-card">
+                    <h3>Communauté</h3>
+                    <p>Organisation d'ateliers, production de guides bénévoles et accompagnement des relecteurs.</p>
+                </article>
+            </div>
+        </section>
+
+        <section class="support-contact">
+            <h2>Recevoir un reçu ou proposer un mécénat ?</h2>
+            <p>Écrivez-nous pour obtenir un reçu fiscal, programmer un don récurrent ou nouer un partenariat.</p>
+            <a href="mailto:contact@halalopenbeautyfacts.org" class="ghost-btn ghost-btn--dark">contact@halalopenbeautyfacts.org</a>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="site-footer__grid">
+            <div>
+                <h4>Projet</h4>
+                <ul>
+                    <li><a href="legal.html">Mentions légales</a></li>
+                    <li><a href="terms.html">Conditions d'utilisation</a></li>
+                    <li><a href="#">Transparence financière</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Découvrir</h4>
+                <ul>
+                    <li><a href="index.html#catalogue">Catalogue</a></li>
+                    <li><a href="index.html#engagements">Engagements</a></li>
+                    <li><a href="index.html#communautes">Communauté</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Contribuer</h4>
+                <ul>
+                    <li><a href="add.html">Ajouter un produit</a></li>
+                    <li><a href="signin.html">Espace contributeur</a></li>
+                    <li><a href="donate.html">Faire un don</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Suivez-nous</h4>
+                <div class="social">
+                    <a href="#">🐦 Twitter</a>
+                    <a href="#">📸 Instagram</a>
+                    <a href="#">💼 LinkedIn</a>
+                </div>
+            </div>
+        </div>
+        <p class="site-footer__copy">© 2025 Halal Open Beauty Facts · Données ouvertes sous ODbL.</p>
+    </footer>
+
+    <script>
+        (function () {
+            const copyButtons = document.querySelectorAll('[data-copy-target]');
+            copyButtons.forEach((button) => {
+                button.addEventListener('click', () => {
+                    const targetId = button.getAttribute('data-copy-target');
+                    const source = document.getElementById(targetId);
+                    if (!source) return;
+                    const text = source.textContent.trim();
+                    if (!navigator.clipboard) {
+                        const textarea = document.createElement('textarea');
+                        textarea.value = text;
+                        document.body.appendChild(textarea);
+                        textarea.select();
+                        document.execCommand('copy');
+                        textarea.remove();
+                    } else {
+                        navigator.clipboard.writeText(text).catch(() => {});
+                    }
+                    const original = button.textContent;
+                    button.textContent = 'Copié !';
+                    setTimeout(() => {
+                        button.textContent = original;
+                    }, 2000);
+                });
+            });
+
+            const form = document.getElementById('donation-intent-form');
+            if (!form) return;
+
+            const amountButtons = form.querySelectorAll('[data-amount]');
+            const frequencyButtons = form.querySelectorAll('[data-frequency]');
+            const customAmountInput = document.getElementById('custom-amount');
+            const errorEl = document.getElementById('donation-form-error');
+            const summaryCard = document.getElementById('donation-summary-card');
+            const summaryText = document.getElementById('donation-summary-text');
+            const summaryRef = document.getElementById('donation-summary-reference');
+            const mailtoLink = document.getElementById('donation-mailto');
+
+            let selectedFrequency = 'unique';
+            let selectedAmount = 30;
+
+            const frequencyLabels = {
+                unique: 'unique',
+                monthly: 'mensuel',
+                yearly: 'annuel'
+            };
+            const frequencyShort = {
+                unique: 'U',
+                monthly: 'M',
+                yearly: 'A'
+            };
+
+            frequencyButtons.forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    selectedFrequency = btn.dataset.frequency;
+                    frequencyButtons.forEach((b) => b.classList.toggle('is-active', b === btn));
+                });
+            });
+
+            amountButtons.forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    selectedAmount = Number(btn.dataset.amount);
+                    amountButtons.forEach((b) => b.classList.toggle('is-active', b === btn));
+                    if (customAmountInput) {
+                        customAmountInput.value = '';
+                    }
+                });
+            });
+
+            if (customAmountInput) {
+                customAmountInput.addEventListener('input', () => {
+                    const value = parseFloat(customAmountInput.value.replace(',', '.'));
+                    selectedAmount = Number.isFinite(value) ? value : null;
+                    amountButtons.forEach((b) => b.classList.remove('is-active'));
+                });
+            }
+
+            form.addEventListener('submit', (event) => {
+                event.preventDefault();
+                if (!selectedAmount || selectedAmount <= 0) {
+                    errorEl.textContent = 'Merci de choisir ou saisir un montant valide.';
+                    return;
+                }
+                errorEl.textContent = '';
+
+                const donorName = document.getElementById('donor-name')?.value.trim() || '';
+                const donorEmail = document.getElementById('donor-email')?.value.trim() || '';
+                const donorMessage = document.getElementById('donor-message')?.value.trim() || '';
+                const wantsReceipt = document.getElementById('receipt-checkbox')?.checked;
+                const wantsPublic = document.getElementById('public-checkbox')?.checked;
+
+                const freqLabel = frequencyLabels[selectedFrequency] || 'unique';
+                const freqCode = frequencyShort[selectedFrequency] || 'U';
+                const reference = `HOB-${Math.round(selectedAmount)}${freqCode}-${new Date().getFullYear()}`;
+
+                summaryText.innerHTML = `Merci ${donorName || 'cher donateur'} ! Pour finaliser votre don de <strong>${selectedAmount.toFixed(2)} €</strong> (${freqLabel}), effectuez un virement vers le compte E-HALAL avec la référence ci-dessous.`;
+                summaryRef.textContent = reference;
+                summaryCard.classList.add('is-visible');
+
+                const subject = encodeURIComponent(`Don ${selectedAmount.toFixed(2)}€ (${freqLabel})`);
+                let body = `Salam,\n\nJe confirme un don de ${selectedAmount.toFixed(2)} € (${freqLabel}) pour Halal Open Beauty Facts.\nRéférence proposée : ${reference}.\n`;
+                if (wantsReceipt) {
+                    body += 'Je souhaite recevoir un reçu fiscal.\n';
+                }
+                if (wantsPublic) {
+                    body += 'Vous pouvez afficher mon nom sur le mur des donateurs.\n';
+                }
+                if (donorMessage) {
+                    body += `Message : ${donorMessage}\n`;
+                }
+                body += `\nNom : ${donorName || '—'}\nEmail : ${donorEmail || '—'}\n`;
+                body += '\nMerci !\n';
+
+                mailtoLink.href = `mailto:contact@halalopenbeautyfacts.org?subject=${subject}&body=${encodeURIComponent(body)}`;
+            });
+        })();
+    </script>
+</body>
+</html>

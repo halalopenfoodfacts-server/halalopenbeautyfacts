@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fiche produit - Halal Open Beauty Facts</title>
+    <link rel="stylesheet" href="assets/css/style.css?v=20251229">
+    <link rel="stylesheet" href="assets/css/product.css?v=20251229">
+</head>
+<body>
+    <div class="top-strip">
+        <div class="top-strip__content">
+            <div class="top-strip__left">
+                <select id="country-select" class="top-strip__select">
+                    <option value="">🌍 Choisir un pays</option>
+                </select>
+                <select id="language-select" class="top-strip__select">
+                    <option value="">🌐 Choisir une langue</option>
+                </select>
+            </div>
+            <p class="top-strip__notice" data-i18n="top_notice">Analyse communautaire · Scanner halal & transparence en open data</p>
+        </div>
+    </div>
+
+    <header class="site-header site-header--secondary">
+        <div class="site-header__inner">
+            <a class="brand" href="index.html">
+                <img src="assets/images/obf.PNG" alt="Logo Halal Open Beauty Facts" class="brand__logo">
+                <div class="brand__text">
+                    <span>Halal Open Beauty Facts</span>
+                    <small>Base halal collaborative</small>
+                </div>
+            </a>
+            <nav class="primary-nav">
+                <a href="index.html#catalogue" class="ghost-btn" data-i18n="nav_back_catalog">← Retour au catalogue</a>
+                <a href="add.html" class="outline-btn" data-i18n="community_cta_primary">➕ Ajouter un produit</a>
+                <a href="signin.html" class="solid-btn" data-i18n="nav_signin">Se connecter</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="product-page">
+        <section id="product-content" class="product-shell">
+            <div class="loading-placeholder">
+                <div class="spinner"></div>
+                <p data-i18n="product_loading">Chargement de la fiche produit...</p>
+            </div>
+        </section>
+
+        <section class="app-callout product-app-callout" id="app-mobile">
+            <div class="app-callout__content">
+                <h2 data-i18n="product_app_title">Scannez et complétez les fiches</h2>
+                <p data-i18n="product_app_desc">L'application officielle vous permet d'ajouter des photos, traductions et vérifications halal en direct.</p>
+                <div class="app-callout__badges">
+                    <a href="https://apps.apple.com/app/open-beauty-facts/id1122926380" target="_blank" rel="noopener">
+                        <img src="https://static.openfoodfacts.org/images/misc/appstore/black/appstore_US.svg" alt="App Store">
+                    </a>
+                    <a href="https://play.google.com/store/apps/details?id=org.openbeautyfacts.scanner" target="_blank" rel="noopener">
+                        <img src="https://static.openfoodfacts.org/images/misc/google-play-badge-en.png" alt="Google Play">
+                    </a>
+                    <a href="https://f-droid.org/en/packages/org.openbeautyfacts.scanner/" target="_blank" rel="noopener">
+                        <img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid">
+                    </a>
+                    <a href="https://world.openbeautyfacts.org/data/files/app/OpenBeautyFacts.apk" target="_blank" rel="noopener" class="apk-badge" data-i18n="product_app_apk">⬇️ Télécharger l'APK Android</a>
+                </div>
+            </div>
+            <div class="app-callout__preview">
+                <img src="assets/images/c.PNG" alt="Application Halal Open Beauty Facts" class="full-width">
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="site-footer__grid">
+            <div>
+                <h4 data-i18n="footer_project_title">Projet</h4>
+                <ul>
+                    <li><a href="legal.html" data-i18n="footer_project_legal">Mentions légales</a></li>
+                    <li><a href="#" data-i18n="footer_project_finance">Transparence financière</a></li>
+                    <li><a href="#" data-i18n="footer_project_press">Contact presse</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 data-i18n="footer_discover_title">Découvrir</h4>
+                <ul>
+                    <li><a href="index.html#catalogue" data-i18n="footer_discover_catalog">Catalogue</a></li>
+                    <li><a href="index.html#engagements" data-i18n="footer_discover_commitments">Engagements</a></li>
+                    <li><a href="index.html#communautes" data-i18n="footer_discover_community">Communauté</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 data-i18n="footer_contribute_title">Contribuer</h4>
+                <ul>
+                    <li><a href="add.html" data-i18n="footer_contribute_add">Ajouter un produit</a></li>
+                    <li><a href="#" data-i18n="footer_contribute_translate">Traduire</a></li>
+                    <li><a href="#" id="footer-donate-link" data-i18n="footer_contribute_donate">Faire un don</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 data-i18n="footer_follow_title">Suivez-nous</h4>
+                <div class="social">
+                    <a href="#" data-i18n="footer_social_twitter">🐦 Twitter</a>
+                    <a href="#" data-i18n="footer_social_instagram">📸 Instagram</a>
+                    <a href="#" data-i18n="footer_social_linkedin">💼 LinkedIn</a>
+                </div>
+            </div>
+        </div>
+        <p class="site-footer__copy" data-i18n="footer_copy_full">© 2025 Halal Open Beauty Facts · Licence Open Database.</p>
+    </footer>
+
+    <script src="assets/js/nav.js"></script>
+    <script src="assets/js/locale.js"></script>
+    <script src="assets/js/product.js"></script>
+</body>
+</html>

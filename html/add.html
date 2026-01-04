@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajouter un produit - Halal Open Beauty Facts</title>
+    <link rel="stylesheet" href="assets/css/style.css?v=20251229">
+</head>
+<body>
+    <div class="top-strip">
+        <div class="top-strip__content">
+            <div class="top-strip__left">
+                <select id="country-select" class="top-strip__select">
+                    <option value="">🌍 Choisir un pays</option>
+                </select>
+                <select id="language-select" class="top-strip__select">
+                    <option value="">🌐 Choisir une langue</option>
+                </select>
+            </div>
+            <p class="top-strip__notice" data-i18n="top_notice">Projet communautaire 100% open source · Soutenez la transparence 💚</p>
+        </div>
+    </div>
+
+    <header class="site-header">
+        <div class="site-header__inner">
+            <a class="brand" href="index.html">
+                <img src="assets/images/obf.PNG" alt="Halal Open Beauty Facts" class="brand__logo">
+                <div class="brand__text">
+                    <span>Halal Open Beauty Facts</span>
+                    <small>Powered by Open Food Facts</small>
+                </div>
+            </a>
+            <div class="mega-search mega-search--accent">
+                <input type="text" placeholder="Rechercher un produit pour vérifier ses infos" disabled>
+                <button disabled style="opacity: .5; cursor: not-allowed;">Recherche</button>
+            </div>
+            <nav class="primary-nav">
+                <a href="index.html#app-mobile" class="ghost-btn ghost-btn--dark" data-i18n="hero_cta_app">📱 App mobile</a>
+                <a href="signin.html" class="outline-btn" data-i18n="nav_signin">Se connecter</a>
+                <a href="index.html" class="solid-btn" data-i18n="nav_back_home">Retour accueil</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="form-shell">
+            <div class="form-card">
+                <p class="status-pill" data-i18n="add_intro_badge">🧾 Ajout via API officielle</p>
+                <h1 data-i18n="add_intro_title">Ajouter un produit halal</h1>
+                <p data-i18n="add_intro_desc">Renseignez les informations présentes sur l'emballage. Les données seront envoyées directement vers l'API officielle Open Beauty Facts.</p>
+
+                <form id="add-product-form">
+                    <div class="form-grid">
+                        <div class="input-group">
+                            <label for="code" data-i18n="add_form_code_label">Code-barres *</label>
+                            <input type="text" id="code" name="code" required placeholder="Ex : 3274080005003" data-i18n-placeholder="add_form_code_placeholder">
+                            <small data-i18n="add_form_code_helper">Sans espace ni caractère spécial.</small>
+                        </div>
+                        <div class="input-group">
+                            <label for="product_name" data-i18n="add_form_name_label">Nom du produit *</label>
+                            <input type="text" id="product_name" name="product_name" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="brands" data-i18n="add_form_brands_label">Marque</label>
+                            <input type="text" id="brands" name="brands" placeholder="Ex : Inaya" data-i18n-placeholder="add_form_brands_placeholder">
+                        </div>
+                        <div class="input-group">
+                            <label for="quantity" data-i18n="add_form_quantity_label">Contenance</label>
+                            <input type="text" id="quantity" name="quantity" placeholder="50 ml" data-i18n-placeholder="add_form_quantity_placeholder">
+                        </div>
+                        <div class="input-group">
+                            <label for="labels" data-i18n="add_form_labels_label">Labels</label>
+                            <input type="text" id="labels" name="labels" placeholder="halal, vegan, alcohol-free" data-i18n-placeholder="add_form_labels_placeholder">
+                        </div>
+                        <div class="input-group">
+                            <label for="countries" data-i18n="add_form_countries_label">Pays de vente</label>
+                            <input type="text" id="countries" name="countries" placeholder="France, Maroc" data-i18n-placeholder="add_form_countries_placeholder">
+                        </div>
+                        <div class="input-group">
+                            <label for="lang" data-i18n="add_form_lang_label">Langue principale *</label>
+                            <select id="lang" name="lang" required>
+                                <option value="fr" data-i18n="add_form_lang_option_fr">Français</option>
+                                <option value="en" data-i18n="add_form_lang_option_en">Anglais</option>
+                                <option value="ar" data-i18n="add_form_lang_option_ar">Arabe</option>
+                                <option value="es" data-i18n="add_form_lang_option_es">Espagnol</option>
+                                <option value="pt" data-i18n="add_form_lang_option_pt">Portugais</option>
+                                <option value="he" data-i18n="add_form_lang_option_he">Hébreu</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="ingredients_text" data-i18n="add_form_ingredients_label">Ingrédients</label>
+                            <textarea id="ingredients_text" name="ingredients_text" placeholder="Liste INCI complète" data-i18n-placeholder="add_form_ingredients_placeholder"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="input-group">
+                            <label for="user_id" data-i18n="add_form_user_label">Identifiant Open Beauty Facts *</label>
+                            <input type="text" id="user_id" name="user_id" required>
+                            <small data-i18n="add_form_user_helper">Le même que sur openbeautyfacts.org</small>
+                        </div>
+                        <div class="input-group">
+                            <label for="password" data-i18n="add_form_password_label">Mot de passe *</label>
+                            <input type="password" id="password" name="password" required>
+                            <small data-i18n="add_form_password_helper">Nous ne le stockons pas. Il est chiffré et envoyé à l'API.</small>
+                        </div>
+                    </div>
+
+                    <button type="submit" data-i18n="add_form_submit">Publier le produit</button>
+                    <div id="form-feedback" class="form-feedback"></div>
+                </form>
+
+                <footer>
+                    <p data-i18n="add_form_footer">Les données soumises sont publiées sous <strong>Open Database License</strong>. Merci pour votre contribution !</p>
+                </footer>
+            </div>
+
+            <aside class="auth-side">
+                <h2 data-i18n="add_sidebar_title">Besoin d'aide ?</h2>
+                <p data-i18n="add_sidebar_doc">Consultez la <a href="https://world.openbeautyfacts.org/producer" target="_blank" rel="noopener">documentation producteur</a> pour connaître toutes les options disponibles (photos, nutriments, ingrédients détaillés...).</p>
+                <ul>
+                    <li data-i18n="add_sidebar_tip_required">✅ Champs obligatoires : code-barres, nom, langue, identifiants.</li>
+                    <li data-i18n="add_sidebar_tip_photos">📸 Ajoutez ensuite les photos depuis l'application mobile.</li>
+                    <li data-i18n="add_sidebar_tip_support">💌 Assistance : <a href="mailto:contact@halalopenbeautyfacts.org">contact@halalopenbeautyfacts.org</a></li>
+                </ul>
+            </aside>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="site-footer__grid">
+            <div>
+                <h4 data-i18n="footer_project_title">Projet</h4>
+                <ul>
+                    <li><a href="legal.html" data-i18n="footer_project_legal">Mentions légales</a></li>
+                    <li><a href="#" data-i18n="footer_project_finance">Transparence financière</a></li>
+                    <li><a href="#" data-i18n="footer_project_press">Contact presse</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 data-i18n="footer_discover_title">Découvrir</h4>
+                <ul>
+                    <li><a href="index.html#catalogue" data-i18n="footer_discover_catalog">Catalogue</a></li>
+                    <li><a href="index.html#engagements" data-i18n="footer_discover_commitments">Engagements</a></li>
+                    <li><a href="index.html#communautes" data-i18n="footer_discover_community">Communauté</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 data-i18n="footer_contribute_title">Contribuer</h4>
+                <ul>
+                    <li><a href="add.html" data-i18n="footer_contribute_add">Ajouter un produit</a></li>
+                    <li><a href="#" data-i18n="footer_contribute_translate">Traduire</a></li>
+                    <li><a href="#" id="footer-donate-link" data-i18n="footer_contribute_donate">Faire un don</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 data-i18n="footer_follow_title">Suivez-nous</h4>
+                <div class="social">
+                    <a href="#" data-i18n="footer_social_twitter">🐦 Twitter</a>
+                    <a href="#" data-i18n="footer_social_instagram">📸 Instagram</a>
+                    <a href="#" data-i18n="footer_social_linkedin">💼 LinkedIn</a>
+                </div>
+            </div>
+        </div>
+        <p class="site-footer__copy" data-i18n="footer_copy_full">© 2025 Halal Open Beauty Facts · Licence Open Database.</p>
+    </footer>
+    <script src="assets/js/nav.js"></script>
+    <script src="assets/js/locale.js"></script>
+    <script src="assets/js/add.js"></script>
+</body>
+</html>

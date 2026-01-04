@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Halal Open Beauty Facts - Cosmétique transparente et Halal</title>
+    <link rel="stylesheet" href="assets/css/style.css?v=20251229">
+</head>
+<body>
+    <div class="top-strip">
+        <div class="top-strip__content">
+            <div class="top-strip__left">
+                <select id="country-select" class="top-strip__select">
+                    <option value="">🌍 Choisir un pays</option>
+                </select>
+                <select id="language-select" class="top-strip__select">
+                    <option value="">🌐 Choisir une langue</option>
+                </select>
+            </div>
+            <p class="top-strip__notice" data-i18n="top_notice">Projet communautaire 100% open source · Soutenez la transparence 💚</p>
+        </div>
+    </div>
+
+    <header class="site-header">
+        <div class="site-header__inner">
+            <a class="brand brand--hero" href="index.html">
+                <img src="assets/images/h.png" alt="Logo Halal Open Beauty Facts" class="brand__logo">
+                <div class="brand__text">
+                    <span>Halal Open Beauty Facts</span>
+                    <small>1ère base de données halal collaborative.</small>
+                </div>
+            </a>
+            <div class="header-controls">
+                <div class="mega-search mega-search--accent" role="search">
+                    <div class="mega-search__stack">
+                        <div class="mega-search__field">
+                            <input type="text" id="search-input" data-i18n-placeholder="search_placeholder" placeholder="Rechercher une marque, un ingrédient ou un produit halal">
+                        </div>
+                        <div class="mega-search__field mega-search__field--barcode">
+                            <input type="text" id="barcode-input" data-i18n-placeholder="barcode_placeholder" placeholder="Code-barres (ex : 3274080005003)">
+                            <button type="button" id="barcode-button" aria-label="Ouvrir la fiche produit par code-barres" class="barcode-btn" data-i18n="barcode_cta">📷 Scanner</button>
+                        </div>
+                    </div>
+                    <div class="mega-search__actions">
+                        <button type="button" id="search-button" class="search-submit" data-i18n="search_cta">🔍 Rechercher</button>
+                        <div class="barcode-card">
+                            <img src="https://barcodeapi.org/api/auto/3274080005003.svg?text=3274080005003" alt="Exemple de code-barres scannable" class="barcode-card__image" loading="lazy" onerror="this.onerror=null;this.src='assets/images/sample-barcode.svg';">
+                            <span class="barcode-card__hint" data-i18n="barcode_hint">Essayez avec le 3274080005003</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="header-cta-row">
+                    <nav class="primary-nav" aria-label="Actions rapides">
+                        <a href="#app-mobile" class="pill-btn pill-btn--app" data-i18n="hero_cta_app">📱 App mobile</a>
+                        <a href="add.html" class="outline-btn" data-i18n="community_cta_primary">➕ Ajouter un produit</a>
+                        <a href="signin.html" class="solid-btn" data-i18n="nav_signin">Se connecter</a>
+                    </nav>
+                    <a href="https://world.openbeautyfacts.org/data" target="_blank" rel="noopener" class="header-link">API publique →</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="donation-banner" id="fundraiser-banner">
+        <p>❤️ Nous dépendons de vos dons pour rester indépendants. <a href="#" id="donate-link">Je fais un don</a></p>
+        <button id="close-banner" aria-label="Fermer">×</button>
+    </div>
+
+    <main>
+        <section class="hero" id="discover">
+            <div class="hero__content">
+                <p class="hero__eyebrow" data-i18n="hero_eyebrow">Base de données mondiale de produits cosmétiques Halal</p>
+                <h1 data-i18n="hero_title">Le guide digital pour choisir des soins halal, éthiques et sûrs.</h1>
+                <p class="hero__subtitle" data-i18n="hero_subtitle">Analysez instantanément les produits cosmétiques, vérifiez les ingrédients sensibles et explorez la plus grande base de données halal collaborative.</p>
+                <div class="hero__cta">
+                    <a href="#catalogue" class="solid-btn" data-i18n="hero_cta_explore">Explorer les produits</a>
+                    <a href="add.html" class="ghost-btn" data-i18n="hero_cta_contribute">Contribuer maintenant</a>
+                    <a href="#app-mobile" class="ghost-btn ghost-btn--dark" data-i18n="hero_cta_app">📱 App mobile</a>
+                </div>
+                <div class="hero__locale" id="country-context" aria-live="polite">
+                    <span class="status-pill hero__country-pill" id="country-chip" data-i18n="country_badge_global">🌍 Monde</span>
+                    <p id="country-message" data-i18n="country_message_global" data-i18n-template="country_message_template">Vue mondiale : contributions de tous les pays.</p>
+                </div>
+                <div class="hero__stats">
+                    <article>
+                        <span class="stat-label" data-i18n="stats_products">Produits cosmétiques halal référencés</span>
+                        <strong id="product-count" data-fallback="1,2M+">1,2M+</strong>
+                    </article>
+                    <article>
+                        <span class="stat-label" data-i18n="stats_contributors">Contributeurs actifs</span>
+                        <strong id="contributors-count" data-fallback="120K">120K</strong>
+                    </article>
+                    <article>
+                        <span class="stat-label" data-i18n="stats_countries">Pays couverts</span>
+                        <strong id="country-count" data-fallback="180">180</strong>
+                    </article>
+                </div>
+            </div>
+            <div class="hero__visual">
+                <img src="assets/images/c.PNG" alt="Famille utilisant des cosmétiques halal" class="hero__image">
+                <div class="badge halal">✅ Certifié Halal & Vegan-friendly</div>
+                <div class="badge scan">📷 Scanner connecté</div>
+            </div>
+        </section>
+
+        <section class="quick-links" aria-label="Accès rapide">
+            <article>
+                <h3 data-i18n="quick_catalogue_title">Catalogue</h3>
+                <p data-i18n="quick_catalogue_desc">Filtrez par labels halal, végétarien ou sans alcool en quelques clics.</p>
+                <a href="#catalogue" data-i18n="quick_catalogue_cta">Voir les produits →</a>
+            </article>
+            <article>
+                <h3 data-i18n="quick_engagements_title">Engagements</h3>
+                <p data-i18n="quick_engagements_desc">Découvrez nos outils d'analyse d'ingrédients et la transparence des données.</p>
+                <a href="#engagements" data-i18n="quick_engagements_cta">Lire nos engagements →</a>
+            </article>
+            <article>
+                <h3 data-i18n="quick_community_title">Communauté</h3>
+                <p data-i18n="quick_community_desc">Rejoignez les bénévoles qui enrichissent la base de données au quotidien.</p>
+                <a href="#communautes" data-i18n="quick_community_cta">Rencontrer la communauté →</a>
+            </article>
+        </section>
+
+        <section class="trusted">
+            <p>Ils nous soutiennent</p>
+            <div class="trusted__logos">
+                <img src="assets/images/obf1.jpg" alt="Partenaire Halal Open Beauty Facts 1">
+                <img src="assets/images/obf2.PNG" alt="Partenaire Halal Open Beauty Facts 2">
+                <img src="assets/images/obf3.PNG" alt="Partenaire Halal Open Beauty Facts 3">
+                <img src="assets/images/obf4.PNG" alt="Partenaire Halal Open Beauty Facts 4">
+                <img src="assets/images/obf5.PNG" alt="Partenaire Halal Open Beauty Facts 5">
+                <img src="assets/images/obf6.png" alt="Partenaire Halal Open Beauty Facts 6">
+            </div>
+        </section>
+
+        <section class="filters" id="catalogue">
+            <div class="filters__headline">
+                <h2 data-i18n="filters_title">Catalogue Halal</h2>
+                <p data-i18n="filters_desc">Sélectionnez vos critères et trouvez immédiatement des soins adaptés.</p>
+            </div>
+            <div class="filters__chips">
+                <button class="filter-btn" data-filter="vegan" data-i18n="filter_vegan">🌱 Vegan</button>
+                <button class="filter-btn" data-filter="vegetarian" data-i18n="filter_vegetarian">🥗 Végétarien</button>
+                <button class="filter-btn" data-filter="alcohol-free" data-i18n="filter_alcoholfree">🚫 Sans alcool</button>
+            </div>
+            <div class="filters__dropdowns">
+                <select id="category-select" class="filter-select">
+                    <option value="">📦 Toutes les catégories</option>
+                    <option value="en:skin-care">Soins de la peau</option>
+                    <option value="en:hair-care">Soins capillaires</option>
+                    <option value="en:make-up">Maquillage</option>
+                    <option value="en:fragrance">Parfums</option>
+                </select>
+                <select id="sort-select" class="filter-select">
+                    <option value="popularity">⭐ Popularité</option>
+                    <option value="product_name">🔤 Nom du produit</option>
+                </select>
+            </div>
+        </section>
+
+        <section class="product-grid-section">
+            <div class="product-grid" id="product-grid">
+                <div class="loading-placeholder">
+                    <div class="spinner"></div>
+                    <p>Chargement des produits halal...</p>
+                </div>
+            </div>
+            <div class="pagination" id="pagination"></div>
+        </section>
+
+        <section class="live-feed" id="live-feed">
+            <div class="live-feed__header">
+                <div>
+                    <p class="eyebrow" data-i18n="live_feed_eyebrow">Flux communautaire</p>
+                    <h2 data-i18n="live_feed_title">Dernières contributions halal</h2>
+                    <p data-i18n="live_feed_desc">Observer en temps réel les nouveaux ajouts et corrections de la communauté Halal Open Beauty Facts.</p>
+                </div>
+                <button class="ghost-btn ghost-btn--dark" id="refresh-live-feed" data-i18n="live_feed_refresh">↻ Actualiser</button>
+            </div>
+            <div class="live-feed__list" id="live-feed-list">
+                <div class="live-feed__placeholder" data-i18n="live_feed_loading">Chargement du flux...</div>
+            </div>
+            <span id="live-feed-loading-text" class="visually-hidden" data-i18n="live_feed_loading">Chargement du flux...</span>
+            <span id="live-feed-empty-text" class="visually-hidden" data-i18n="live_feed_empty">Aucune contribution récente.</span>
+        </section>
+
+        <section class="family-gallery" aria-label="Familles Halal">
+            <div class="family-gallery__text">
+                <p class="eyebrow" data-i18n="family_eyebrow">Vies réelles, besoins réels</p>
+                <h2 data-i18n="family_title">Les familles qui nous inspirent partagent leurs routines beauté halal.</h2>
+                <p data-i18n="family_desc">Ces clichés proviennent de la communauté Halal Open Beauty Facts et illustrent la diversité des consommateurs que nous servons au quotidien.</p>
+            </div>
+            <div class="family-gallery__grid">
+                <img src="assets/images/b.png" alt="Famille partageant un rituel soin">
+                <img src="assets/images/c.PNG" alt="Jeunes engagés pour la transparence">
+                <img src="assets/images/d.png" alt="Atelier collaboratif autour des cosmétiques halal">
+            </div>
+        </section>
+
+        <section class="insights" id="engagements">
+            <article>
+                <h3 data-i18n="insight_1_title">🧪 Analyse fine des ingrédients</h3>
+                <p data-i18n="insight_1_desc">Détection automatique des dérivés d'alcool, gélatine ou sources animales grâce aux taxonomies ouvertes.</p>
+            </article>
+            <article>
+                <h3 data-i18n="insight_2_title">📷 Scanner mobile</h3>
+                <p data-i18n="insight_2_desc">Connectez l'application officielle pour scanner les codes-barres et obtenir un verdict Halal instantané.</p>
+            </article>
+            <article>
+                <h3 data-i18n="insight_3_title">🤝 Données ouvertes</h3>
+                <p data-i18n="insight_3_desc">API publique, exports CSV et widgets prêts à intégrer dans vos plateformes e-commerce.</p>
+            </article>
+        </section>
+
+        <section class="community" id="communautes">
+            <div class="community__text">
+                <p class="eyebrow" data-i18n="community_eyebrow">Communauté mondiale</p>
+                <h2 data-i18n="community_title">Contribuez à la plus grande base Halal open source.</h2>
+                <p data-i18n="community_desc">Photographiez les packagings, traduisez les étiquettes, validez les ingrédients sensibles et aidez les consommateurs musulmans du monde entier.</p>
+                <div class="community__actions">
+                    <a href="add.html" class="solid-btn" data-i18n="community_cta_primary">Ajouter un produit</a>
+                    <a href="#" class="ghost-btn" data-i18n="community_cta_secondary">Télécharger le guide bénévole</a>
+                </div>
+            </div>
+            <div class="community__media">
+                <img src="assets/images/b.png" alt="Communauté Halal Open Beauty Facts" />
+                <div class="community__stack">
+                    <img src="assets/images/c.PNG" alt="Atelier de vérification des ingrédients">
+                    <img src="assets/images/d.png" alt="Famille testant des cosmétiques halal">
+                </div>
+                <div class="community__card">
+                    <strong>+3 500</strong>
+                    <span data-i18n="community_card_text">produits halal ajoutés en 30 jours</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="app-callout" id="app-mobile">
+            <div class="app-callout__content">
+                <h2 data-i18n="app_title">Scannez un produit en magasin</h2>
+                <p data-i18n="app_desc">L'application Open Beauty Facts vérifie la conformité halal, l'INCI et la présence d'allergènes en temps réel.</p>
+                <div class="app-callout__badges">
+                    <a href="https://apps.apple.com/app/open-beauty-facts/id1122926380" target="_blank" rel="noopener">
+                        <img src="https://static.openfoodfacts.org/images/misc/appstore/black/appstore_US.svg" alt="App Store">
+                    </a>
+                    <a href="https://play.google.com/store/apps/details?id=org.openbeautyfacts.scanner" target="_blank" rel="noopener">
+                        <img src="https://static.openfoodfacts.org/images/misc/google-play-badge-en.png" alt="Google Play">
+                    </a>
+                    <a href="https://f-droid.org/en/packages/org.openbeautyfacts.scanner/" target="_blank" rel="noopener">
+                        <img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid">
+                    </a>
+                    <a href="#" id="apk-download-link" class="apk-badge" aria-disabled="true">⬇️ Télécharger l'APK Android</a>
+                </div>
+            </div>
+            <div class="app-callout__preview">
+                <img src="assets/images/c.PNG" alt="Capture de l'application Halal Open Beauty Facts">
+            </div>
+        </section>
+
+        <section class="legal-section" id="mentions-legales">
+            <div class="legal-card">
+                <h2 data-i18n="legal_section_title">Mentions légales</h2>
+                <p data-i18n="legal_section_alert" data-i18n-html="true"><strong>Important :</strong> Halal Open Beauty Facts est un site citoyen d'information sur les produits cosmétiques halal. Nous ne vendons aucun produit et ne faisons la promotion d'aucune marque.</p>
+                <p data-i18n="legal_section_indep">Halal Open Beauty Facts est 100% indépendant, et n'est lié à aucun industriel, distributeur ou acteur de la filière Halal.</p>
+                <p data-i18n="legal_section_support">Pour toute question ou réclamation liée à un produit halal, contactez directement le service clients du fabricant ou distributeur présent sur l'emballage.</p>
+                <p data-i18n="legal_section_owner">Responsable de publication : Mustapha Zenthar.</p>
+                <a class="legal-mail" href="mailto:contact@halalopenbeautyfacts.org" data-i18n="legal_section_contact">contact@halalopenbeautyfacts.org</a>
+            </div>
+            <div class="legal-card legal-card--light">
+                <h3 data-i18n="legal_license_title">Licence d'utilisation des données</h3>
+                <p>Open Database License.</p>
+                <p>Database Contents License.</p>
+                <p>Licence Creative Commons Attribution Partage.</p>
+                <a class="legal-mail" href="legal.html">Consulter la page complète →</a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="site-footer__grid">
+            <div>
+                <h4>Projet</h4>
+                <ul>
+                    <li><a href="legal.html">Mentions légales</a></li>
+                    <li><a href="terms.html">Conditions d'utilisation</a></li>
+                    <li><a href="#">Transparence financière</a></li>
+                    <li><a href="#">Contact presse</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Découvrir</h4>
+                <ul>
+                    <li><a href="#catalogue">Catalogue</a></li>
+                    <li><a href="#engagements">Engagements</a></li>
+                    <li><a href="#communautes">Communauté</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Contribuer</h4>
+                <ul>
+                    <li><a href="add.html">Ajouter un produit</a></li>
+                    <li><a href="#">Traduire</a></li>
+                    <li><a href="#" id="footer-donate-link">Faire un don</a></li>
+                    <li><a href="https://github.com/halalopenfoodfacts-server/halalopenbeautyfacts" target="_blank" rel="noopener">Code source sur GitHub</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Suivez-nous</h4>
+                <div class="social">
+                    <a href="#">🐦 Twitter</a>
+                    <a href="#">📸 Instagram</a>
+                    <a href="#">💼 LinkedIn</a>
+                </div>
+            </div>
+        </div>
+        <p class="site-footer__copy">© 2025 Halal Open Beauty Facts · Licence Open Database · Merci à la communauté mondiale.</p>
+    </footer>
+
+    <script src="assets/js/nav.js"></script>
+    <script src="assets/js/locale.js"></script>
+    <script src="assets/js/app.js"></script>
+</body>
+</html>

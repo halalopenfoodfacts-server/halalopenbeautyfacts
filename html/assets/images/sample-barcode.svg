@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="180" height="60" viewBox="0 0 180 60" role="img" aria-label="Code-barres de démonstration">
+  <rect width="180" height="60" fill="#ffffff"/>
+  <g fill="#0b0f1a">
+    <rect x="6" y="8" width="4" height="44"/>
+    <rect x="14" y="8" width="6" height="44"/>
+    <rect x="26" y="8" width="3" height="44"/>
+    <rect x="34" y="8" width="5" height="44"/>
+    <rect x="44" y="8" width="2" height="44"/>
+    <rect x="50" y="8" width="7" height="44"/>
+    <rect x="63" y="8" width="3" height="44"/>
+    <rect x="70" y="8" width="6" height="44"/>
+    <rect x="82" y="8" width="4" height="44"/>
+    <rect x="90" y="8" width="2" height="44"/>
+    <rect x="96" y="8" width="5" height="44"/>
+    <rect x="106" y="8" width="3" height="44"/>
+    <rect x="114" y="8" width="6" height="44"/>
+    <rect x="126" y="8" width="2" height="44"/>
+    <rect x="132" y="8" width="5" height="44"/>
+    <rect x="142" y="8" width="3" height="44"/>
+    <rect x="150" y="8" width="6" height="44"/>
+    <rect x="162" y="8" width="4" height="44"/>
+  </g>
+  <text x="90" y="56" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" text-anchor="middle" fill="#0b0f1a">3274080005003</text>
+</svg>

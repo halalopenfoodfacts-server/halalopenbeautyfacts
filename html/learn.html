@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apprendre — Halal Open Beauty Facts</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        .learn-page { max-width: 860px; margin: 2rem auto; padding: 0 1rem; }
+        .learn-page h1 { font-size: 1.9rem; margin-bottom: 0.3rem; }
+        .learn-tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 1.5rem 0; }
+        .learn-tab { padding: 0.5rem 1.1rem; border-radius: 999px; border: 2px solid var(--border,#e5e7eb); background: #fff; cursor: pointer; font-weight: 600; font-size: 0.88rem; }
+        .learn-tab.active { background: var(--primary,#16a34a); color: #fff; border-color: var(--primary,#16a34a); }
+        .learn-panel { display: none; }
+        .learn-panel.active { display: block; }
+        .learn-card { background: #fff; border: 1px solid var(--border,#e5e7eb); border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; }
+        .learn-card h3 { margin-top: 0; font-size: 1.1rem; }
+        .learn-card p, .learn-card li { color: #374151; line-height: 1.7; }
+        .learn-card ul { padding-left: 1.3rem; }
+        .quiz-btn { padding: 0.5rem 1.2rem; border-radius: 8px; border: 2px solid var(--border,#e5e7eb); background: #fff; cursor: pointer; font-weight: 600; margin: 0.3rem; transition: all .15s; }
+        .quiz-btn.correct { background: #d1fae5; border-color: #10b981; color: #065f46; }
+        .quiz-btn.wrong   { background: #fee2e2; border-color: #ef4444; color: #991b1b; }
+        .quiz-result { margin-top: 0.75rem; font-weight: 600; min-height: 1.5rem; }
+        .ingredient-checker input { padding: 0.55rem 1rem; border: 2px solid var(--border,#e5e7eb); border-radius: 8px; width: 100%; max-width: 400px; font-size: 0.95rem; margin-bottom: 0.75rem; box-sizing: border-box; }
+        .ingredient-result { padding: 0.75rem 1rem; border-radius: 8px; font-weight: 600; display: none; }
+        .ingredient-result.safe    { background: #d1fae5; color: #065f46; display: block; }
+        .ingredient-result.warning { background: #fef3c7; color: #92400e; display: block; }
+        .ingredient-result.alert   { background: #fee2e2; color: #991b1b; display: block; }
+    </style>
+</head>
+<body>
+    <header class="site-header site-header--secondary">
+        <div class="site-header__inner">
+            <a class="brand" href="index.html">
+                <img src="assets/images/e.png" alt="Logo" class="brand__logo" style="height:32px">
+                <div class="brand__text"><strong>Halal Open Beauty Facts</strong></div>
+            </a>
+            <nav class="primary-nav">
+                <a href="index.html#catalogue" class="ghost-btn">← Catalogue</a>
+                <a href="blog.html" class="ghost-btn">📰 Blog</a>
+            </nav>
+        </div>
+    </header>
+    <main class="learn-page">
+        <h1>🎓 Apprendre</h1>
+        <p style="color:#6b7280">Guides interactifs pour comprendre les cosmétiques halal et déchiffrer les INCI.</p>
+
+        <div class="learn-tabs">
+            <button class="learn-tab active" data-tab="bases">Bases halal beauté</button>
+            <button class="learn-tab" data-tab="inci">Ingrédients INCI</button>
+            <button class="learn-tab" data-tab="checker">Vérificateur</button>
+            <button class="learn-tab" data-tab="quiz">Quiz</button>
+        </div>
+
+        <div class="learn-panel active" id="tab-bases">
+            <div class="learn-card">
+                <h3>💄 Cosmétiques halal : les principes</h3>
+                <p>Un cosmétique halal doit être exempt de tout ingrédient haram et ne pas avoir été testé sur des animaux selon certaines certifications. Les principaux critères :</p>
+                <ul>
+                    <li>Absence d'alcool éthylique (ethanol / alcohol denat.)</li>
+                    <li>Absence d'ingrédients porcins (gélatine de porc, collagène porcin...)</li>
+                    <li>Absence de carmine (colorant d'insecte, CI 75470)</li>
+                    <li>Ingrédients d'origine animale issus d'abattage halal ou d'origine végétale</li>
+                </ul>
+            </div>
+            <div class="learn-card">
+                <h3>🐷 Dérivés porcins dans les cosmétiques</h3>
+                <ul>
+                    <li><strong>Gelatin</strong> — peut être porcine</li>
+                    <li><strong>Collagen</strong> — peut être d'origine porcine ou bovine</li>
+                    <li><strong>Lard</strong> — graisse de porc</li>
+                    <li><strong>Pepsin</strong> — enzyme gastrique porcine</li>
+                    <li><strong>Keratin</strong> — généralement d'origine kératine animale</li>
+                </ul>
+            </div>
+            <div class="learn-card">
+                <h3>🍷 L'alcool : comment l'identifier</h3>
+                <p>Les alcools à éviter dans les cosmétiques :</p>
+                <ul>
+                    <li><strong>Alcohol / Ethanol / Alcohol denat.</strong> — haram</li>
+                    <li><strong>SD Alcohol, Denatured Alcohol</strong> — haram</li>
+                </ul>
+                <p>Les alcools généralement acceptés (alcools gras) :</p>
+                <ul>
+                    <li>Cetyl Alcohol, Cetearyl Alcohol, Stearyl Alcohol, Myristyl Alcohol — d'origine végétale, halal</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="learn-panel" id="tab-inci">
+            <div class="learn-card">
+                <h3>🚫 Ingrédients INCI haram</h3>
+                <ul>
+                    <li>Alcohol, Ethanol, Alcohol Denat., SD Alcohol</li>
+                    <li>Carmine, CI 75470 — colorant d'insecte</li>
+                    <li>Gelatin (porcine) — gélatine</li>
+                    <li>Lard, Adeps suillus — graisse de porc</li>
+                    <li>Pepsin — enzyme porcine</li>
+                </ul>
+            </div>
+            <div class="learn-card">
+                <h3>⚠️ Ingrédients à vérifier</h3>
+                <ul>
+                    <li><strong>Glycerin / Glycerol</strong> — végétal (halal) ou animal (à vérifier)</li>
+                    <li><strong>Collagen</strong> — origine à préciser</li>
+                    <li><strong>Keratin</strong> — souvent bovine, origine à vérifier</li>
+                    <li><strong>Stearic Acid</strong> — végétale ou animale</li>
+                    <li><strong>Parfum / Fragrance</strong> — peut contenir de l'alcool</li>
+                </ul>
+            </div>
+            <div class="learn-card">
+                <h3>✅ Ingrédients généralement halal</h3>
+                <ul>
+                    <li>Aqua (Eau), tous les extraits de plantes</li>
+                    <li>Cetyl Alcohol, Cetearyl Alcohol (alcools gras végétaux)</li>
+                    <li>Shea Butter, Argan Oil, Jojoba Oil</li>
+                    <li>Tocopherol (Vitamine E), Ascorbic Acid (Vitamine C)</li>
+                    <li>Niacinamide, Hyaluronic Acid (fermentation microbienne)</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="learn-panel" id="tab-checker">
+            <div class="learn-card">
+                <h3>🔍 Vérificateur d'ingrédient INCI</h3>
+                <p>Entrez un ingrédient INCI ou son nom courant :</p>
+                <div class="ingredient-checker">
+                    <input type="text" id="checker-input" placeholder="ex: alcohol denat, carmine, glycerin...">
+                    <button class="solid-btn" onclick="checkIngredient()">Vérifier</button>
+                    <div class="ingredient-result" id="checker-result"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="learn-panel" id="tab-quiz">
+            <div id="quiz-container"></div>
+            <button class="ghost-btn" id="btn-restart" style="margin-top:1rem" onclick="startQuiz()">🔄 Recommencer</button>
+        </div>
+    </main>
+
+    <script>
+    document.querySelectorAll('.learn-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.learn-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.learn-panel').forEach(p => p.classList.remove('active'));
+            tab.classList.add('active');
+            document.getElementById(`tab-${tab.dataset.tab}`).classList.add('active');
+        });
+    });
+
+    const ALERT_MAP = {
+        'alcohol denat': '🚫 HARAM — Alcool dénaturé, interdit en cosmétique halal.',
+        'ethanol': '🚫 HARAM — Alcool éthylique.',
+        'alcohol': '🚫 HARAM — Vérifiez s\'il s\'agit d\'alcohol denat (haram) ou d\'un alcool gras (halal).',
+        'carmine': '🚫 HARAM — Carmin (CI 75470) : colorant d\'insecte, non halal.',
+        'ci 75470': '🚫 HARAM — Carmine, colorant d\'insecte.',
+        'lard': '🚫 HARAM — Graisse de porc.',
+        'pepsin': '🚫 HARAM — Enzyme d\'origine porcine.',
+        'gelatin': '🚫 HARAM probable — Gélatine, souvent porcine. Cherchez la certification halal.',
+    };
+    const WARN_MAP = {
+        'glycerin': '⚠️ À VÉRIFIER — Peut être d\'origine végétale (halal) ou animale.',
+        'collagen': '⚠️ À VÉRIFIER — Collagène, origine animale à préciser.',
+        'keratin': '⚠️ À VÉRIFIER — Kératine, origine animale à préciser.',
+        'stearic acid': '⚠️ À VÉRIFIER — Peut être végétale ou animale.',
+        'parfum': '⚠️ À VÉRIFIER — Peut contenir de l\'alcool éthylique.',
+        'fragrance': '⚠️ À VÉRIFIER — Peut contenir de l\'alcool.',
+    };
+    const SAFE_MAP = {
+        'aqua': '✅ HALAL — Eau, toujours halal.',
+        'cetyl alcohol': '✅ HALAL — Alcool gras végétal, halal.',
+        'cetearyl alcohol': '✅ HALAL — Alcool gras végétal, halal.',
+        'niacinamide': '✅ HALAL — Vitamine B3, synthétique.',
+        'hyaluronic acid': '✅ HALAL — Fermentation microbienne, halal.',
+        'tocopherol': '✅ HALAL — Vitamine E, végétale.',
+        'shea butter': '✅ HALAL — Beurre de karité, végétal.',
+        'argan oil': '✅ HALAL — Huile d\'argan, végétale.',
+    };
+
+    window.checkIngredient = function() {
+        const val = document.getElementById('checker-input').value.trim().toLowerCase();
+        const res = document.getElementById('checker-result');
+        if (!val) return;
+        const alert = Object.keys(ALERT_MAP).find(k => val.includes(k));
+        const warn  = Object.keys(WARN_MAP).find(k => val.includes(k));
+        const safe  = Object.keys(SAFE_MAP).find(k => val.includes(k));
+        if (alert)      { res.textContent = ALERT_MAP[alert]; res.className = 'ingredient-result alert'; }
+        else if (warn)  { res.textContent = WARN_MAP[warn];   res.className = 'ingredient-result warning'; }
+        else if (safe)  { res.textContent = SAFE_MAP[safe];   res.className = 'ingredient-result safe'; }
+        else { res.textContent = '❓ Ingrédient non trouvé. Consultez un organisme certificateur halal.'; res.className = 'ingredient-result warning'; }
+    };
+    document.getElementById('checker-input').addEventListener('keydown', e => { if (e.key === 'Enter') checkIngredient(); });
+
+    const QUESTIONS = [
+        { q: 'Le Cetyl Alcohol est-il haram ?', choices: ['Oui', 'Non', 'Ça dépend'], correct: 1, explain: 'Non. Le Cetyl Alcohol est un alcool gras d\'origine végétale, tout à fait halal. Seuls les alcools éthyliques sont haram.' },
+        { q: 'La Carmine (CI 75470) est-elle halal ?', choices: ['Oui', 'Non', 'Peut-être'], correct: 1, explain: 'Non. La carmine est un colorant extrait de cochenilles (insectes), considéré haram.' },
+        { q: 'Un parfum sans mention d\'alcool sur l\'étiquette est-il forcément halal ?', choices: ['Oui', 'Non', 'Probablement'], correct: 1, explain: 'Non. Les "parfums" et "fragrances" peuvent contenir de l\'alcool sans le mentionner explicitement.' },
+        { q: 'La Glycerin végétale certifiée est-elle halal ?', choices: ['Oui', 'Non', 'Ça dépend'], correct: 0, explain: 'Oui. La glycérine végétale certifiée est halal. C\'est l\'origine animale non certifiée qui pose problème.' },
+        { q: 'Le "Alcohol Denat." dans un sérum est-il acceptable ?', choices: ['Oui', 'Non', 'En usage externe seulement'], correct: 1, explain: 'Non selon la majorité des savants. L\'Alcohol Denat. est de l\'alcool éthylique dénaturé, considéré haram même en usage externe.' },
+    ];
+    let qIndex = 0;
+
+    function startQuiz() { qIndex = 0; renderQuestion(); }
+    function renderQuestion() {
+        const container = document.getElementById('quiz-container');
+        if (qIndex >= QUESTIONS.length) {
+            container.innerHTML = `<div class="learn-card"><h3>🎉 Quiz terminé !</h3><p>Excellent ! Vous maîtrisez les bases de la cosmétique halal.</p></div>`;
+            return;
+        }
+        const q = QUESTIONS[qIndex];
+        container.innerHTML = `<div class="learn-card">
+            <p style="font-size:.8rem;color:#9ca3af">Question ${qIndex+1}/${QUESTIONS.length}</p>
+            <h3>${q.q}</h3>
+            <div>${q.choices.map((c,i) => `<button class="quiz-btn" onclick="answerQuiz(${i})">${c}</button>`).join('')}</div>
+            <p class="quiz-result" id="quiz-result"></p>
+        </div>`;
+    }
+    window.answerQuiz = function(i) {
+        const q = QUESTIONS[qIndex];
+        document.querySelectorAll('.quiz-btn').forEach((b,idx) => {
+            b.disabled = true;
+            if (idx === q.correct) b.classList.add('correct');
+            else if (idx === i) b.classList.add('wrong');
+        });
+        document.getElementById('quiz-result').textContent = (i === q.correct ? '✅ Correct ! ' : '❌ Incorrect. ') + q.explain;
+        setTimeout(() => { qIndex++; renderQuestion(); }, 2800);
+    };
+    startQuiz();
+    </script>
+</body>
+</html>

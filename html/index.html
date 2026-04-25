@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Halal Open Beauty Facts - Cosmétique transparente et Halal</title>
     <link rel="stylesheet" href="assets/css/style.css?v=20251229">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#16a34a">
 </head>
 <body>
     <div class="top-strip">
@@ -354,6 +356,23 @@
             </div>
         </section>
 
+        <section class="voyage-section" id="mode-voyage">
+            <h2>✈️ Mode Voyage</h2>
+            <p>Filtrez les cosmétiques halal disponibles dans votre pays de destination.</p>
+            <div class="voyage-grid">
+                <button class="voyage-country" data-country="france">🇫🇷 France</button>
+                <button class="voyage-country" data-country="morocco">🇲🇦 Maroc</button>
+                <button class="voyage-country" data-country="algeria">🇩🇿 Algérie</button>
+                <button class="voyage-country" data-country="tunisia">🇹🇳 Tunisie</button>
+                <button class="voyage-country" data-country="turkey">🇹🇷 Turquie</button>
+                <button class="voyage-country" data-country="saudi-arabia">🇸🇦 Arabie Saoudite</button>
+                <button class="voyage-country" data-country="united-arab-emirates">🇦🇪 Émirats</button>
+                <button class="voyage-country" data-country="malaysia">🇲🇾 Malaisie</button>
+                <button class="voyage-country" data-country="indonesia">🇮🇩 Indonésie</button>
+                <button class="voyage-country" data-country="united-kingdom">🇬🇧 Royaume-Uni</button>
+            </div>
+        </section>
+
         <section class="app-callout" id="app-mobile">
             <div class="app-callout__content">
                 <h2 data-i18n="app_title">Scannez un produit en magasin</h2>
@@ -410,8 +429,11 @@
                 <h4>Découvrir</h4>
                 <ul>
                     <li><a href="#catalogue">Catalogue</a></li>
-                    <li><a href="#engagements">Engagements</a></li>
-                    <li><a href="#communautes">Communauté</a></li>
+                    <li><a href="blog.html">📰 Blog</a></li>
+                    <li><a href="learn.html">🎓 Apprendre</a></li>
+                    <li><a href="compare.html">⚖️ Comparateur</a></li>
+                    <li><a href="dashboard.html">📊 Mon tableau de bord</a></li>
+                    <li><a href="api.html">🔌 API</a></li>
                 </ul>
             </div>
             <div>
@@ -440,5 +462,11 @@
     <script src="assets/js/locale.js"></script>
     <script src="assets/js/ledger.js"></script>
     <script src="assets/js/app.js"></script>
+    <script src="assets/js/voyage.js"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/service-worker.js').catch(() => {});
+      }
+    </script>
 </body>
 </html>

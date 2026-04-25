@@ -587,3 +587,37 @@
         padding: 1.5rem;
     }
 }
+
+/* === Halal-o-mètre === */
+.halalometer { display: flex; align-items: center; gap: 1rem; margin: 0.75rem 0 1rem; }
+.halalometer__bar { flex: 1; height: 12px; background: #e5e7eb; border-radius: 999px; overflow: hidden; }
+.halalometer__fill { height: 100%; border-radius: 999px; transition: width .6s ease; }
+.halalometer__fill--safe    { background: linear-gradient(90deg, #16a34a, #4ade80); }
+.halalometer__fill--warning { background: linear-gradient(90deg, #f59e0b, #fde68a); }
+.halalometer__fill--alert   { background: linear-gradient(90deg, #dc2626, #f87171); }
+.halalometer__score { font-weight: 700; font-size: 0.9rem; white-space: nowrap; }
+.halal-bullet--safe    { color: #15803d; }
+.halal-bullet--warning { color: #b45309; }
+.halal-bullet--alert   { color: #b91c1c; }
+.halal-bullet--info    { color: #1d4ed8; }
+
+/* === Certifications === */
+.certif-badges { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border, #e5e7eb); }
+.certif-title  { font-size: 0.82rem; font-weight: 600; color: #6b7280; margin: 0 0 0.5rem; }
+.certif-chip   { display: inline-block; color: #fff; font-size: 0.78rem; font-weight: 700; padding: 0.25rem 0.7rem; border-radius: 999px; margin: 0.2rem; }
+
+/* === Listes === */
+.list-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+.list-btn { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.45rem 1rem; border-radius: 8px; border: 2px solid var(--border, #e5e7eb); background: #fff; cursor: pointer; font-size: 0.85rem; font-weight: 600; text-decoration: none; color: inherit; transition: all .15s; }
+.list-btn:hover { background: #f3f4f6; }
+.list-btn--active { border-color: var(--primary, #16a34a); background: #f0fdf4; color: var(--primary, #16a34a); }
+.list-btn--link { background: #f9fafb; }
+.list-toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(80px); background: #1f2937; color: #fff; padding: 0.65rem 1.3rem; border-radius: 999px; font-weight: 600; font-size: 0.88rem; opacity: 0; transition: all .25s; z-index: 9999; pointer-events: none; }
+.list-toast--visible { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* === Commentaires === */
+.comment-item { padding: 0.75rem 0; border-bottom: 1px solid #f3f4f6; }
+.comment-meta { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.25rem; }
+.comment-stars-display { color: #f59e0b; }
+.comment-star { font-size: 1.4rem; color: #d1d5db; cursor: pointer; transition: color .1s; }
+.comment-star.active { color: #f59e0b; }

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon tableau de bord — Halal Open Beauty Facts</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        .dash-page { max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
+        .dash-page h1 { font-size: 1.8rem; margin-bottom: 0.3rem; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+        .stat-card { background: #fff; border: 1px solid var(--border,#e5e7eb); border-radius: 16px; padding: 1.2rem; text-align: center; }
+        .stat-card__value { font-size: 2rem; font-weight: 800; color: var(--primary,#16a34a); }
+        .stat-card__label { font-size: 0.82rem; color: #6b7280; margin-top: 0.25rem; }
+        .badge-grid { display: flex; flex-wrap: wrap; gap: 0.75rem; margin: 1rem 0; }
+        .badge { padding: 0.5rem 1.1rem; border-radius: 999px; font-weight: 700; font-size: 0.82rem; }
+        .badge--bronze { background: #fef3c7; color: #92400e; }
+        .badge--silver { background: #f3f4f6; color: #374151; }
+        .badge--gold   { background: #fef9c3; color: #713f12; }
+        .badge--locked { background: #f9fafb; color: #d1d5db; }
+        .history-list { list-style: none; padding: 0; margin: 0; }
+        .history-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 0; border-bottom: 1px solid #f3f4f6; }
+        .history-item img { width: 40px; height: 40px; object-fit: contain; border-radius: 6px; background: #f9fafb; }
+        .history-item a { font-weight: 600; font-size: 0.88rem; text-decoration: none; color: inherit; }
+        .history-item a:hover { color: var(--primary,#16a34a); }
+        .history-item span { font-size: 0.75rem; color: #9ca3af; }
+        .section-card { background: #fff; border: 1px solid var(--border,#e5e7eb); border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; }
+        .section-card h2 { margin-top: 0; font-size: 1.1rem; }
+    </style>
+</head>
+<body>
+    <header class="site-header site-header--secondary">
+        <div class="site-header__inner">
+            <a class="brand" href="index.html">
+                <img src="assets/images/e.png" alt="Logo" class="brand__logo" style="height:32px">
+                <div class="brand__text"><strong>Halal Open Beauty Facts</strong></div>
+            </a>
+            <nav class="primary-nav">
+                <a href="index.html" class="ghost-btn">← Catalogue</a>
+                <a href="my-lists.html" class="ghost-btn">📄 Mes listes</a>
+            </nav>
+        </div>
+    </header>
+    <main class="dash-page">
+        <h1>📊 Mon tableau de bord</h1>
+        <p style="color:#6b7280">Vos statistiques d'utilisation Halal Open Beauty Facts.</p>
+        <div class="stats-grid" id="stats-grid"></div>
+        <div class="section-card">
+            <h2>🏅 Badges obtenus</h2>
+            <div class="badge-grid" id="badge-grid"></div>
+        </div>
+        <div class="section-card">
+            <h2>🕒 Historique de consultation</h2>
+            <ul class="history-list" id="history-list"></ul>
+        </div>
+    </main>
+    <script>
+    const history = (() => { try { return JSON.parse(localStorage.getItem('beauty_scan_history')||'[]'); } catch { return []; } })();
+    const favs    = (() => { try { return JSON.parse(localStorage.getItem('beauty_list_fav')||'[]'); } catch { return []; } })();
+    const cart    = (() => { try { return JSON.parse(localStorage.getItem('beauty_list_cart')||'[]'); } catch { return []; } })();
+    const black   = (() => { try { return JSON.parse(localStorage.getItem('beauty_list_black')||'[]'); } catch { return []; } })();
+
+    // Stats
+    document.getElementById('stats-grid').innerHTML = [
+        { label: 'Fiches consultées', value: history.length },
+        { label: 'Produits favoris', value: favs.length },
+        { label: 'Ma liste', value: cart.length },
+        { label: 'Blacklistés', value: black.length },
+    ].map(s => `<div class="stat-card"><div class="stat-card__value">${s.value}</div><div class="stat-card__label">${s.label}</div></div>`).join('');
+
+    // Badges
+    const badges = [
+        { label: '🔍 Premier scan', earned: history.length >= 1, tier: 'bronze' },
+        { label: '💄 5 produits vus', earned: history.length >= 5, tier: 'bronze' },
+        { label: '⭐ Premier favori', earned: favs.length >= 1, tier: 'silver' },
+        { label: '🛒 Liste de 3', earned: cart.length >= 3, tier: 'silver' },
+        { label: '💅 Explorer (20 fiches)', earned: history.length >= 20, tier: 'gold' },
+        { label: '🏆 Connaisseur (50 fiches)', earned: history.length >= 50, tier: 'gold' },
+    ];
+    document.getElementById('badge-grid').innerHTML = badges.map(b =>
+        `<span class="badge badge--${b.earned ? b.tier : 'locked'}" title="${b.earned ? 'Obtenu' : 'Pas encore'}">${b.earned ? '' : '🔒 '}${b.label}</span>`
+    ).join('');
+
+    // History
+    const el = document.getElementById('history-list');
+    if (!history.length) { el.innerHTML = '<li style="color:#9ca3af;padding:1rem 0">Aucune fiche consultée pour le moment.</li>'; }
+    else {
+        el.innerHTML = history.slice(0, 20).map(p => `
+            <li class="history-item">
+                <img src="${p.img||'https://static.openfoodfacts.org/images/misc/product-default.png'}" alt="${p.name}">
+                <div>
+                    <a href="product.html?code=${p.code}">${p.name}</a><br>
+                    <span>${p.brand||''} · ${new Date(p.date).toLocaleDateString('fr-FR')}</span>
+                </div>
+            </li>`).join('');
+    }
+    </script>
+</body>
+</html>

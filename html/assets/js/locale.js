@@ -2,7 +2,7 @@
     const COUNTRY_STORAGE_KEY = 'hobf_country';
     const LANGUAGE_STORAGE_KEY = 'hobf_language';
 
-    const COUNTRY_ENDPOINT = 'https://world.openbeautyfacts.org/countries.json';
+    const COUNTRY_ENDPOINT = '/proxy/facets/countries.json';
     const COUNTRY_CACHE_KEY = 'hobf_country_cache_v1';
     const COUNTRY_CACHE_TTL = 12 * 60 * 60 * 1000;
 

@@ -229,18 +229,30 @@ document.addEventListener('DOMContentLoaded', () => {
                             <a href="add.html" class="ghost-btn">Ajouter un nouveau produit</a>
                             <button type="button" class="ghost-btn ghost-btn--dark" id="open-edit-drawer">✏️ Éditer depuis ce site</button>
                         </div>
+                        <div class="list-actions" id="list-actions" data-code="${product.code}" data-name="${(product.product_name||'').replace(/"/g,'&quot;')}" data-brand="${(product.brands||'').replace(/"/g,'&quot;')}" data-img="${product.image_front_small_url||product.image_front_url||''}">
+                            <button class="list-btn" id="btn-fav"   title="Ajouter aux favoris">  ⭐ <span>Favoris</span></button>
+                            <button class="list-btn" id="btn-cart"  title="Ajouter à ma liste">🛒 <span>Ma liste</span></button>
+                            <button class="list-btn" id="btn-black" title="Blacklister ce produit">🚫 <span>Blacklist</span></button>
+                            <a href="my-lists.html" class="list-btn list-btn--link">📄 Mes listes</a>
+                        </div>
                     </div>
                 </div>
 
                 <div class="product-panels">
                     <article class="product-panel product-panel--halal">
                         <div class="product-panel__header">
-                            <h2>Verdict halal</h2>
+                            <h2>Halal-o-mètre</h2>
                             <span class="status-chip status-chip--${halalVerdict.level}">${halalVerdict.icon} ${halalVerdict.title}</span>
+                        </div>
+                        <div class="halalometer">
+                            <div class="halalometer__bar">
+                                <div class="halalometer__fill halalometer__fill--${halalVerdict.level}" style="width:${halalVerdict.score}%"></div>
+                            </div>
+                            <span class="halalometer__score">${halalVerdict.score}/100</span>
                         </div>
                         <p class="product-panel__lead">${halalVerdict.message}</p>
                         <ul class="halal-bullets">
-                            ${halalVerdict.bullets.map(item => `<li>${item}</li>`).join('')}
+                            ${halalVerdict.bullets.map(b => `<li class="halal-bullet halal-bullet--${b.type}">${b.text}</li>`).join('')}
                         </ul>
                         <div class="tag-wrap">${analysisHtml}</div>
                     </article>
@@ -285,6 +297,165 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
         `;
         hydrateEditForm(product);
+        recordScanHistory(product);
+        injectCertifications(product);
+        injectComments(product.code);
+        initListButtons();
+    }
+
+    // F9 — Certifications visuelles
+    const CERTIF_MAP = {
+        'hmc':    { label: 'HMC',    color: '#15803d', title: 'Halal Monitoring Committee (UK)' },
+        'jakim':  { label: 'JAKIM',  color: '#1d4ed8', title: 'Jabatan Kemajuan Islam Malaysia' },
+        'ifanca': { label: 'IFANCA', color: '#7c3aed', title: 'Islamic Food and Nutrition Council of America' },
+        'mui':    { label: 'MUI',    color: '#b45309', title: 'Majelis Ulama Indonesia' },
+        'halal':  { label: 'Halal certifié', color: '#16a34a', title: 'Certification halal générique' },
+    };
+
+    function injectCertifications(product) {
+        const labels = (product.labels_tags || []).map(l => l.toLowerCase());
+        const found = [];
+        for (const [key, info] of Object.entries(CERTIF_MAP)) {
+            if (labels.some(l => l.includes(key))) found.push(info);
+        }
+        if (!found.length) return;
+        const panel = document.querySelector('.product-panel--halal');
+        if (!panel) return;
+        const div = document.createElement('div');
+        div.className = 'certif-badges';
+        div.innerHTML = `<p class="certif-title">🏅 Certifications reconnues</p>` +
+            found.map(c => `<span class="certif-chip" style="background:${c.color}" title="${c.title}">${c.label}</span>`).join('');
+        panel.appendChild(div);
+    }
+
+    // F10 — Commentaires (localStorage)
+    function getComments(code) {
+        try { return JSON.parse(localStorage.getItem(`comments_beauty_${code}`) || '[]'); } catch { return []; }
+    }
+    function saveComments(code, arr) {
+        localStorage.setItem(`comments_beauty_${code}`, JSON.stringify(arr));
+    }
+
+    function injectComments(code) {
+        const panelsContainer = document.querySelector('.product-panels');
+        if (!panelsContainer || !code) return;
+        const comments = getComments(code);
+        const panel = document.createElement('article');
+        panel.className = 'product-panel product-panel--comments';
+        panel.id = 'comments-panel';
+        panel.innerHTML = `
+            <h2>💬 Avis de la communauté</h2>
+            <div id="comments-list">${renderCommentsList(comments)}</div>
+            <form id="comment-form" style="margin-top:1rem">
+                <div class="comment-stars" id="star-picker">
+                    ${[1,2,3,4,5].map(n => `<span class="comment-star" data-v="${n}">★</span>`).join('')}
+                </div>
+                <input type="hidden" id="comment-rating" value="0">
+                <textarea id="comment-text" placeholder="Votre avis sur ce produit beauté halal..." rows="3" style="width:100%;padding:.6rem;border-radius:8px;border:1px solid #e5e7eb;box-sizing:border-box;resize:vertical;font-family:inherit;margin:.5rem 0"></textarea>
+                <button type="submit" class="solid-btn" style="width:100%">Publier mon avis</button>
+            </form>
+        `;
+        panelsContainer.appendChild(panel);
+        const stars = panel.querySelectorAll('.comment-star');
+        stars.forEach(s => {
+            s.addEventListener('mouseenter', () => highlightStars(stars, +s.dataset.v));
+            s.addEventListener('mouseleave', () => highlightStars(stars, +document.getElementById('comment-rating').value));
+            s.addEventListener('click', () => {
+                document.getElementById('comment-rating').value = s.dataset.v;
+                highlightStars(stars, +s.dataset.v);
+            });
+        });
+        panel.querySelector('#comment-form').addEventListener('submit', e => {
+            e.preventDefault();
+            const text = document.getElementById('comment-text').value.trim();
+            const rating = +document.getElementById('comment-rating').value;
+            if (!text || !rating) return;
+            const arr = getComments(code);
+            arr.unshift({ text, rating, date: new Date().toLocaleDateString('fr-FR') });
+            saveComments(code, arr);
+            document.getElementById('comments-list').innerHTML = renderCommentsList(arr);
+            document.getElementById('comment-text').value = '';
+            document.getElementById('comment-rating').value = 0;
+            highlightStars(stars, 0);
+        });
+    }
+
+    function highlightStars(stars, n) {
+        stars.forEach((s, i) => s.classList.toggle('active', i < n));
+    }
+
+    function renderCommentsList(comments) {
+        if (!comments.length) return '<p style="color:#9ca3af">Soyez le premier à donner votre avis !</p>';
+        return comments.map(c => `
+            <div class="comment-item">
+                <div class="comment-meta">
+                    <span class="comment-stars-display">${'★'.repeat(c.rating)}${'☆'.repeat(5-c.rating)}</span>
+                    <span style="color:#9ca3af;font-size:.8rem">${c.date}</span>
+                </div>
+                <p style="margin:.3rem 0 0">${c.text}</p>
+            </div>
+        `).join('');
+    }
+
+    // F3 — Listes personnelles
+    function getList(name) {
+        try { return JSON.parse(localStorage.getItem(`beauty_list_${name}`) || '[]'); } catch { return []; }
+    }
+    function saveList(name, arr) { localStorage.setItem(`beauty_list_${name}`, JSON.stringify(arr)); }
+    function isInList(name, code) { return getList(name).some(p => p.code === code); }
+    function toggleList(name, item) {
+        let arr = getList(name);
+        if (arr.some(p => p.code === item.code)) { arr = arr.filter(p => p.code !== item.code); }
+        else arr.unshift(item);
+        saveList(name, arr);
+        return arr.some(p => p.code === item.code);
+    }
+    function showListToast(msg) {
+        let t = document.getElementById('list-toast');
+        if (!t) { t = document.createElement('div'); t.id = 'list-toast'; t.className = 'list-toast'; document.body.appendChild(t); }
+        t.textContent = msg; t.classList.add('list-toast--visible');
+        setTimeout(() => t.classList.remove('list-toast--visible'), 2200);
+    }
+
+    function initListButtons() {
+        const container = document.getElementById('list-actions');
+        if (!container) return;
+        const code  = container.dataset.code;
+        const name  = container.dataset.name;
+        const brand = container.dataset.brand;
+        const img   = container.dataset.img;
+        const item  = { code, name, brand, img };
+        const btnFav   = document.getElementById('btn-fav');
+        const btnCart  = document.getElementById('btn-cart');
+        const btnBlack = document.getElementById('btn-black');
+        if (!btnFav || !btnCart || !btnBlack || !code) return;
+        if (isInList('fav',   code)) btnFav.classList.add('list-btn--active');
+        if (isInList('cart',  code)) btnCart.classList.add('list-btn--active');
+        if (isInList('black', code)) btnBlack.classList.add('list-btn--active');
+        btnFav.addEventListener('click', () => {
+            const active = toggleList('fav', item);
+            btnFav.classList.toggle('list-btn--active', active);
+            showListToast(active ? '⭐ Ajouté aux favoris' : 'Retiré des favoris');
+        });
+        btnCart.addEventListener('click', () => {
+            const active = toggleList('cart', item);
+            btnCart.classList.toggle('list-btn--active', active);
+            showListToast(active ? '🛒 Ajouté à ma liste' : 'Retiré de la liste');
+        });
+        btnBlack.addEventListener('click', () => {
+            const active = toggleList('black', item);
+            btnBlack.classList.toggle('list-btn--active', active);
+            showListToast(active ? '🚫 Produit blacklisté' : 'Retiré de la blacklist');
+        });
+    }
+
+    // Scan history for dashboard
+    function recordScanHistory(product) {
+        try {
+            const history = JSON.parse(localStorage.getItem('beauty_scan_history') || '[]');
+            history.unshift({ code: product.code, name: product.product_name || 'Produit', brand: product.brands || '', img: product.image_front_small_url || product.image_front_url || '', date: Date.now() });
+            localStorage.setItem('beauty_scan_history', JSON.stringify(history.slice(0, 100)));
+        } catch {}
     }
 
     function renderTagPills(values, fallbackText) {
@@ -379,34 +550,41 @@ document.addEventListener('DOMContentLoaded', () => {
         let level = 'safe';
         let title = 'Halal confirmé';
         let message = 'Analyse communautaire favorable pour ce soin.';
+        let score = 90;
         const bullets = [];
 
         if (alertMatches.length) {
             level = 'alert';
             title = 'Alerte : ingrédients litigieux';
             message = `Présence possible de ${alertMatches.join(', ')}. Vérifiez l\'étiquette avant usage.`;
+            score = 20;
         } else if (warningMatches.length || hasCompletionGap) {
             level = 'warning';
             title = 'Vérification nécessaire';
             message = warningMatches.length
                 ? `Analyse automatique : ${warningMatches.join(', ')} à confirmer.`
                 : 'Cette fiche manque de photos ou d\'INCI complet.';
-        }
-
-        if (analysisTags && analysisTags.length) {
-            bullets.push(`Analyse ingrédients : ${asArray(analysisTags).map(cleanTag).slice(0, 4).join(', ')}`);
+            score = 55;
         }
 
         if (halalLabels.trim().length && !halalLabels.includes('tag-pill--ghost')) {
-            bullets.push('Présence d\'un label halal déclaré.');
+            bullets.push({ type: 'safe', text: 'Présence d\'un label halal déclaré.' });
+            score = Math.min(100, score + 10);
+        }
+
+        if (analysisTags && analysisTags.length) {
+            bullets.push({ type: 'info', text: `Analyse ingrédients : ${asArray(analysisTags).map(cleanTag).slice(0, 4).join(', ')}` });
         }
 
         if (hasCompletionGap) {
-            bullets.push('Complétez les photos pack + INCI pour fiabiliser le verdict.');
+            bullets.push({ type: 'warning', text: 'Complétez les photos pack + INCI pour fiabiliser le verdict.' });
         }
 
+        alertMatches.forEach(kw => bullets.push({ type: 'alert', text: `Ingrédient litigieux détecté : ${kw}` }));
+        warningMatches.forEach(kw => bullets.push({ type: 'warning', text: `À vérifier : ${kw}` }));
+
         if (!bullets.length) {
-            bullets.push('Aucune alerte automatique détectée.');
+            bullets.push({ type: 'safe', text: 'Aucune alerte automatique détectée.' });
         }
 
         return {
@@ -414,6 +592,7 @@ document.addEventListener('DOMContentLoaded', () => {
             title,
             message,
             bullets,
+            score,
             icon: level === 'alert' ? '⚠️' : level === 'warning' ? '⏳' : '✅'
         };
     }

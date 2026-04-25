@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comparateur — Halal Open Beauty Facts</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        .compare-page { max-width: 1000px; margin: 2rem auto; padding: 0 1rem; }
+        .compare-page h1 { font-size: 1.8rem; margin-bottom: 0.3rem; }
+        .compare-search { display: flex; gap: 0.5rem; margin: 1.5rem 0; flex-wrap: wrap; }
+        .compare-search input { flex: 1; min-width: 200px; padding: 0.6rem 1rem; border-radius: 8px; border: 2px solid var(--border,#e5e7eb); font-size: 0.95rem; }
+        .compare-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; margin-top: 1.5rem; }
+        .compare-slot { background: #fff; border: 2px dashed var(--border,#e5e7eb); border-radius: 16px; padding: 1.5rem; min-height: 200px; text-align: center; }
+        .compare-slot--filled { border-style: solid; text-align: left; }
+        .compare-slot img { width: 80px; height: 80px; object-fit: contain; border-radius: 8px; float: right; margin-left: 1rem; }
+        .compare-slot h3 { font-size: 1rem; margin: 0 0 0.25rem; }
+        .compare-slot p { font-size: 0.82rem; color: #6b7280; margin: 0 0 0.5rem; }
+        .compare-slot .btn-remove { float: right; background: none; border: none; cursor: pointer; color: #9ca3af; font-size: 1.1rem; margin-top: -2rem; }
+        .compare-row { display: grid; gap: 1rem; margin-top: 1rem; }
+        .compare-table { width: 100%; border-collapse: collapse; margin-top: 1.5rem; }
+        .compare-table th, .compare-table td { padding: 0.6rem 0.8rem; border-bottom: 1px solid #f3f4f6; font-size: 0.88rem; }
+        .compare-table th { text-align: left; color: #6b7280; font-weight: 600; background: #f9fafb; }
+        .compare-table td { background: #fff; }
+        .verdict-safe    { color: #15803d; font-weight: 700; }
+        .verdict-warning { color: #b45309; font-weight: 700; }
+        .verdict-alert   { color: #b91c1c; font-weight: 700; }
+        .search-results-dropdown { position: absolute; z-index: 100; background: #fff; border: 1px solid var(--border,#e5e7eb); border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,.1); width: 100%; max-width: 400px; max-height: 260px; overflow-y: auto; }
+        .search-result-item { padding: 0.6rem 1rem; cursor: pointer; display: flex; align-items: center; gap: 0.6rem; font-size: 0.88rem; border-bottom: 1px solid #f3f4f6; }
+        .search-result-item:hover { background: #f9fafb; }
+        .search-result-item img { width: 36px; height: 36px; object-fit: contain; border-radius: 4px; }
+        .compare-search-wrap { position: relative; flex: 1; min-width: 200px; }
+    </style>
+</head>
+<body>
+    <header class="site-header site-header--secondary">
+        <div class="site-header__inner">
+            <a class="brand" href="index.html">
+                <img src="assets/images/e.png" alt="Logo" class="brand__logo" style="height:32px">
+                <div class="brand__text"><strong>Halal Open Beauty Facts</strong></div>
+            </a>
+            <nav class="primary-nav">
+                <a href="index.html" class="ghost-btn">← Catalogue</a>
+            </nav>
+        </div>
+    </header>
+    <main class="compare-page">
+        <h1>⚖️ Comparateur beauté</h1>
+        <p style="color:#6b7280">Comparez jusqu'à 3 produits cosmétiques halal côte à côte.</p>
+        <div class="compare-search">
+            <div class="compare-search-wrap">
+                <input type="text" id="search-input" placeholder="🔍 Rechercher un produit beauté..." autocomplete="off">
+                <div class="search-results-dropdown" id="search-dropdown" style="display:none"></div>
+            </div>
+            <button class="solid-btn" onclick="triggerSearch()">Ajouter</button>
+        </div>
+        <div class="compare-grid" id="compare-grid"></div>
+        <table class="compare-table" id="compare-table" style="display:none">
+            <thead id="compare-thead"></thead>
+            <tbody id="compare-tbody"></tbody>
+        </table>
+    </main>
+    <script>
+    let slots = [];
+    const SEARCH_URL = '/proxy/search/search';
+
+    async function triggerSearch() {
+        const q = document.getElementById('search-input').value.trim();
+        if (!q) return;
+        try {
+            const res = await fetch(`${SEARCH_URL}?q=${encodeURIComponent(q)}&page_size=6&index=beauty`);
+            const data = await res.json();
+            showDropdown(data.hits || []);
+        } catch { alert('Erreur de recherche.'); }
+    }
+
+    document.getElementById('search-input').addEventListener('keydown', e => {
+        if (e.key === 'Enter') triggerSearch();
+    });
+
+    let searchDebounce;
+    document.getElementById('search-input').addEventListener('input', e => {
+        clearTimeout(searchDebounce);
+        searchDebounce = setTimeout(() => { if (e.target.value.trim().length > 2) triggerSearch(); }, 400);
+    });
+
+    function showDropdown(hits) {
+        const dd = document.getElementById('search-dropdown');
+        if (!hits.length) { dd.style.display = 'none'; return; }
+        dd.style.display = 'block';
+        dd.innerHTML = hits.map(p => `
+            <div class="search-result-item" onclick="addProduct(${JSON.stringify(p).replace(/"/g,'&quot;')})">
+                <img src="${p.image_front_small_url||p.image_front_url||''}" alt="">
+                <span>${p.product_name||p.code} — ${Array.isArray(p.brands)?p.brands.join(', '):p.brands||''}</span>
+            </div>`).join('');
+    }
+
+    document.addEventListener('click', e => {
+        if (!e.target.closest('.compare-search-wrap')) {
+            document.getElementById('search-dropdown').style.display = 'none';
+        }
+    });
+
+    function addProduct(p) {
+        if (slots.length >= 3) { alert('Maximum 3 produits.'); return; }
+        if (slots.find(s => s.code === p.code)) { alert('Produit déjà ajouté.'); return; }
+        slots.push(p);
+        document.getElementById('search-input').value = '';
+        document.getElementById('search-dropdown').style.display = 'none';
+        renderGrid();
+    }
+
+    function removeProduct(code) { slots = slots.filter(p => p.code !== code); renderGrid(); }
+
+    function getVerdict(p) {
+        const ALERT_KW = ['porc','alcool','alcohol denat','cochenille','e120','gélatine de porc'];
+        const WARN_KW  = ['gélatine','glycérine','parfum','e471'];
+        const text = ((p.ingredients_text||'')+(p.ingredients_text_fr||'')).toLowerCase();
+        if (ALERT_KW.some(k => text.includes(k))) return { label: '🚫 Alerte', cls: 'verdict-alert' };
+        if (WARN_KW.some(k => text.includes(k)))  return { label: '⚠️ À vérifier', cls: 'verdict-warning' };
+        return { label: '✅ Favorable', cls: 'verdict-safe' };
+    }
+
+    function renderGrid() {
+        const grid = document.getElementById('compare-grid');
+        const table = document.getElementById('compare-table');
+        grid.innerHTML = slots.map(p => {
+            const v = getVerdict(p);
+            const brands = Array.isArray(p.brands) ? p.brands.join(', ') : (p.brands||'');
+            return `<div class="compare-slot compare-slot--filled">
+                <button class="btn-remove" onclick="removeProduct('${p.code}')">✕</button>
+                <img src="${p.image_front_small_url||p.image_front_url||''}" alt="${p.product_name}">
+                <h3>${p.product_name||p.code}</h3>
+                <p>${brands}</p>
+                <span class="${v.cls}">${v.label}</span><br><br>
+                <a href="product.html?code=${p.code}" class="ghost-btn" style="font-size:.8rem">Voir la fiche</a>
+            </div>`;
+        }).join('');
+
+        // Slot placeholder
+        if (slots.length < 3) {
+            grid.innerHTML += `<div class="compare-slot" style="display:flex;align-items:center;justify-content:center;color:#9ca3af">
+                + Recherchez un produit à comparer
+            </div>`;
+        }
+
+        // Comparison table
+        if (slots.length >= 2) {
+            table.style.display = 'table';
+            const rows = [
+                { label: 'Code-barres', fn: p => p.code||'—' },
+                { label: 'Marque', fn: p => Array.isArray(p.brands)?p.brands.join(', '):(p.brands||'—') },
+                { label: 'Catégorie', fn: p => (p.categories||'—').split(',')[0] },
+                { label: 'Labels halal', fn: p => (p.labels_tags||[]).filter(l=>l.includes('halal')).join(', ')||'Aucun' },
+                { label: 'Verdict', fn: p => `<span class="${getVerdict(p).cls}">${getVerdict(p).label}</span>` },
+                { label: 'Pays de vente', fn: p => (p.countries_tags||[]).slice(0,3).map(c=>c.replace(/^en:/,'')).join(', ')||'—' },
+            ];
+            document.getElementById('compare-thead').innerHTML = `<tr><th>Critère</th>${slots.map(p=>`<th>${p.product_name||p.code}</th>`).join('')}</tr>`;
+            document.getElementById('compare-tbody').innerHTML = rows.map(r =>
+                `<tr><th>${r.label}</th>${slots.map(p=>`<td>${r.fn(p)}</td>`).join('')}</tr>`
+            ).join('');
+        } else {
+            table.style.display = 'none';
+        }
+    }
+
+    renderGrid();
+    </script>
+</body>
+</html>

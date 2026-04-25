@@ -2403,3 +2403,20 @@ html[data-portal="food"] .app-callout__badges {
 [dir="rtl"] .community__actions {
     justify-content: flex-start;
 }
+
+/* === Mode Voyage === */
+.voyage-section { padding: 3rem 1rem; text-align: center; }
+.voyage-section h2 { font-size: 1.6rem; margin-bottom: 0.5rem; }
+.voyage-section p { color: #6b7280; margin-bottom: 1.5rem; }
+.voyage-grid { display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center; max-width: 700px; margin: 0 auto; }
+.voyage-country { padding: 0.55rem 1.2rem; border-radius: 999px; border: 2px solid var(--border, #e5e7eb); background: #fff; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: all .15s; }
+.voyage-country:hover { background: var(--primary, #16a34a); color: #fff; border-color: var(--primary, #16a34a); }
+
+/* === Scan verdict overlay === */
+.scan-verdict { background: #fff; border-radius: 16px; padding: 1.2rem; margin-top: 1rem; }
+.scan-verdict__header { font-weight: 700; margin-bottom: 0.5rem; }
+.scan-verdict__badge { font-size: 1.1rem; font-weight: 700; }
+.scan-verdict__bar { height: 10px; background: #e5e7eb; border-radius: 999px; overflow: hidden; margin: 0.5rem 0; }
+.scan-verdict__fill { height: 100%; border-radius: 999px; background: #16a34a; transition: width .5s; }
+.scan-verdict__msg { font-size: 0.88rem; color: #374151; }
+.scan-verdict__actions { display: flex; gap: 0.5rem; margin-top: 0.75rem; flex-wrap: wrap; }

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API publique — Halal Open Beauty Facts</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        .api-page { max-width: 860px; margin: 2rem auto; padding: 0 1rem; }
+        .api-page h1 { font-size: 1.9rem; }
+        .endpoint-card { background: #fff; border: 1px solid var(--border,#e5e7eb); border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; }
+        .endpoint-card h3 { margin-top: 0; display: flex; align-items: center; gap: 0.6rem; }
+        .method { background: #16a34a; color: #fff; font-size: 0.75rem; font-weight: 700; padding: 0.2rem 0.55rem; border-radius: 6px; }
+        pre { background: #f1f5f9; border-radius: 8px; padding: 1rem; overflow-x: auto; font-size: 0.82rem; line-height: 1.6; }
+        .param-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+        .param-table th { text-align: left; border-bottom: 2px solid #e5e7eb; padding: 0.4rem 0.6rem; color: #6b7280; }
+        .param-table td { padding: 0.4rem 0.6rem; border-bottom: 1px solid #f3f4f6; }
+        .param-table code { background: #f1f5f9; padding: 0.1rem 0.35rem; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <header class="site-header site-header--secondary">
+        <div class="site-header__inner">
+            <a class="brand" href="index.html">
+                <img src="assets/images/e.png" alt="Logo" class="brand__logo" style="height:32px">
+                <div class="brand__text"><strong>Halal Open Beauty Facts</strong></div>
+            </a>
+            <nav class="primary-nav">
+                <a href="index.html" class="ghost-btn">← Accueil</a>
+            </nav>
+        </div>
+    </header>
+    <main class="api-page">
+        <h1>🔌 API Publique Beauty</h1>
+        <p style="color:#6b7280">Accédez aux données cosmétiques halal via nos endpoints proxy. Données issues d'<strong>Open Beauty Facts</strong>.</p>
+
+        <div class="endpoint-card">
+            <h3><span class="method">GET</span> Recherche de produits cosmétiques</h3>
+            <pre>/proxy/search/search?q={query}&page_size={n}&page={p}&index=beauty</pre>
+            <table class="param-table">
+                <thead><tr><th>Paramètre</th><th>Type</th><th>Description</th></tr></thead>
+                <tbody>
+                    <tr><td><code>q</code></td><td>string</td><td>Texte à rechercher</td></tr>
+                    <tr><td><code>index</code></td><td>string</td><td>Mettre <code>beauty</code> pour Open Beauty Facts</td></tr>
+                    <tr><td><code>page_size</code></td><td>int</td><td>Résultats par page (max 100)</td></tr>
+                    <tr><td><code>page</code></td><td>int</td><td>Numéro de page (base 1)</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="endpoint-card">
+            <h3><span class="method">GET</span> Catalogue par catégorie / pays</h3>
+            <pre>/proxy/v2/search?categories_tags={cat}&countries_tags={country}&page_size={n}&page={p}</pre>
+            <table class="param-table">
+                <thead><tr><th>Paramètre</th><th>Description</th></tr></thead>
+                <tbody>
+                    <tr><td><code>categories_tags</code></td><td>Ex: <code>en:face-creams</code>, <code>en:shampoos</code></td></tr>
+                    <tr><td><code>countries_tags</code></td><td>Ex: <code>en:france</code></td></tr>
+                    <tr><td><code>labels_tags</code></td><td>Ex: <code>en:halal</code></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="endpoint-card">
+            <h3><span class="method">GET</span> Produit par code-barres</h3>
+            <pre>/proxy/v2/product/{barcode}.json</pre>
+            <p>Retourne toutes les données d'un produit cosmétique : INCI, labels, certifications, pays de vente.</p>
+        </div>
+
+        <div class="endpoint-card">
+            <h3><span class="method">GET</span> Facettes</h3>
+            <pre>/proxy/facets/countries.json
+/proxy/facets/categories.json
+/proxy/facets/labels.json</pre>
+        </div>
+
+        <div class="endpoint-card">
+            <h3>⚖️ Licence &amp; Attribution</h3>
+            <p>Données issues d'<a href="https://world.openbeautyfacts.org" target="_blank">Open Beauty Facts</a>, licence <strong>ODbL</strong>. Attribution obligatoire.</p>
+            <p>
+                <a href="https://wiki.openfoodfacts.org/API" target="_blank" class="ghost-btn" style="display:inline-block;margin-right:.5rem">📖 Doc officielle OBF</a>
+            </p>
+        </div>
+    </main>
+</body>
+</html>

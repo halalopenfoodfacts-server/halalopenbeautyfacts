@@ -68,13 +68,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const API_DOMAIN = 'https://world.openbeautyfacts.org';
-    const SEARCH_API_URL = 'https://search.openbeautyfacts.org/search';
+    const SEARCH_API_URL = '/proxy/search/search';
+    const CATALOGUE_API_URL = '/proxy/v2/search';
     const SESSION_ENDPOINT = `${API_DOMAIN}/cgi/session.pl?json=1`;
     const ACCOUNT_CREATE_URL = `${API_DOMAIN}/cgi/user.pl`;
     const ACCOUNT_LOGOUT_URL = `${API_DOMAIN}/cgi/logout.pl`;
     const LOCAL_SIGNUP_PAGE = 'signup.html';
     const CONTRIBUTOR_BASE_URL = `${API_DOMAIN}/contributor/`;
-    const CONTRIBUTORS_FACET_ENDPOINT = `${API_DOMAIN}/facets/contributors.json`;
+    const CONTRIBUTORS_FACET_ENDPOINT = '/proxy/facets/contributors.json';
     const AUTH_WELCOME_KEY = 'halal-auth-welcome';
     const PORTAL_ID = API_DOMAIN.includes('openbeautyfacts') ? 'beauty' : 'food';
     const AUTH_INTENT_TTL = 10 * 60 * 1000;

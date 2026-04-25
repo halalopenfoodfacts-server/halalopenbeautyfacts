@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="fr" data-portal="beauty">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Utilisateurs Halal - Halal Open Beauty Facts</title>
+    <link rel="stylesheet" href="assets/css/style.css?v=20251229">
+</head>
+<body>
+    <div class="top-strip">
+        <div class="top-strip__content">
+            <div class="top-strip__left">
+                <select id="country-select" class="top-strip__select">
+                    <option value="">🌍 Choisir un pays</option>
+                </select>
+                <select id="language-select" class="top-strip__select">
+                    <option value="">🌐 Choisir une langue</option>
+                </select>
+            </div>
+            <p class="top-strip__notice">Annuaire officiel des comptes Halal Open Beauty Facts.</p>
+        </div>
+    </div>
+
+    <header class="site-header">
+        <div class="site-header__inner">
+            <a class="brand brand--hero" href="index.html">
+                <img src="assets/images/h.png" alt="Logo Halal Open Beauty Facts" class="brand__logo">
+                <div class="brand__text">
+                    <span>Halal Open Beauty Facts</span>
+                    <small>Transparence & communauté Halal.</small>
+                </div>
+            </a>
+            <div class="header-controls">
+                <div class="mega-search mega-search--accent" role="search">
+                    <div class="mega-search__field">
+                        <span class="mega-search__icon" aria-hidden="true">🔍</span>
+                        <input type="text" placeholder="Recherche centralisée" disabled>
+                    </div>
+                    <div class="mega-search__actions">
+                        <button type="button" class="search-submit" disabled>Rechercher</button>
+                        <button type="button" class="barcode-trigger" disabled>
+                            <span class="barcode-trigger__bars" aria-hidden="true"></span>
+                            <span class="barcode-trigger__label">Scanner</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="header-cta-row">
+                    <nav class="primary-nav" aria-label="Navigation principale">
+                        <a href="index.html#catalogue" class="pill-btn pill-btn--app">📦 Catalogue</a>
+                        <a href="add.html" class="outline-btn">➕ Ajouter un produit</a>
+                        <a href="signup.html" class="ghost-btn">Créer un compte</a>
+                        <a href="signin.html" class="solid-btn">Se connecter</a>
+                    </nav>
+                    <a href="https://world.openbeautyfacts.org/data" target="_blank" rel="noopener" class="header-link">API publique →</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="halal-directory">
+            <div class="halal-directory__head">
+                <p class="eyebrow">Annuaire temps réel</p>
+                <h1>Utilisateurs Halal vérifiés</h1>
+                <p>Ces profils Open Beauty Facts ont été créés via les formulaires Halal et portent l'équipe officielle. Les données ci-dessous proviennent directement de l'API OBf.</p>
+            </div>
+
+            <div class="halal-directory__panel">
+                <div class="halal-directory__meta">
+                    <div>
+                        <p class="halal-directory__meta-label">Comptes Halal</p>
+                        <strong id="halal-user-count">0</strong>
+                    </div>
+                    <div>
+                        <p class="halal-directory__meta-label">Dernière mise à jour</p>
+                        <strong id="halal-users-last-update">—</strong>
+                    </div>
+                </div>
+                <div class="halal-directory__controls">
+                    <label class="input-chip" for="halal-user-search">
+                        <span>Rechercher</span>
+                        <input type="search" id="halal-user-search" placeholder="Nom ou identifiant halal">
+                    </label>
+                    <label class="input-chip" for="halal-user-sort">
+                        <span>Trier par</span>
+                        <select id="halal-user-sort">
+                            <option value="recent" selected>Dernière activité</option>
+                            <option value="contribs">Contributions</option>
+                            <option value="name">Nom</option>
+                        </select>
+                    </label>
+                    <button type="button" class="ghost-btn" id="halal-users-refresh">↻ Actualiser</button>
+                </div>
+                <p class="halal-directory__status" id="halal-users-status">Connexion à l'API Open Beauty Facts...</p>
+            </div>
+
+            <div class="halal-directory__cards" id="halal-users-list">
+                <div class="loading-placeholder">Chargement des comptes halal...</div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="site-footer__grid">
+            <div>
+                <h4>Projet</h4>
+                <ul>
+                    <li><a href="legal.html">Mentions légales</a></li>
+                    <li><a href="terms.html">Conditions d'utilisation</a></li>
+                    <li><a href="#">Transparence financière</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Découvrir</h4>
+                <ul>
+                    <li><a href="index.html#catalogue">Catalogue</a></li>
+                    <li><a href="index.html#engagements">Engagements</a></li>
+                    <li><a href="index.html#communautes">Communauté</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Contribuer</h4>
+                <ul>
+                    <li><a href="add.html">Ajouter un produit</a></li>
+                    <li><a href="signup.html">Créer un compte</a></li>
+                    <li><a href="signin.html">Se connecter</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Suivez-nous</h4>
+                <div class="social">
+                    <a href="https://www.facebook.com/profile.php?id=61571584380846&amp;locale=fr_FR" target="_blank" rel="noopener">🔵 Facebook</a>
+                    <a href="#">🐦 Twitter</a>
+                    <a href="#">📸 Instagram</a>
+                    <a href="#">💼 LinkedIn</a>
+                </div>
+            </div>
+        </div>
+        <p class="site-footer__copy">© 2025 Halal Open Beauty Facts · Merci à la communauté mondiale.</p>
+    </footer>
+
+    <script src="assets/js/nav.js"></script>
+    <script src="assets/js/locale.js"></script>
+    <script src="assets/js/ledger.js"></script>
+    <script src="assets/js/halal-users.js"></script>
+</body>
+</html>

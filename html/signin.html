@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-portal="beauty">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -48,9 +48,9 @@
             <div class="auth-card">
                 <p class="status-pill" data-i18n="signin_card_badge">Compte Open Beauty Facts</p>
                 <h1 data-i18n="signin_card_title">Se connecter</h1>
-                <p data-i18n="signin_card_desc">Vous serez redirigé vers l'espace officiel pour valider votre session.</p>
+                <p data-i18n="signin_card_desc">La validation se fait sur Open Beauty Facts puis vous revenez ici automatiquement.</p>
 
-                <form action="https://world.openbeautyfacts.org/cgi/login.pl" method="POST" target="_blank">
+                <form action="https://world.openbeautyfacts.org/cgi/login.pl" method="POST" target="off-auth-bridge">
                     <div class="input-group">
                         <label for="user_id" data-i18n="signin_user_label">Identifiant</label>
                         <input type="text" id="user_id" name="user_id" required>
@@ -59,12 +59,13 @@
                         <label for="password" data-i18n="signin_password_label">Mot de passe</label>
                         <input type="password" id="password" name="password" required>
                     </div>
-                    <input type="hidden" name="redirect_to" value="https://world.openbeautyfacts.org">
+                    <input type="hidden" name="redirect_to" value="index.html">
                     <button type="submit" data-i18n="signin_submit">Se connecter via Open Beauty Facts</button>
                 </form>
+                <iframe name="off-auth-bridge" title="Session Open Beauty Facts" style="display:none; border:0;" aria-hidden="true"></iframe>
 
                 <footer>
-                    <p data-i18n="signin_footer_links" data-i18n-html="true"><a href="https://world.openbeautyfacts.org/cgi/user.pl" target="_blank" rel="noopener">Créer un compte</a> · <a href="https://world.openbeautyfacts.org/cgi/reset_password.pl" target="_blank" rel="noopener">Mot de passe oublié</a></p>
+                    <p data-i18n="signin_footer_links" data-i18n-html="true"><a href="signup.html">Créer un compte Halal</a> · <a href="https://world.openbeautyfacts.org/cgi/reset_password.pl" target="_blank" rel="noopener">Mot de passe oublié</a></p>
                 </footer>
             </div>
 
@@ -100,7 +101,7 @@
                 <ul>
                     <li><a href="add.html">Ajouter un produit</a></li>
                     <li><a href="#">Traduire</a></li>
-                    <li><a href="#" id="footer-donate-link">Faire un don</a></li>
+                    <li><a href="donate.html" id="footer-donate-link" data-donate-link>Faire un don</a></li>
                 </ul>
             </div>
             <div>
@@ -114,5 +115,6 @@
         </div>
         <p class="site-footer__copy">© 2025 Halal Open Beauty Facts · Licence Open Database.</p>
     </footer>
+    <script src="assets/js/auth.js"></script>
 </body>
 </html>

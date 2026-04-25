@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="fr" data-portal="beauty">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Créer un compte - Halal Open Beauty Facts</title>
+    <link rel="stylesheet" href="assets/css/style.css?v=20251229">
+</head>
+<body>
+    <div class="top-strip">
+        <div class="top-strip__content">
+            <div class="top-strip__left">
+                <select id="country-select" class="top-strip__select">
+                    <option value="">🌍 Choisir un pays</option>
+                </select>
+                <select id="language-select" class="top-strip__select">
+                    <option value="">🌐 Choisir une langue</option>
+                </select>
+                <span class="status-pill">🆕 Création de compte</span>
+            </div>
+            <p class="top-strip__notice">Identifiants compatibles avec Open Beauty Facts.</p>
+        </div>
+    </div>
+
+    <header class="site-header">
+        <div class="site-header__inner">
+            <a class="brand" href="index.html">
+                <img src="assets/images/obf.PNG" alt="Halal Open Beauty Facts" class="brand__logo">
+                <div class="brand__text">
+                    <span>Halal Open Beauty Facts</span>
+                    <small>Propulsé par Open Beauty Facts</small>
+                </div>
+            </a>
+            <div class="header-controls">
+                <div class="mega-search mega-search--accent" role="search">
+                    <input type="text" placeholder="Recherche désactivée" disabled>
+                    <button type="button" disabled>Recherche</button>
+                </div>
+                <nav class="primary-nav" aria-label="Navigation rapide">
+                    <a href="signin.html" class="ghost-btn ghost-btn--dark">Déjà inscrit ?</a>
+                    <a href="add.html" class="outline-btn">Ajouter un produit</a>
+                    <a href="index.html" class="solid-btn">Retour à l'accueil</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="auth-shell">
+            <div class="auth-card">
+                <p class="status-pill">Compte Halal + Open Beauty Facts</p>
+                <h1>Créer mon espace</h1>
+                <p class="form-lead">Les données envoyées ci-dessous sont transmises à l'API Open Beauty Facts. Après validation officielle, vous revenez automatiquement sur Halal.</p>
+
+                <form id="signup-form" action="https://world.openbeautyfacts.org/cgi/user.pl" method="POST" target="off-auth-bridge" novalidate>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="name">Nom complet</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="email">E-mail</label>
+                            <input type="email" id="email" name="email" autocomplete="email" required>
+                        </div>
+                    </div>
+
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="userid">Identifiant (sans accents)</label>
+                            <input type="text" id="userid" name="userid" autocomplete="username" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="preferred_language">Langue préférée</label>
+                            <select id="preferred_language" name="preferred_language" required>
+                                <option value="fr" selected>Français</option>
+                                <option value="en">Anglais</option>
+                                <option value="ar">Arabe</option>
+                                <option value="es">Espagnol</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="password">Mot de passe</label>
+                            <input type="password" id="password" name="password" autocomplete="new-password" minlength="8" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="confirm_password">Confirmer le mot de passe</label>
+                            <input type="password" id="confirm_password" name="confirm_password" autocomplete="new-password" minlength="8" required>
+                            <small id="password-hint" class="form-hint" aria-live="polite"></small>
+                        </div>
+                    </div>
+
+                    <div class="input-group checkbox-group">
+                        <label>
+                            <input type="checkbox" name="newsletter" value="1" checked>
+                            Recevoir les actualités cosmétique (≤ 2 e-mails / mois)
+                        </label>
+                    </div>
+
+                    <div class="input-group checkbox-group">
+                        <label>
+                            <input type="checkbox" id="pro-toggle" name="pro">
+                            Je représente une marque ou un laboratoire
+                        </label>
+                        <div id="pro-fields" class="stacked" hidden>
+                            <label for="requested_org">Nom de la marque</label>
+                            <input type="text" id="requested_org" name="requested_org" placeholder="Ex. Atelier Halal Beauty">
+                            <p class="form-hint">Les comptes pro sont vérifiés par Open Beauty Facts.</p>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="team_1">Équipe Halal</label>
+                        <input type="text" id="team_1" name="team_1" value="halal-open-beauty-facts" data-default-team="halal-open-beauty-facts">
+                        <small class="form-hint">Permet d'identifier les comptes créés depuis Halal (modifiable).</small>
+                    </div>
+
+                    <div class="input-row">
+                        <div class="input-group checkbox-group">
+                            <label>
+                                <input type="checkbox" name="display_barcode" value="1">
+                                Afficher les codes-barres dans les listes
+                            </label>
+                        </div>
+                        <div class="input-group checkbox-group">
+                            <label>
+                                <input type="checkbox" name="edit_link" value="1">
+                                Ajouter un lien « modifier »
+                            </label>
+                        </div>
+                    </div>
+
+                    <p class="form-hint">En soumettant ce formulaire vous acceptez les conditions Open Beauty Facts.</p>
+                    <div class="input-group checkbox-group">
+                        <label>
+                            <input type="checkbox" id="terms-checkbox" required>
+                            J'accepte les conditions d'utilisation.
+                        </label>
+                    </div>
+
+                    <input type="hidden" name="action" value="process">
+                    <input type="hidden" name="type" value="add">
+                    <input type="hidden" name="pro_checkbox" value="1">
+                    <input type="hidden" name="comment" value="Compte créé via Halal Open Beauty Facts">
+                    <input type="hidden" name="redirect_to" value="index.html">
+
+                    <button type="submit" class="solid-btn solid-btn--full" id="signup-submit">Créer mon compte</button>
+                    <p id="signup-status" class="form-status" aria-live="polite"></p>
+                </form>
+                <iframe name="off-auth-bridge" title="Création de compte Open Beauty Facts" style="display:none; border:0;" aria-hidden="true"></iframe>
+            </div>
+
+            <aside class="auth-side">
+                <h2>Pourquoi cette étape ?</h2>
+                <ol>
+                    <li>Vos identifiants fonctionnent sur Open Beauty Facts et sur Halal.</li>
+                    <li>Vous apparaissez automatiquement dans l'équipe Halal.</li>
+                    <li>La confirmation s'ouvre dans un onglet openbeautyfacts.org.</li>
+                    <li>Ajoutez ensuite des produits cosmétiques halal.</li>
+                </ol>
+                <p>Questions ? Écrivez à <a href="mailto:contact@halalopenbeautyfacts.org">contact@halalopenbeautyfacts.org</a>.</p>
+                <a href="signin.html" class="ghost-btn">Déjà un compte ? Se connecter</a>
+            </aside>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="site-footer__grid">
+            <div>
+                <h4>Projet</h4>
+                <ul>
+                    <li><a href="legal.html">Mentions légales</a></li>
+                    <li><a href="#">Transparence financière</a></li>
+                    <li><a href="#">Contact presse</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Découvrir</h4>
+                <ul>
+                    <li><a href="index.html#catalogue">Catalogue</a></li>
+                    <li><a href="index.html#engagements">Engagements</a></li>
+                    <li><a href="index.html#communautes">Communauté</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Contribuer</h4>
+                <ul>
+                    <li><a href="add.html">Ajouter un produit</a></li>
+                    <li><a href="signin.html">Se connecter</a></li>
+                    <li><a href="donate.html" id="footer-donate-link" data-donate-link>Faire un don</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Suivez-nous</h4>
+                <div class="social">
+                    <a href="#">🐦 Twitter</a>
+                    <a href="#">📸 Instagram</a>
+                    <a href="#">💼 LinkedIn</a>
+                </div>
+            </div>
+        </div>
+        <p class="site-footer__copy">© 2025 Halal Open Beauty Facts · Licence Open Database.</p>
+    </footer>
+
+    <script src="assets/js/locale.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/signup.js"></script>
+</body>
+</html>

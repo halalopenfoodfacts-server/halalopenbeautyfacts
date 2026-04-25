@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-portal="beauty">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -32,43 +32,64 @@
             </a>
             <div class="header-controls">
                 <div class="mega-search mega-search--accent" role="search">
-                    <div class="mega-search__stack">
-                        <div class="mega-search__field">
-                            <input type="text" id="search-input" data-i18n-placeholder="search_placeholder" placeholder="Rechercher une marque, un ingrédient ou un produit halal">
-                        </div>
-                        <div class="mega-search__field mega-search__field--barcode">
-                            <input type="text" id="barcode-input" data-i18n-placeholder="barcode_placeholder" placeholder="Code-barres (ex : 3274080005003)">
-                            <button type="button" id="barcode-button" aria-label="Ouvrir la fiche produit par code-barres" class="barcode-btn" data-i18n="barcode_cta">📷 Scanner</button>
-                        </div>
+                    <div class="mega-search__field">
+                        <span class="mega-search__icon" aria-hidden="true">🔍</span>
+                        <input type="text" id="search-input" data-i18n-placeholder="search_placeholder" placeholder="Rechercher une marque, un ingrédient ou un produit halal">
                     </div>
                     <div class="mega-search__actions">
-                        <button type="button" id="search-button" class="search-submit" data-i18n="search_cta">🔍 Rechercher</button>
-                        <div class="barcode-card">
-                            <img src="https://barcodeapi.org/api/auto/3274080005003.svg?text=3274080005003" alt="Exemple de code-barres scannable" class="barcode-card__image" loading="lazy" onerror="this.onerror=null;this.src='assets/images/sample-barcode.svg';">
-                            <span class="barcode-card__hint" data-i18n="barcode_hint">Essayez avec le 3274080005003</span>
-                        </div>
+                        <button type="button" id="search-button" class="search-submit" data-i18n="search_cta">Rechercher</button>
+                        <button type="button" id="barcode-button" aria-label="Ouvrir la fiche produit par code-barres" class="barcode-trigger">
+                            <span class="barcode-trigger__bars" aria-hidden="true"></span>
+                            <span class="barcode-trigger__label" data-i18n="barcode_cta">Scanner</span>
+                        </button>
+                    </div>
+                </div>
+                <span id="barcode-manual-prompt" class="visually-hidden" data-i18n="barcode_manual_prompt">Entrez un code-barres pour ouvrir la fiche produit.</span>
+                <div class="barcode-overlay" id="barcode-overlay" hidden>
+                    <div class="barcode-overlay__panel">
+                        <button type="button" class="barcode-overlay__close" id="barcode-cancel" data-i18n="barcode_scan_cancel" aria-label="Fermer le scanner">Fermer</button>
+                        <video id="barcode-video" class="barcode-overlay__video" autoplay playsinline muted></video>
+                        <p class="barcode-overlay__helper" data-i18n="barcode_scan_helper">Cadrez le code-barres dans le cadre. La capture se lance automatiquement.</p>
                     </div>
                 </div>
                 <div class="header-cta-row">
                     <nav class="primary-nav" aria-label="Actions rapides">
                         <a href="#app-mobile" class="pill-btn pill-btn--app" data-i18n="hero_cta_app">📱 App mobile</a>
                         <a href="add.html" class="outline-btn" data-i18n="community_cta_primary">➕ Ajouter un produit</a>
+                        <a href="halal-users.html" class="ghost-btn" data-i18n="nav_halal_users">👥 Utilisateurs Halal</a>
                         <a href="signin.html" class="solid-btn" data-i18n="nav_signin">Se connecter</a>
                     </nav>
-                    <a href="https://world.openbeautyfacts.org/data" target="_blank" rel="noopener" class="header-link">API publique →</a>
+                    <div class="user-greeting" id="user-greeting" hidden aria-live="polite">
+                        <span class="user-greeting__eyebrow">👋 Welcome</span>
+                        <strong class="user-greeting__name" id="user-greeting-name"></strong>
+                    </div>
+                    <div class="account-chip" id="account-chip" hidden aria-live="polite">
+                        <span class="account-chip__avatar" id="account-chip-avatar" aria-hidden="true">H</span>
+                        <div>
+                            <p class="account-chip__label">Connectée</p>
+                            <strong class="account-chip__name" id="account-chip-name"></strong>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </header>
 
     <div class="donation-banner" id="fundraiser-banner">
-        <p>❤️ Nous dépendons de vos dons pour rester indépendants. <a href="#" id="donate-link">Je fais un don</a></p>
+        <p>❤️ Nous dépendons de vos dons pour rester indépendants. <a href="donate.html" id="donate-link" data-donate-link>Je fais un don</a></p>
         <button id="close-banner" aria-label="Fermer">×</button>
     </div>
 
     <main>
         <section class="hero" id="discover">
             <div class="hero__content">
+                <div class="welcome-banner" id="welcome-banner" hidden aria-live="polite">
+                    <div class="welcome-banner__text">
+                        <p class="welcome-banner__eyebrow" id="welcome-title"></p>
+                        <p class="welcome-banner__body" id="welcome-message"></p>
+                    </div>
+                    <button type="button" class="welcome-banner__close" id="welcome-dismiss" aria-label="Fermer le message">×</button>
+                </div>
                 <p class="hero__eyebrow" data-i18n="hero_eyebrow">Base de données mondiale de produits cosmétiques Halal</p>
                 <h1 data-i18n="hero_title">Le guide digital pour choisir des soins halal, éthiques et sûrs.</h1>
                 <p class="hero__subtitle" data-i18n="hero_subtitle">Analysez instantanément les produits cosmétiques, vérifiez les ingrédients sensibles et explorez la plus grande base de données halal collaborative.</p>
@@ -81,18 +102,28 @@
                     <span class="status-pill hero__country-pill" id="country-chip" data-i18n="country_badge_global">🌍 Monde</span>
                     <p id="country-message" data-i18n="country_message_global" data-i18n-template="country_message_template">Vue mondiale : contributions de tous les pays.</p>
                 </div>
+                <div class="hero__account" id="account-widget">
+                    <div>
+                        <p class="hero__account-status" id="account-status">Espace contributrice</p>
+                        <p class="hero__account-hint" id="account-hint">Connectez-vous avec votre compte Open Beauty Facts pour suivre vos ajouts.</p>
+                    </div>
+                    <div class="hero__account-actions">
+                        <a href="signin.html" class="solid-btn" id="account-action-primary">Se connecter</a>
+                        <a href="signup.html" class="ghost-btn" id="account-action-secondary">Créer un compte</a>
+                    </div>
+                </div>
                 <div class="hero__stats">
                     <article>
                         <span class="stat-label" data-i18n="stats_products">Produits cosmétiques halal référencés</span>
-                        <strong id="product-count" data-fallback="1,2M+">1,2M+</strong>
+                        <strong id="product-count">Chargement...</strong>
                     </article>
                     <article>
                         <span class="stat-label" data-i18n="stats_contributors">Contributeurs actifs</span>
-                        <strong id="contributors-count" data-fallback="120K">120K</strong>
+                        <strong id="contributors-count">+125K</strong>
                     </article>
                     <article>
                         <span class="stat-label" data-i18n="stats_countries">Pays couverts</span>
-                        <strong id="country-count" data-fallback="180">180</strong>
+                        <strong id="country-count">180</strong>
                     </article>
                 </div>
             </div>
@@ -124,12 +155,17 @@
         <section class="trusted">
             <p>Ils nous soutiennent</p>
             <div class="trusted__logos">
-                <img src="assets/images/obf1.jpg" alt="Partenaire Halal Open Beauty Facts 1">
+                <img src="assets/images/obf1.PNG" alt="Partenaire Halal Open Beauty Facts 1">
                 <img src="assets/images/obf2.PNG" alt="Partenaire Halal Open Beauty Facts 2">
                 <img src="assets/images/obf3.PNG" alt="Partenaire Halal Open Beauty Facts 3">
-                <img src="assets/images/obf4.PNG" alt="Partenaire Halal Open Beauty Facts 4">
+                
                 <img src="assets/images/obf5.PNG" alt="Partenaire Halal Open Beauty Facts 5">
-                <img src="assets/images/obf6.png" alt="Partenaire Halal Open Beauty Facts 6">
+                <img src="assets/images/obf6.PNG" alt="Partenaire Halal Open Beauty Facts 6">
+                <img src="assets/images/obf7.PNG" alt="Partenaire Halal Open Beauty Facts 7">
+                <img src="assets/images/obf8.PNG" alt="Partenaire Halal Open Beauty Facts 8">
+                
+                <img src="assets/images/obf9.PNG" alt="Partenaire Halal Open Beauty Facts 9">
+                <img src="assets/images/obf10.PNG" alt="Partenaire Halal Open Beauty Facts 10">
             </div>
         </section>
 
@@ -155,6 +191,61 @@
                     <option value="popularity">⭐ Popularité</option>
                     <option value="product_name">🔤 Nom du produit</option>
                 </select>
+            </div>
+            <div class="advanced-filters" id="advanced-filters">
+                <button type="button" class="advanced-filters__toggle" id="advanced-filter-toggle">
+                    ⚙️ Filtres avancés
+                    <span class="advanced-filters__indicator" id="advanced-filter-indicator">0 actif</span>
+                </button>
+                <div class="advanced-filters__panel" id="advanced-filter-panel" hidden>
+                    <div class="advanced-filters__group">
+                        <div class="advanced-filters__group-head">
+                            <p>Nutri-Score / INCI</p>
+                            <small>Sélectionnez le niveau attendu pour vos soins.</small>
+                        </div>
+                        <div class="chip-row" role="group" aria-label="Nutri-Score">
+                            <button type="button" class="chip" data-advanced-filter="nutri" data-value="a">A</button>
+                            <button type="button" class="chip" data-advanced-filter="nutri" data-value="b">B</button>
+                            <button type="button" class="chip" data-advanced-filter="nutri" data-value="c">C</button>
+                            <button type="button" class="chip" data-advanced-filter="nutri" data-value="d">D</button>
+                            <button type="button" class="chip" data-advanced-filter="nutri" data-value="e">E</button>
+                        </div>
+                    </div>
+                    <div class="advanced-filters__group">
+                        <div class="advanced-filters__group-head">
+                            <p>NOVA</p>
+                            <small>Contrôlez le degré de transformation.</small>
+                        </div>
+                        <div class="chip-row" role="group" aria-label="Groupes NOVA">
+                            <button type="button" class="chip" data-advanced-filter="nova" data-value="1">Groupe 1</button>
+                            <button type="button" class="chip" data-advanced-filter="nova" data-value="2">Groupe 2</button>
+                            <button type="button" class="chip" data-advanced-filter="nova" data-value="3">Groupe 3</button>
+                            <button type="button" class="chip" data-advanced-filter="nova" data-value="4">Groupe 4</button>
+                        </div>
+                    </div>
+                    <div class="advanced-filters__group">
+                        <div class="advanced-filters__group-head">
+                            <p>Labels & promesses</p>
+                            <small>Affinez selon les labels déclarés.</small>
+                        </div>
+                        <div class="chip-row" role="group" aria-label="Labels clean beauty">
+                            <button type="button" class="chip" data-advanced-filter="label" data-value="en:halal">Halal</button>
+                            <button type="button" class="chip" data-advanced-filter="label" data-value="en:halal-certification">Certification</button>
+                            <button type="button" class="chip" data-advanced-filter="label" data-value="en:cruelty-free">Cruelty-free</button>
+                            <button type="button" class="chip" data-advanced-filter="label" data-value="en:organic">Bio</button>
+                        </div>
+                    </div>
+                    <div class="advanced-filters__group advanced-filters__group--columns">
+                        <label class="switch" for="advanced-palm-toggle">
+                            <input type="checkbox" id="advanced-palm-toggle">
+                            <span>Exclure les produits contenant de l'huile de palme</span>
+                        </label>
+                    </div>
+                    <div class="advanced-filters__footer">
+                        <button type="button" class="ghost-btn ghost-btn--subtle" id="advanced-filter-reset">Réinitialiser</button>
+                        <button type="button" class="solid-btn" id="advanced-filter-apply">Appliquer les filtres</button>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -182,6 +273,34 @@
             </div>
             <span id="live-feed-loading-text" class="visually-hidden" data-i18n="live_feed_loading">Chargement du flux...</span>
             <span id="live-feed-empty-text" class="visually-hidden" data-i18n="live_feed_empty">Aucune contribution récente.</span>
+        </section>
+
+        <section class="api-live" id="api-live" aria-live="polite">
+            <div class="api-live__header">
+                <div>
+                    <p class="eyebrow">API live</p>
+                    <h2>Connexion directe à Open Beauty Facts</h2>
+                    <p>Visualisez la santé des appels déclenchés par ce site.</p>
+                </div>
+                <button type="button" class="ghost-btn ghost-btn--dark" id="api-live-refresh">↻ Relancer les appels</button>
+            </div>
+            <div class="api-live__grid">
+                <article class="api-live__card is-pending" data-api-source="catalogue">
+                    <span class="api-live__badge">Catalogue</span>
+                    <strong class="api-live__latency">—</strong>
+                    <p class="api-live__hint">En attente d'une recherche.</p>
+                </article>
+                <article class="api-live__card is-pending" data-api-source="stats">
+                    <span class="api-live__badge">Statistiques</span>
+                    <strong class="api-live__latency">—</strong>
+                    <p class="api-live__hint">Pas encore de données.</p>
+                </article>
+                <article class="api-live__card is-pending" data-api-source="live">
+                    <span class="api-live__badge">Flux live</span>
+                    <strong class="api-live__latency">—</strong>
+                    <p class="api-live__hint">Les dernières contributions apparaîtront ici.</p>
+                </article>
+            </div>
         </section>
 
         <section class="family-gallery" aria-label="Familles Halal">
@@ -230,7 +349,7 @@
                 </div>
                 <div class="community__card">
                     <strong>+3 500</strong>
-                    <span data-i18n="community_card_text">produits halal ajoutés en 30 jours</span>
+                    <span data-i18n="community_card_text">produits cosmétiques halal ajoutés en 30 jours</span>
                 </div>
             </div>
         </section>
@@ -263,7 +382,7 @@
                 <p data-i18n="legal_section_alert" data-i18n-html="true"><strong>Important :</strong> Halal Open Beauty Facts est un site citoyen d'information sur les produits cosmétiques halal. Nous ne vendons aucun produit et ne faisons la promotion d'aucune marque.</p>
                 <p data-i18n="legal_section_indep">Halal Open Beauty Facts est 100% indépendant, et n'est lié à aucun industriel, distributeur ou acteur de la filière Halal.</p>
                 <p data-i18n="legal_section_support">Pour toute question ou réclamation liée à un produit halal, contactez directement le service clients du fabricant ou distributeur présent sur l'emballage.</p>
-                <p data-i18n="legal_section_owner">Responsable de publication : Mustapha Zenthar.</p>
+                <p data-i18n="legal_section_owner">Responsable de publication : Mustapha Zentar.</p>
                 <a class="legal-mail" href="mailto:contact@halalopenbeautyfacts.org" data-i18n="legal_section_contact">contact@halalopenbeautyfacts.org</a>
             </div>
             <div class="legal-card legal-card--light">
@@ -300,16 +419,17 @@
                 <ul>
                     <li><a href="add.html">Ajouter un produit</a></li>
                     <li><a href="#">Traduire</a></li>
-                    <li><a href="#" id="footer-donate-link">Faire un don</a></li>
+                    <li><a href="donate.html" id="footer-donate-link" data-donate-link>Faire un don</a></li>
                     <li><a href="https://github.com/halalopenfoodfacts-server/halalopenbeautyfacts" target="_blank" rel="noopener">Code source sur GitHub</a></li>
                 </ul>
             </div>
             <div>
                 <h4>Suivez-nous</h4>
                 <div class="social">
-                    <a href="#">🐦 Twitter</a>
-                    <a href="#">📸 Instagram</a>
-                    <a href="#">💼 LinkedIn</a>
+                    <a href="https://www.facebook.com/profile.php?id=61571584380846&amp;locale=fr_FR" target="_blank" rel="noopener" data-i18n="footer_social_facebook">🔵 Facebook</a>
+                    <a href="#" data-i18n="footer_social_twitter">🐦 Twitter</a>
+                    <a href="#" data-i18n="footer_social_instagram">📸 Instagram</a>
+                    <a href="#" data-i18n="footer_social_linkedin">💼 LinkedIn</a>
                 </div>
             </div>
         </div>
@@ -318,6 +438,7 @@
 
     <script src="assets/js/nav.js"></script>
     <script src="assets/js/locale.js"></script>
+    <script src="assets/js/ledger.js"></script>
     <script src="assets/js/app.js"></script>
 </body>
 </html>

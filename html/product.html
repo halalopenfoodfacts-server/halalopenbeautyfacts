@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-portal="beauty">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -47,6 +47,96 @@
             </div>
         </section>
 
+        <div class="edit-portal" id="edit-portal" hidden>
+            <div class="edit-portal__backdrop" id="edit-close-backdrop"></div>
+            <div class="edit-portal__panel" role="dialog" aria-modal="true" aria-labelledby="edit-panel-title">
+                <button type="button" class="edit-portal__close" id="edit-close-button" aria-label="Fermer">×</button>
+                <header class="edit-portal__header">
+                    <p class="edit-portal__eyebrow">Contribution instantanée</p>
+                    <h2 id="edit-panel-title">Éditer cette fiche beauté</h2>
+                    <p class="edit-portal__lead">Identifiez-vous avec votre compte Open Beauty Facts et envoyez vos corrections directement aux modérateurs.</p>
+                </header>
+                <form id="edit-form" class="edit-form">
+                    <input type="hidden" name="code" id="edit-code">
+                    <input type="hidden" name="lang" value="fr">
+                    <input type="hidden" name="json" value="1">
+                    <div class="edit-form__grid edit-form__grid--auth">
+                        <div class="edit-form__row">
+                            <label for="edit-user">Identifiant Open Beauty Facts</label>
+                            <input type="text" id="edit-user" name="user_id" placeholder="ex : contributrice_halal" required>
+                        </div>
+                        <div class="edit-form__row edit-form__row--token">
+                            <label for="edit-api-key">Connexion OAuth / clé API</label>
+                            <div class="api-connect">
+                                <input type="text" id="edit-api-key" name="user_token" placeholder="Coller votre clé API ou token OAuth" autocomplete="off" required>
+                                <button type="button" class="ghost-btn ghost-btn--tight" id="oauth-sync">🔐 Synchroniser ma session</button>
+                            </div>
+                            <p class="api-connect__hint">Connectez-vous sur <a href="https://world.openbeautyfacts.org/cgi/login.pl" target="_blank" rel="noopener">world.openbeautyfacts.org</a> dans un autre onglet, puis cliquez sur « Synchroniser » pour récupérer un token sans partager votre mot de passe.</p>
+                            <label class="remember-toggle">
+                                <input type="checkbox" id="remember-api-key" checked>
+                                Mémoriser cette clé sur cet appareil
+                            </label>
+                            <p class="api-connect__status" id="oauth-status" aria-live="polite"></p>
+                        </div>
+                    </div>
+                    <div class="edit-form__row">
+                        <label for="edit-name">Nom du produit</label>
+                        <input type="text" id="edit-name" name="product_name" placeholder="Nom complet figurant sur l'emballage">
+                    </div>
+                    <div class="edit-form__grid">
+                        <div class="edit-form__row">
+                            <label for="edit-brands">Marque(s)</label>
+                            <input type="text" id="edit-brands" name="brands" placeholder="Marque, gamme, collection">
+                        </div>
+                        <div class="edit-form__row">
+                            <label for="edit-quantity">Contenance</label>
+                            <input type="text" id="edit-quantity" name="quantity" placeholder="50 ml, 200 g, duo pack">
+                        </div>
+                    </div>
+                    <div class="edit-form__row">
+                        <label for="edit-ingredients">Liste INCI (FR)</label>
+                        <textarea id="edit-ingredients" name="ingredients_text_fr" rows="4" placeholder="INCI exact tel qu'imprimé"></textarea>
+                    </div>
+                    <div class="edit-form__row">
+                        <label for="edit-labels">Labels halal / clean beauty</label>
+                        <input type="text" id="edit-labels" name="labels" placeholder="ex : halal, cruelty-free, alcohol-free">
+                    </div>
+                    <div class="edit-form__row">
+                        <label for="edit-comment">Message aux modérateurs</label>
+                        <textarea id="edit-comment" name="comment" rows="3" placeholder="Précisez vos sources ou l'origine de la modification"></textarea>
+                    </div>
+                    <div class="edit-form__row edit-form__row--photo">
+                        <div class="edit-form__row-heading">
+                            <label for="edit-photo-type">Ajouter une photo depuis ce tiroir</label>
+                            <p class="edit-form__helper">Ajoutez un visuel pack ou INCI pour fiabiliser cette fiche beauté.</p>
+                        </div>
+                        <div class="photo-upload" id="photo-uploader">
+                            <select id="edit-photo-type">
+                                <option value="front_fr">Face avant (FR)</option>
+                                <option value="ingredients_fr">Ingrédients / INCI (FR)</option>
+                                <option value="packaging_fr">Packaging (FR)</option>
+                            </select>
+                            <input type="file" id="edit-photo-file" accept="image/*" capture="environment">
+                            <div class="photo-upload__actions">
+                                <button type="button" class="ghost-btn ghost-btn--tight" id="camera-start">🎥 Activer la caméra</button>
+                                <button type="button" class="ghost-btn ghost-btn--tight" id="camera-capture" disabled>📸 Capturer</button>
+                                <button type="button" class="ghost-btn ghost-btn--subtle" id="camera-stop" hidden>✖ Fermer</button>
+                            </div>
+                            <video id="camera-preview" class="photo-upload__video" autoplay playsinline muted hidden></video>
+                            <canvas id="camera-canvas" hidden></canvas>
+                            <img id="photo-preview" class="photo-upload__preview" alt="Prévisualisation de la photo" hidden>
+                            <p class="photo-upload__status" id="photo-status" aria-live="polite"></p>
+                        </div>
+                    </div>
+                    <div class="edit-form__actions">
+                        <button type="button" class="ghost-btn" id="edit-cancel">Annuler</button>
+                        <button type="submit" class="solid-btn" id="edit-submit">Envoyer la mise à jour</button>
+                    </div>
+                    <p class="edit-form__status" id="edit-status" role="status" aria-live="polite"></p>
+                </form>
+            </div>
+        </div>
+
         <section class="app-callout product-app-callout" id="app-mobile">
             <div class="app-callout__content">
                 <h2 data-i18n="product_app_title">Scannez et complétez les fiches</h2>
@@ -93,7 +183,7 @@
                 <ul>
                     <li><a href="add.html" data-i18n="footer_contribute_add">Ajouter un produit</a></li>
                     <li><a href="#" data-i18n="footer_contribute_translate">Traduire</a></li>
-                    <li><a href="#" id="footer-donate-link" data-i18n="footer_contribute_donate">Faire un don</a></li>
+                    <li><a href="donate.html" id="footer-donate-link" data-donate-link data-i18n="footer_contribute_donate">Faire un don</a></li>
                 </ul>
             </div>
             <div>

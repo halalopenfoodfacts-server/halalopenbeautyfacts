@@ -3,6 +3,8 @@
     const LANGUAGE_STORAGE_KEY = 'hobf_language';
 
     const COUNTRY_ENDPOINT = 'https://world.openbeautyfacts.org/countries.json';
+    const COUNTRY_CACHE_KEY = 'hobf_country_cache_v1';
+    const COUNTRY_CACHE_TTL = 12 * 60 * 60 * 1000;
 
     const SUPPORTED_COUNTRIES = [
         { value: '', label: '🌍 World / Monde' },
@@ -17,6 +19,44 @@
     ];
 
     const countryLabelMap = new Map();
+
+    function readCountryCache() {
+        if (typeof localStorage === 'undefined') {
+            return null;
+        }
+        try {
+            const raw = localStorage.getItem(COUNTRY_CACHE_KEY);
+            if (!raw) {
+                return null;
+            }
+            const parsed = JSON.parse(raw);
+            if (!parsed?.timestamp || !Array.isArray(parsed.items)) {
+                return null;
+            }
+            if (Date.now() - parsed.timestamp > COUNTRY_CACHE_TTL) {
+                localStorage.removeItem(COUNTRY_CACHE_KEY);
+                return null;
+            }
+            return parsed.items;
+        } catch (error) {
+            console.warn('Unable to read country cache', error);
+            return null;
+        }
+    }
+
+    function writeCountryCache(items = []) {
+        if (typeof localStorage === 'undefined') {
+            return;
+        }
+        try {
+            localStorage.setItem(COUNTRY_CACHE_KEY, JSON.stringify({
+                timestamp: Date.now(),
+                items: items.slice(0, 200)
+            }));
+        } catch (error) {
+            console.warn('Unable to persist country cache', error);
+        }
+    }
 
     function rememberCountryLabel(value, label) {
         const key = (value || '').toLowerCase();
@@ -44,18 +84,22 @@
         fr: {
             top_notice: 'Projet communautaire 100% open source · Soutenez la transparence 💚',
             nav_signin: 'Se connecter',
+            nav_halal_users: '👥 Utilisateurs Halal',
             search_placeholder: 'Rechercher une marque, un ingrédient ou un produit halal',
             barcode_placeholder: 'Code-barres (ex : 3274080005003)',
-            search_cta: '🔍 Rechercher',
-            barcode_cta: '📷 Scanner',
+            search_cta: 'Rechercher',
+            barcode_cta: 'Scanner',
             barcode_hint: 'Essayez avec le 3274080005003',
-            hero_eyebrow: 'Base mondiale de cosmétiques Halal',
+            search_tab_label: 'Recherche produits',
+            barcode_tab_label: 'Code-barres',
+            barcode_helper: 'Scannez ou saisissez un code pour ouvrir la fiche produit.',
+            hero_eyebrow: 'Base de données mondiale de produits cosmétiques halal.',
             hero_title: 'Le guide digital pour choisir des soins halal, éthiques et sûrs.',
-            hero_subtitle: 'Analysez instantanément les produits, vérifiez les ingrédients sensibles et explorez la plus grande base de données halal collaborative.',
+            hero_subtitle: 'Analysez instantanément les produits cosmétiques halal.',
             hero_cta_explore: 'Explorer les produits',
             hero_cta_contribute: 'Contribuer maintenant',
             hero_cta_app: '📱 App mobile',
-            stats_products: 'Produits référencés',
+            stats_products: 'produits cosmétiques halal référencés',
             stats_contributors: 'Contributeurs actifs',
             stats_countries: 'Pays couverts',
             quick_catalogue_title: 'Catalogue',
@@ -99,18 +143,22 @@
             legal_section_alert: '<strong>Important :</strong> Halal Open Beauty Facts est un site citoyen d’information sur les produits cosmétiques halal. Nous ne vendons aucun produit et ne faisons la promotion d’aucune marque.',
             legal_section_indep: 'Halal Open Beauty Facts est 100% indépendant, et n’est lié à aucun industriel, distributeur ou acteur de la filière Halal.',
             legal_section_support: 'Pour toute question ou réclamation liée à un produit halal, contactez directement le service clients du fabricant ou distributeur présent sur l’emballage.',
-            legal_section_owner: 'Responsable de publication : Mustapha Zenthar.',
+            legal_section_owner: 'Responsable de publication : Mustapha Zentar.',
             legal_section_contact: 'contact@halalopenbeautyfacts.org',
             legal_license_title: 'Licence d’utilisation des données'
         },
         en: {
             top_notice: '100% open-source community project · Support transparency 💚',
             nav_signin: 'Sign in',
+            nav_halal_users: '👥 Halal users',
             search_placeholder: 'Search a brand, ingredient or halal product',
             barcode_placeholder: 'Barcode (ex: 3274080005003)',
-            search_cta: '🔍 Search',
-            barcode_cta: '📷 Scan',
+            search_cta: 'Search',
+            barcode_cta: 'Scan',
             barcode_hint: 'Try with 3274080005003',
+            search_tab_label: 'Product search',
+            barcode_tab_label: 'Barcode',
+            barcode_helper: 'Scan or paste a barcode to open the product sheet.',
             hero_eyebrow: 'Global halal cosmetics base',
             hero_title: 'Your digital guide to safe, ethical halal beauty.',
             hero_subtitle: 'Instantly analyze products, flag sensitive ingredients and explore the largest collaborative halal database.',
@@ -161,18 +209,22 @@
             legal_section_alert: '<strong>Important:</strong> Halal Open Beauty Facts is a civic website about halal cosmetics. We do not sell nor promote any product.',
             legal_section_indep: 'Halal Open Beauty Facts is 100% independent and linked to no manufacturer, retailer or halal actor.',
             legal_section_support: 'For any question or claim, contact the customer service listed on the product packaging.',
-            legal_section_owner: 'Publication director: Mustapha Zenthar.',
+            legal_section_owner: 'Publication director: Mustapha Zentar.',
             legal_section_contact: 'contact@halalopenbeautyfacts.org',
             legal_license_title: 'Data usage license'
         },
         ar: {
             top_notice: 'مشروع مجتمعي مفتوح المصدر بالكامل · ادعموا الشفافية 💚',
             nav_signin: 'تسجيل الدخول',
+            nav_halal_users: '👥 مستخدمو حلال',
             search_placeholder: 'ابحث عن علامة، مكوّن أو منتج حلال',
             barcode_placeholder: 'الباركود (مثال: 3274080005003)',
-            search_cta: '🔍 بحث',
-            barcode_cta: '📷 مسح',
+            search_cta: 'بحث',
+            barcode_cta: 'مسح',
             barcode_hint: 'جرّب الرمز 3274080005003',
+            search_tab_label: 'بحث عن منتج',
+            barcode_tab_label: 'الباركود',
+            barcode_helper: 'امسح أو أدخل رمزاً لفتح صفحة المنتج.',
             hero_eyebrow: 'أكبر قاعدة لمنتجات التجميل الحلال',
             hero_title: 'دليلك الرقمي لاختيار عناية حلال وآمنة.',
             hero_subtitle: 'حلّل المنتجات فوراً، تحقّق من المكوّنات الحساسة واكتشف أكبر قاعدة تعاونية.',
@@ -230,11 +282,15 @@
         es: {
             top_notice: 'Proyecto comunitario 100% open source · Apoya la transparencia 💚',
             nav_signin: 'Iniciar sesión',
+            nav_halal_users: '👥 Usuarios Halal',
             search_placeholder: 'Busca una marca, ingrediente o producto halal',
             barcode_placeholder: 'Código de barras (ej: 3274080005003)',
-            search_cta: '🔍 Buscar',
-            barcode_cta: '📷 Escanear',
+            search_cta: 'Buscar',
+            barcode_cta: 'Escanear',
             barcode_hint: 'Prueba con 3274080005003',
+            search_tab_label: 'Búsqueda de productos',
+            barcode_tab_label: 'Código de barras',
+            barcode_helper: 'Escanea o introduce un código para abrir la ficha del producto.',
             hero_eyebrow: 'Base mundial de cosméticos halal',
             hero_title: 'La guía digital para elegir cuidados halal seguros y éticos.',
             hero_subtitle: 'Analiza productos al instante, comprueba ingredientes sensibles y explora la mayor base colaborativa halal.',
@@ -285,7 +341,7 @@
             legal_section_alert: '<strong>Importante:</strong> Halal Open Beauty Facts es un sitio ciudadano sobre cosméticos halal. No vendemos ni promocionamos productos.',
             legal_section_indep: 'Halal Open Beauty Facts es 100% independiente y no está ligado a ningún industrial.',
             legal_section_support: 'Para consultas contacta directamente con el servicio al cliente del fabricante indicado en el envase.',
-            legal_section_owner: 'Responsable de publicación: Mustapha Zenthar.',
+            legal_section_owner: 'Responsable de publicación: Mustapha Zentar.',
             legal_section_contact: 'contact@halalopenbeautyfacts.org',
             legal_license_title: 'Licencia de uso de datos'
         }
@@ -310,6 +366,7 @@
             footer_contribute_translate: 'Traduire',
             footer_contribute_donate: 'Faire un don',
             footer_follow_title: 'Suivez-nous',
+            footer_social_facebook: '🔵 Facebook',
             footer_social_twitter: '🐦 Twitter',
             footer_social_instagram: '📸 Instagram',
             footer_social_linkedin: '💼 LinkedIn',
@@ -365,7 +422,7 @@
             signin_user_label: 'Identifiant',
             signin_password_label: 'Mot de passe',
             signin_submit: 'Se connecter via Open Beauty Facts',
-            signin_footer_links: '<a href="https://world.openbeautyfacts.org/cgi/user.pl" target="_blank" rel="noopener">Créer un compte</a> · <a href="https://world.openbeautyfacts.org/cgi/reset_password.pl" target="_blank" rel="noopener">Mot de passe oublié</a>',
+            signin_footer_links: '<a href="signup.html">Créer un compte Halal</a> · <a href="https://world.openbeautyfacts.org/cgi/reset_password.pl" target="_blank" rel="noopener">Mot de passe oublié</a>',
             signin_aside_title: 'Pourquoi un compte ? ',
             signin_aside_desc1: 'Il vous permet d’ajouter des produits, valider les ingrédients sensibles et suivre vos contributions.',
             signin_aside_desc2: 'La même identité fonctionne sur Open Beauty Facts et Halal Open Beauty Facts.',
@@ -447,6 +504,7 @@
             footer_contribute_translate: 'Translate',
             footer_contribute_donate: 'Donate',
             footer_follow_title: 'Follow us',
+            footer_social_facebook: '🔵 Facebook',
             footer_social_twitter: '🐦 Twitter',
             footer_social_instagram: '📸 Instagram',
             footer_social_linkedin: '💼 LinkedIn',
@@ -502,7 +560,7 @@
             signin_user_label: 'Username',
             signin_password_label: 'Password',
             signin_submit: 'Sign in via Open Beauty Facts',
-            signin_footer_links: '<a href="https://world.openbeautyfacts.org/cgi/user.pl" target="_blank" rel="noopener">Create an account</a> · <a href="https://world.openbeautyfacts.org/cgi/reset_password.pl" target="_blank" rel="noopener">Forgot password</a>',
+            signin_footer_links: '<a href="signup.html">Create a Halal account</a> · <a href="https://world.openbeautyfacts.org/cgi/reset_password.pl" target="_blank" rel="noopener">Forgot password</a>',
             signin_aside_title: 'Why an account?',
             signin_aside_desc1: 'It lets you add products, validate sensitive ingredients and track your contributions.',
             signin_aside_desc2: 'The same identity works on Open Beauty Facts and Halal Open Beauty Facts.',
@@ -584,6 +642,7 @@
             footer_contribute_translate: 'ترجم',
             footer_contribute_donate: 'تبرع',
             footer_follow_title: 'تابعنا',
+            footer_social_facebook: '🔵 فيسبوك',
             footer_social_twitter: '🐦 تويتر',
             footer_social_instagram: '📸 إنستغرام',
             footer_social_linkedin: '💼 لينكدإن',
@@ -639,7 +698,7 @@
             signin_user_label: 'اسم المستخدم',
             signin_password_label: 'كلمة المرور',
             signin_submit: 'تسجيل الدخول عبر Open Beauty Facts',
-            signin_footer_links: '<a href="https://world.openbeautyfacts.org/cgi/user.pl" target="_blank" rel="noopener">إنشاء حساب</a> · <a href="https://world.openbeautyfacts.org/cgi/reset_password.pl" target="_blank" rel="noopener">نسيت كلمة المرور</a>',
+            signin_footer_links: '<a href="signup.html">إنشاء حساب حلال</a> · <a href="https://world.openbeautyfacts.org/cgi/reset_password.pl" target="_blank" rel="noopener">نسيت كلمة المرور</a>',
             signin_aside_title: 'لماذا الحساب؟',
             signin_aside_desc1: 'يمكنك من إضافة المنتجات، التحقق من المكونات الحساسة وتتبع مساهماتك.',
             signin_aside_desc2: 'نفس الهوية تعمل على Open Beauty Facts و Halal Open Beauty Facts.',
@@ -721,6 +780,7 @@
             footer_contribute_translate: 'Traducir',
             footer_contribute_donate: 'Donar',
             footer_follow_title: 'Síguenos',
+            footer_social_facebook: '🔵 Facebook',
             footer_social_twitter: '🐦 Twitter',
             footer_social_instagram: '📸 Instagram',
             footer_social_linkedin: '💼 LinkedIn',
@@ -776,7 +836,7 @@
             signin_user_label: 'Usuario',
             signin_password_label: 'Contraseña',
             signin_submit: 'Entrar con Open Beauty Facts',
-            signin_footer_links: '<a href="https://world.openbeautyfacts.org/cgi/user.pl" target="_blank" rel="noopener">Crear cuenta</a> · <a href="https://world.openbeautyfacts.org/cgi/reset_password.pl" target="_blank" rel="noopener">Olvidé mi contraseña</a>',
+            signin_footer_links: '<a href="signup.html">Crear cuenta Halal</a> · <a href="https://world.openbeautyfacts.org/cgi/reset_password.pl" target="_blank" rel="noopener">Olvidé mi contraseña</a>',
             signin_aside_title: '¿Por qué una cuenta?',
             signin_aside_desc1: 'Te permite añadir productos, validar ingredientes sensibles y seguir tus aportes.',
             signin_aside_desc2: 'La misma identidad funciona en Open Beauty Facts y Halal Open Beauty Facts.',
@@ -883,7 +943,27 @@
     }
 
     function resolveInitialCountry() {
-        return getQueryParam('country') || localStorage.getItem(COUNTRY_STORAGE_KEY) || '';
+        // IMPORTANT: Par défaut, afficher le monde entier (base de données globale)
+        // Ne jamais filtrer automatiquement par pays sauf si explicitement demandé
+        const queryCountry = getQueryParam('country');
+        const storedCountry = localStorage.getItem(COUNTRY_STORAGE_KEY);
+        
+        console.log('[LOCALE] resolveInitialCountry - queryCountry:', queryCountry);
+        console.log('[LOCALE] resolveInitialCountry - storedCountry:', storedCountry);
+        
+        // Si pas de paramètre URL, toujours retourner '' (monde entier)
+        // Ignorer le localStorage pour forcer l'affichage mondial par défaut
+        const finalCountry = queryCountry || '';
+        
+        console.log('[LOCALE] resolveInitialCountry - finalCountry:', finalCountry);
+        
+        // Nettoyer le localStorage si contient France par défaut
+        if (storedCountry && storedCountry !== '' && !queryCountry) {
+            console.log('[LOCALE] Nettoyage localStorage - suppression filtre pays:', storedCountry);
+            localStorage.removeItem(COUNTRY_STORAGE_KEY);
+        }
+        
+        return finalCountry;
     }
 
     function populateSelect(select, options) {
@@ -900,6 +980,22 @@
     function slugifyCountryId(id = '') {
         const clean = id.split(':').pop() || id;
         return clean.toLowerCase().replace(/_/g, '-');
+    }
+
+    function normalizeCountryTags(tags = []) {
+        const seen = new Set();
+        return tags
+            .filter(tag => tag?.name && tag.id)
+            .sort((a, b) => (b.products || 0) - (a.products || 0))
+            .map(tag => {
+                const value = slugifyCountryId(tag.id);
+                if (seen.has(value)) {
+                    return null;
+                }
+                seen.add(value);
+                return { value, label: tag.name };
+            })
+            .filter(Boolean);
     }
 
     function hydrateCountries(select) {
@@ -941,7 +1037,19 @@
             finalizeSelection();
         };
 
+        const renderDataset = (dataset = []) => {
+            resetWithPlaceholder();
+            dataset.forEach(({ value, label }) => appendOption(value, label));
+            finalizeSelection();
+        };
+
+        const cachedCountries = readCountryCache();
+
         resetWithPlaceholder();
+        if (cachedCountries?.length) {
+            cachedCountries.forEach(({ value, label }) => appendOption(value, label));
+            finalizeSelection();
+        }
 
         return fetch(COUNTRY_ENDPOINT)
             .then(response => {
@@ -951,31 +1059,24 @@
                 return response.json();
             })
             .then(data => {
-                const seen = new Set(['']);
                 const tags = Array.isArray(data?.tags) ? data.tags : [];
-
-                tags
-                    .filter(tag => tag?.name && tag.id)
-                    .sort((a, b) => (b.products || 0) - (a.products || 0))
-                    .forEach(tag => {
-                        const value = slugifyCountryId(tag.id);
-                        if (seen.has(value)) {
-                            return;
-                        }
-                        seen.add(value);
-                        appendOption(value, tag.name);
-                    });
-
-                if (select.options.length <= 1) {
-                    fallback();
+                const normalized = normalizeCountryTags(tags);
+                if (normalized.length) {
+                    renderDataset(normalized);
+                    writeCountryCache(normalized);
                     return;
                 }
-
-                finalizeSelection();
+                if (!cachedCountries?.length) {
+                    fallback();
+                }
             })
             .catch(error => {
                 console.warn('Unable to load countries from API, using fallback list', error);
-                fallback();
+                if (!cachedCountries?.length) {
+                    fallback();
+                } else {
+                    finalizeSelection();
+                }
             });
     }
 

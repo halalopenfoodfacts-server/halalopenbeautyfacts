@@ -1,0 +1,57 @@
+[
+    {
+        "id": "halal-data-team",
+        "name": "Halal Data Team",
+        "country": "FR",
+        "contributions": 312,
+        "lastEdit": "2025-12-26T21:32:00Z",
+        "joinedAt": "2025-07-04",
+        "scopes": ["food", "beauty"],
+        "badges": ["core-team", "verifie"],
+        "notes": "Cellule fondatrice OFF × Halal."
+    },
+    {
+        "id": "asma-halal",
+        "name": "Asma L.",
+        "country": "MA",
+        "contributions": 87,
+        "lastEdit": "2025-12-29T08:12:00Z",
+        "joinedAt": "2025-10-18",
+        "scopes": ["food"],
+        "badges": ["moderation"],
+        "notes": "Première volontaire à valider les lots OFF certifiés halal."
+    },
+    {
+        "id": "tariq-ingredients",
+        "name": "Tariq Ingredients",
+        "country": "AE",
+        "contributions": 54,
+        "lastEdit": "2025-12-27T14:55:00Z",
+        "joinedAt": "2025-11-03",
+        "scopes": ["food", "beauty"],
+        "badges": ["nutrition", "packaging"],
+        "notes": "Spécialiste des fiches ingrédients longues et multi-pays."
+    },
+    {
+        "id": "nurbeauty",
+        "name": "Nur Beauty Lab",
+        "country": "MY",
+        "contributions": 43,
+        "lastEdit": "2025-12-25T09:40:00Z",
+        "joinedAt": "2025-09-14",
+        "scopes": ["beauty"],
+        "badges": ["cosmetiques"],
+        "notes": "Tests qualité sur les soins et make-up halal."
+    },
+    {
+        "id": "halalconnect",
+        "name": "Halal Connect",
+        "country": "GB",
+        "contributions": 25,
+        "lastEdit": "2025-12-20T16:24:00Z",
+        "joinedAt": "2025-12-05",
+        "scopes": ["food", "beauty"],
+        "badges": ["community"],
+        "notes": "Collectif diaspora UK, onboarding des nouveaux comptes."
+    }
+]

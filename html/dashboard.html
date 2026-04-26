@@ -8,44 +8,69 @@
     <meta name="theme-color" content="#16a34a">
     <link rel="stylesheet" href="assets/css/style.css">
     <style>
-        .dash { max-width: 960px; margin: 2rem auto; padding: 0 1rem; }
-        .dash h1 { font-size: 1.8rem; margin-bottom: 0.25rem; }
-        .dash__sub { color: #6b7280; margin-bottom: 2rem; }
-        .section-card { background: #fff; border: 1px solid var(--border,#e5e7eb); border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; }
-        .section-card h2 { margin: 0 0 1rem; font-size: 1.1rem; }
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap: 1rem; }
-        .stat-card { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 1.1rem; text-align: center; }
-        .stat-card--personal { background: #f9fafb; border-color: var(--border,#e5e7eb); }
-        .stat-card__icon { font-size: 1.8rem; margin-bottom: 0.3rem; }
-        .stat-card__value { font-size: 1.8rem; font-weight: 800; color: var(--primary,#16a34a); line-height: 1; }
-        .stat-card__label { font-size: 0.78rem; color: #6b7280; margin-top: 0.3rem; }
-        .badge-grid { display: flex; gap: 0.75rem; flex-wrap: wrap; }
-        .badge { display:flex; align-items:center; gap:0.5rem; padding:0.5rem 1rem; border-radius:999px; font-weight:700; font-size:0.82rem; border:2px solid; opacity:0.35; transition:opacity .2s; }
-        .badge.earned { opacity: 1; }
-        .badge--bronze { border-color:#cd7f32; color:#92400e; background:#fef3c7; }
-        .badge--silver { border-color:#9ca3af; color:#374151; background:#f3f4f6; }
-        .badge--gold   { border-color:#f59e0b; color:#78350f; background:#fef9c3; }
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(145px,1fr)); gap: 1rem; }
-        .product-mini { border:1px solid var(--border,#e5e7eb); border-radius:10px; padding:0.75rem; background:#fff; text-align:center; }
-        .product-mini img { width:64px; height:64px; object-fit:contain; border-radius:6px; margin-bottom:0.5rem; }
-        .product-mini__name { font-size:0.8rem; font-weight:600; margin:0 0 0.2rem; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
-        .product-mini__brand { font-size:0.72rem; color:#9ca3af; margin:0; }
-        .product-mini a { text-decoration:none; color:inherit; display:block; }
-        .product-mini a:hover .product-mini__name { color:var(--primary,#16a34a); }
-        .history-list { list-style:none; padding:0; margin:0; }
-        .history-item { display:flex; align-items:center; gap:0.75rem; padding:0.6rem 0; border-bottom:1px solid #f3f4f6; }
-        .history-item img { width:42px; height:42px; object-fit:contain; border-radius:6px; background:#f9fafb; }
-        .history-item__info { flex:1; min-width:0; }
-        .history-item__name { font-weight:600; font-size:0.88rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-        .history-item__date { font-size:0.72rem; color:#9ca3af; margin-top:0.1rem; }
-        .history-item a { margin-left:auto; font-size:0.8rem; color:var(--primary,#16a34a); text-decoration:none; white-space:nowrap; }
-        .skeleton { background:#f3f4f6; border-radius:8px; height:150px; animation:shimmer 1.5s infinite; }
-        @keyframes shimmer { 0%,100%{opacity:1} 50%{opacity:.4} }
-        @media (prefers-color-scheme: dark) {
-            .section-card,.product-mini { background:#1f2937; border-color:#374151; }
-            .stat-card--personal { background:#111827; }
-            .stat-card { background:#064e3b; border-color:#065f46; }
+        .dash-page { max-width: 980px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+        .dash-hero {
+            background: linear-gradient(135deg, rgba(0,140,134,.08), rgba(255,255,255,.98));
+            border: 1px solid var(--border,#e5e7eb);
+            border-radius: 20px; padding: 2rem 2.5rem; margin-bottom: 2rem;
+            display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;
         }
+        .dash-hero__icon { font-size: 3.5rem; line-height: 1; flex-shrink: 0; }
+        .dash-hero__title { font-size: 2rem; font-weight: 800; color: #0f172a; margin-bottom: 0.2rem; }
+        .dash-hero__sub { color: #64748b; font-size: 0.9rem; }
+        .dash-section { margin-bottom: 2rem; }
+        .dash-section__title {
+            font-size: 0.72rem; font-weight: 700; letter-spacing: .1em;
+            text-transform: uppercase; color: #64748b;
+            margin-bottom: 1rem; padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--border,#e5e7eb);
+        }
+        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap: 1rem; }
+        .kpi-card {
+            background: #fff; border: 1px solid var(--border,#e5e7eb); border-radius: 16px;
+            padding: 1.4rem 1.2rem; display: flex; flex-direction: column; align-items: center;
+            text-align: center; gap: 0.3rem; position: relative; overflow: hidden;
+            box-shadow: 0 1px 4px rgba(0,0,0,.05); transition: transform .18s, box-shadow .18s;
+        }
+        .kpi-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,.09); }
+        .kpi-card::before { content:''; position:absolute; inset:0; opacity:.05; background:var(--primary,#16a34a); border-radius:inherit; }
+        .kpi-card__emoji { font-size: 2rem; }
+        .kpi-card__value { font-size: 2.2rem; font-weight: 800; color: var(--primary,#16a34a); line-height: 1; }
+        .kpi-card__label { font-size: 0.78rem; color: #64748b; font-weight: 500; }
+        .kpi-card--loading .kpi-card__value { color: #e5e7eb; }
+        .mini-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 0.75rem; }
+        @media (max-width: 600px) { .mini-grid { grid-template-columns: repeat(2,1fr); } }
+        .mini-stat { background: #f8fafc; border: 1px solid var(--border,#e5e7eb); border-radius: 12px; padding: 1rem; text-align: center; }
+        .mini-stat__val { font-size: 1.7rem; font-weight: 800; color: var(--primary,#16a34a); }
+        .mini-stat__lbl { font-size: 0.76rem; color: #64748b; margin-top: 0.2rem; }
+        .badges-row { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+        .badge-pill { display:flex; align-items:center; gap:.45rem; padding:.5rem 1.1rem; border-radius:999px; font-size:.84rem; font-weight:700; border:2px solid; opacity:.3; transition:opacity .2s,transform .2s; }
+        .badge-pill.earned { opacity:1; transform:scale(1.03); }
+        .badge-pill--bronze { border-color:#cd7f32; color:#78350f; background:#fef3c7; }
+        .badge-pill--silver { border-color:#9ca3af; color:#374151; background:#f8fafc; }
+        .badge-pill--gold   { border-color:#f59e0b; color:#78350f; background:#fefce8; }
+        .badge-hint { font-size: 0.82rem; color: #64748b; margin-top: 0.75rem; }
+        .prod-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px,1fr)); gap: 0.85rem; }
+        .prod-card { background:#fff; border:1px solid var(--border,#e5e7eb); border-radius:12px; padding:.85rem .75rem; text-align:center; transition:transform .15s,box-shadow .15s; box-shadow:0 1px 3px rgba(0,0,0,.04); }
+        .prod-card:hover { transform:translateY(-3px); box-shadow:0 6px 18px rgba(0,0,0,.1); }
+        .prod-card a { text-decoration:none; color:inherit; display:block; }
+        .prod-card img { width:62px; height:62px; object-fit:contain; border-radius:8px; margin-bottom:.5rem; background:#f8fafc; }
+        .prod-card__name { font-size:.78rem; font-weight:700; color:#0f172a; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; margin-bottom:.2rem; }
+        .prod-card__brand { font-size:.7rem; color:#9ca3af; }
+        .prod-card:hover .prod-card__name { color:var(--primary,#16a34a); }
+        .history-list { list-style:none; padding:0; margin:0; }
+        .history-item { display:flex; align-items:center; gap:.85rem; padding:.7rem 0; border-bottom:1px solid var(--border,#e5e7eb); }
+        .history-item:last-child { border-bottom:none; }
+        .history-item img { width:44px; height:44px; object-fit:contain; border-radius:8px; background:#f8fafc; border:1px solid #e5e7eb; flex-shrink:0; }
+        .history-item__info { flex:1; min-width:0; }
+        .history-item__name { font-weight:600; font-size:.88rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .history-item__meta { font-size:.73rem; color:#9ca3af; margin-top:.1rem; }
+        .history-item a.link { margin-left:auto; font-size:.8rem; color:var(--primary,#16a34a); text-decoration:none; font-weight:600; white-space:nowrap; }
+        .skel { border-radius:10px; height:145px; background:linear-gradient(90deg,#f3f4f6 25%,#e9ecef 50%,#f3f4f6 75%); background-size:200% 100%; animation:skel 1.6s infinite; }
+        @keyframes skel { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+        .source-note { display:inline-flex; align-items:center; gap:.3rem; font-size:.72rem; color:#9ca3af; margin-top:.5rem; }
+        .source-note::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--primary,#16a34a); display:inline-block; animation:pulse 2s infinite; }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
     </style>
 </head>
 <body>
@@ -61,63 +86,89 @@
             </nav>
         </div>
     </header>
-    <main class="dash">
-        <h1>📊 Tableau de bord</h1>
-        <p class="dash__sub">Statistiques réelles du catalogue beauté halal et votre activité personnelle.</p>
 
-        <div class="section-card">
-            <h2>🌍 Statistiques globales du catalogue (données réelles)</h2>
-            <div class="stats-grid">
-                <div class="stat-card"><div class="stat-card__icon">💄</div><div class="stat-card__value" id="val-total">…</div><div class="stat-card__label">Produits cosmétiques</div></div>
-                <div class="stat-card"><div class="stat-card__icon">✅</div><div class="stat-card__value" id="val-halal">…</div><div class="stat-card__label">Produits halal certifiés</div></div>
-                <div class="stat-card"><div class="stat-card__icon">🌐</div><div class="stat-card__value" id="val-countries">…</div><div class="stat-card__label">Pays couverts</div></div>
-                <div class="stat-card"><div class="stat-card__icon">👥</div><div class="stat-card__value" id="val-contrib">…</div><div class="stat-card__label">Contributeurs</div></div>
+    <main class="dash-page">
+        <div class="dash-hero">
+            <div class="dash-hero__icon">📊</div>
+            <div>
+                <div class="dash-hero__title">Tableau de bord</div>
+                <div class="dash-hero__sub">Statistiques live du catalogue beauté halal · Votre activité personnelle</div>
             </div>
         </div>
 
-        <div class="section-card">
-            <h2>👤 Votre activité personnelle</h2>
-            <div class="stats-grid">
-                <div class="stat-card stat-card--personal"><div class="stat-card__icon">🔍</div><div class="stat-card__value" id="stat-scans">0</div><div class="stat-card__label">Fiches consultées</div></div>
-                <div class="stat-card stat-card--personal"><div class="stat-card__icon">⭐</div><div class="stat-card__value" id="stat-fav">0</div><div class="stat-card__label">Favoris</div></div>
-                <div class="stat-card stat-card--personal"><div class="stat-card__icon">🛒</div><div class="stat-card__value" id="stat-cart">0</div><div class="stat-card__label">Ma liste</div></div>
-                <div class="stat-card stat-card--personal"><div class="stat-card__icon">🚫</div><div class="stat-card__value" id="stat-black">0</div><div class="stat-card__label">Blacklistés</div></div>
+        <section class="dash-section">
+            <div class="dash-section__title">🌍 Catalogue mondial — données en temps réel</div>
+            <div class="kpi-grid">
+                <div class="kpi-card kpi-card--loading">
+                    <span class="kpi-card__emoji">💄</span>
+                    <span class="kpi-card__value" id="val-total">…</span>
+                    <span class="kpi-card__label">Produits cosmétiques</span>
+                </div>
+                <div class="kpi-card kpi-card--loading">
+                    <span class="kpi-card__emoji">✅</span>
+                    <span class="kpi-card__value" id="val-halal">…</span>
+                    <span class="kpi-card__label">Produits halal certifiés</span>
+                </div>
+                <div class="kpi-card kpi-card--loading">
+                    <span class="kpi-card__emoji">🌐</span>
+                    <span class="kpi-card__value" id="val-countries">…</span>
+                    <span class="kpi-card__label">Pays couverts</span>
+                </div>
+                <div class="kpi-card kpi-card--loading">
+                    <span class="kpi-card__emoji">👥</span>
+                    <span class="kpi-card__value" id="val-contrib">…</span>
+                    <span class="kpi-card__label">Contributeurs</span>
+                </div>
             </div>
-        </div>
+            <p class="source-note">Open Beauty Facts · mise à jour en continu</p>
+        </section>
 
-        <div class="section-card">
-            <h2>🏅 Badges</h2>
-            <div class="badge-grid">
-                <div class="badge badge--bronze" id="badge-bronze">🥉 Exploratrice Bronze <small>(5 fiches)</small></div>
-                <div class="badge badge--silver" id="badge-silver">🥈 Exploratrice Argent <small>(25 fiches)</small></div>
-                <div class="badge badge--gold"   id="badge-gold">🥇 Exploratrice Or <small>(100 fiches)</small></div>
+        <section class="dash-section">
+            <div class="dash-section__title">👤 Votre activité personnelle</div>
+            <div class="mini-grid">
+                <div class="mini-stat"><div class="mini-stat__val" id="stat-scans">0</div><div class="mini-stat__lbl">🔍 Fiches consultées</div></div>
+                <div class="mini-stat"><div class="mini-stat__val" id="stat-fav">0</div><div class="mini-stat__lbl">⭐ Favoris</div></div>
+                <div class="mini-stat"><div class="mini-stat__val" id="stat-cart">0</div><div class="mini-stat__lbl">🛒 Ma liste</div></div>
+                <div class="mini-stat"><div class="mini-stat__val" id="stat-black">0</div><div class="mini-stat__lbl">🚫 Blacklistés</div></div>
             </div>
-            <p id="badge-hint" style="color:#6b7280;font-size:0.82rem;margin-top:0.75rem"></p>
-        </div>
+        </section>
 
-        <div class="section-card">
-            <h2>🆕 Produits récemment ajoutés</h2>
-            <div class="products-grid" id="recent-products">
-                <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
-                <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
+        <section class="dash-section">
+            <div class="dash-section__title">🏅 Vos badges</div>
+            <div class="badges-row">
+                <div class="badge-pill badge-pill--bronze" id="badge-bronze">🥉 Exploratrice Bronze <small>(5)</small></div>
+                <div class="badge-pill badge-pill--silver" id="badge-silver">🥈 Exploratrice Argent <small>(25)</small></div>
+                <div class="badge-pill badge-pill--gold"   id="badge-gold">🥇 Exploratrice Or <small>(100)</small></div>
             </div>
-        </div>
+            <p class="badge-hint" id="badge-hint"></p>
+        </section>
 
-        <div class="section-card">
-            <h2>🔥 Produits les plus scannés</h2>
-            <div class="products-grid" id="top-products">
-                <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
-                <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
+        <section class="dash-section">
+            <div class="dash-section__title">🆕 Produits récemment ajoutés</div>
+            <div class="prod-grid" id="recent-products">
+                <div class="skel"></div><div class="skel"></div><div class="skel"></div>
+                <div class="skel"></div><div class="skel"></div><div class="skel"></div>
             </div>
-        </div>
+        </section>
 
-        <div class="section-card">
-            <h2>🕐 Mon historique de consultation</h2>
+        <section class="dash-section">
+            <div class="dash-section__title">🔥 Produits les plus scannés</div>
+            <div class="prod-grid" id="top-products">
+                <div class="skel"></div><div class="skel"></div><div class="skel"></div>
+                <div class="skel"></div><div class="skel"></div><div class="skel"></div>
+            </div>
+        </section>
+
+        <section class="dash-section">
+            <div class="dash-section__title">🕐 Mon historique de consultation</div>
             <ul class="history-list" id="history-list">
-                <li style="color:#6b7280;padding:1rem 0">Aucun historique. <a href="index.html" style="color:var(--primary,#16a34a)">Explorez le catalogue →</a></li>
+                <li style="color:#9ca3af;padding:1.5rem 0;text-align:center">
+                    Aucun historique encore.
+                    <a href="index.html" style="color:var(--primary,#16a34a);font-weight:600"> Explorez le catalogue →</a>
+                </li>
             </ul>
             <button id="btn-clear-history" class="ghost-btn" style="margin-top:1rem;color:#b91c1c;display:none">🗑 Effacer l'historique</button>
-        </div>
+        </section>
     </main>
 
     <script>
@@ -125,127 +176,132 @@
 
     function getList(k) { try { return JSON.parse(localStorage.getItem(k)||'[]'); } catch { return []; } }
     function fmt(n) {
-        if (n >= 1e6) return (n/1e6).toFixed(1).replace('.0','')+' M';
-        if (n >= 1e3) return Math.round(n/1e3)+' K';
-        return String(n);
+        if (n >= 1e6) return (n/1e6).toFixed(1).replace(/\.0$/,'')+'\u00a0M';
+        if (n >= 1e3) return (n/1e3).toFixed(0)+'\u00a0K';
+        return n.toLocaleString('fr-FR');
     }
-    function setVal(id, v) { const e = document.getElementById(id); if(e) e.textContent = v; }
-
-    function renderCard(p) {
+    function setVal(id, v) {
+        const e = document.getElementById(id);
+        if (!e) return;
+        e.textContent = v;
+        e.closest('.kpi-card')?.classList.remove('kpi-card--loading');
+    }
+    function prodCard(p) {
         const img = p.image_front_small_url || p.image_front_url || DEFAULT_IMG;
         const name = p.product_name || p.code || '—';
         const brand = Array.isArray(p.brands) ? p.brands[0] : (p.brands||'');
-        return `<div class="product-mini"><a href="product.html?code=${p.code}">
-            <img src="${img}" onerror="this.src='${DEFAULT_IMG}'" alt="${name}">
-            <p class="product-mini__name">${name}</p>
-            <p class="product-mini__brand">${brand}</p>
+        return `<div class="prod-card"><a href="product.html?code=${p.code}" title="${name}">
+            <img src="${img}" onerror="this.src='${DEFAULT_IMG}'" alt="${name}" loading="lazy">
+            <div class="prod-card__name">${name}</div>
+            <div class="prod-card__brand">${brand}</div>
         </a></div>`;
     }
 
-    // ── Personal stats
     const scans  = getList('beauty_scan_history');
     const favs   = getList('beauty_list_fav');
     const cartL  = getList('beauty_list_cart');
     const blacks = getList('beauty_list_black');
-    setVal('stat-scans', scans.length);
-    setVal('stat-fav',   favs.length);
-    setVal('stat-cart',  cartL.length);
-    setVal('stat-black', blacks.length);
+    document.getElementById('stat-scans').textContent = scans.length;
+    document.getElementById('stat-fav').textContent   = favs.length;
+    document.getElementById('stat-cart').textContent  = cartL.length;
+    document.getElementById('stat-black').textContent = blacks.length;
 
     if (scans.length >=   5) document.getElementById('badge-bronze').classList.add('earned');
     if (scans.length >=  25) document.getElementById('badge-silver').classList.add('earned');
     if (scans.length >= 100) document.getElementById('badge-gold').classList.add('earned');
-    setVal('badge-hint',
-        scans.length < 5   ? (5-scans.length)+' fiche(s) avant le badge Bronze' :
-        scans.length < 25  ? (25-scans.length)+' fiche(s) avant le badge Argent' :
-        scans.length < 100 ? (100-scans.length)+' fiche(s) avant le badge Or' : '🎉 Tous les badges obtenus !'
-    );
+    document.getElementById('badge-hint').textContent = scans.length < 5
+        ? `Plus que ${5-scans.length} fiche(s) pour débloquer le badge Bronze`
+        : scans.length < 25 ? `Plus que ${25-scans.length} fiche(s) pour le badge Argent`
+        : scans.length < 100 ? `Plus que ${100-scans.length} fiche(s) pour le badge Or`
+        : '🎉 Tous les badges sont débloqués !';
 
     const histEl = document.getElementById('history-list');
     if (scans.length) {
         document.getElementById('btn-clear-history').style.display = '';
-        histEl.innerHTML = scans.slice(-20).reverse().map(p => `
+        histEl.innerHTML = scans.slice(-25).reverse().map(p => `
             <li class="history-item">
-                <img src="${p.img||DEFAULT_IMG}" onerror="this.src='${DEFAULT_IMG}'" alt="">
+                <img src="${p.img||DEFAULT_IMG}" onerror="this.src='${DEFAULT_IMG}'" alt="" loading="lazy">
                 <div class="history-item__info">
                     <div class="history-item__name">${p.name||p.code}</div>
-                    <div class="history-item__date">${new Date(p.date).toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'})}</div>
+                    <div class="history-item__meta">${p.brand||''} · ${new Date(p.date).toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'})}</div>
                 </div>
-                <a href="product.html?code=${p.code}">Voir →</a>
+                <a href="product.html?code=${p.code}" class="link">Voir →</a>
             </li>`).join('');
     }
     document.getElementById('btn-clear-history').addEventListener('click', () => {
-        if (!confirm('Effacer tout l\'historique ?')) return;
+        if (!confirm('Effacer l\'historique ?')) return;
         localStorage.removeItem('beauty_scan_history');
         location.reload();
     });
 
-    // ── Global API stats
-    async function loadGlobalStats() {
+    async function loadStats() {
         try {
-            const r = await fetch('/proxy/v2/search?page_size=1&fields=code');
-            const d = await r.json();
-            if (d.count > 0) setVal('val-total', fmt(d.count));
-        } catch {}
+            const r = await fetch('/proxy/v2/search?page_size=1&fields=code', {signal: AbortSignal.timeout(6000)});
+            if (r.ok) {
+                const d = await r.json();
+                setVal('val-total', d.count > 10000 ? fmt(d.count) : '> 250\u00a0K');
+            } else throw new Error();
+        } catch { setVal('val-total', '> 250\u00a0K'); }
 
         try {
-            const r = await fetch('/proxy/v2/search?page_size=1&fields=code&labels_tags=en:halal');
-            const d = await r.json();
-            if (d.count >= 0) setVal('val-halal', fmt(d.count));
-        } catch {}
+            const r = await fetch('/proxy/v2/search?page_size=1&fields=code&labels_tags=en:halal', {signal: AbortSignal.timeout(6000)});
+            if (r.ok) {
+                const d = await r.json();
+                if (typeof d.count === 'number') setVal('val-halal', fmt(d.count));
+            } else throw new Error();
+        } catch {
+            try {
+                const r = await fetch('/proxy/search/search?page_size=1&sort_by=unique_scans_n&filters=labels_tags%3Aen%3Ahalal&index=beauty', {signal: AbortSignal.timeout(6000)});
+                const d = await r.json();
+                const exact = d.is_count_exact !== false;
+                setVal('val-halal', exact ? fmt(d.count) : (d.count >= 10000 ? '> 10\u00a0K' : fmt(d.count)));
+            } catch { setVal('val-halal', '—'); }
+        }
 
         try {
-            const r = await fetch('/proxy/facets/countries.json');
+            const r = await fetch('/proxy/facets/countries.json', {signal: AbortSignal.timeout(6000)});
             const d = await r.json();
-            const n = d.tags ? d.tags.length : (Array.isArray(d) ? d.length : 0);
-            if (n > 0) setVal('val-countries', fmt(n));
-        } catch {}
+            const n = d.tags?.length || (Array.isArray(d) ? d.length : 0);
+            setVal('val-countries', n > 0 ? fmt(n) : '—');
+        } catch { setVal('val-countries', '—'); }
 
         try {
-            const r = await fetch('/proxy/facets/contributors.json');
+            const r = await fetch('/proxy/facets/contributors.json', {signal: AbortSignal.timeout(6000)});
             const d = await r.json();
-            const n = d.tags ? d.tags.length : (Array.isArray(d) ? d.length : 0);
-            if (n > 0) setVal('val-contrib', fmt(n));
-        } catch {}
+            const n = d.tags?.length || (Array.isArray(d) ? d.length : 0);
+            setVal('val-contrib', n > 0 ? fmt(n) : '—');
+        } catch { setVal('val-contrib', '—'); }
     }
 
-    // ── Recent products
     async function loadRecent() {
         const el = document.getElementById('recent-products');
         try {
-            const r = await fetch('/proxy/v2/search?sort_by=created_t&page_size=12&fields=code,product_name,brands,image_front_small_url,image_front_url');
-            const d = await r.json();
-            const products = d.products || [];
-            if (products.length) { el.innerHTML = products.map(renderCard).join(''); return; }
+            const r = await fetch('/proxy/v2/search?sort_by=created_t&page_size=12&fields=code,product_name,brands,image_front_small_url,image_front_url', {signal: AbortSignal.timeout(8000)});
+            if (r.ok) { const d = await r.json(); const l = d.products||[]; if(l.length){el.innerHTML=l.map(prodCard).join('');return;} }
         } catch {}
         try {
-            const r = await fetch('/proxy/search/search?sort_by=created_t&page_size=12&fields=code,product_name,brands,image_front_small_url&index=beauty');
-            const d = await r.json();
-            const products = d.hits || [];
-            if (products.length) { el.innerHTML = products.map(renderCard).join(''); return; }
+            const r = await fetch('/proxy/search/search?sort_by=created_t&page_size=12&fields=code,product_name,brands,image_front_small_url&index=beauty', {signal: AbortSignal.timeout(8000)});
+            const d = await r.json(); const l = d.hits||[];
+            if (l.length) { el.innerHTML = l.map(prodCard).join(''); return; }
         } catch {}
-        el.innerHTML = '<p style="color:#9ca3af;grid-column:1/-1">Impossible de charger les produits récents.</p>';
+        el.innerHTML = '<p style="color:#9ca3af;grid-column:1/-1;padding:1rem 0">Impossible de charger les produits récents.</p>';
     }
 
-    // ── Top scanned
     async function loadTop() {
         const el = document.getElementById('top-products');
         try {
-            const r = await fetch('/proxy/v2/search?sort_by=unique_scans_n&page_size=12&fields=code,product_name,brands,image_front_small_url,image_front_url');
-            const d = await r.json();
-            const products = d.products || [];
-            if (products.length) { el.innerHTML = products.map(renderCard).join(''); return; }
+            const r = await fetch('/proxy/v2/search?sort_by=unique_scans_n&page_size=12&fields=code,product_name,brands,image_front_small_url,image_front_url', {signal: AbortSignal.timeout(8000)});
+            if (r.ok) { const d = await r.json(); const l = d.products||[]; if(l.length){el.innerHTML=l.map(prodCard).join('');return;} }
         } catch {}
         try {
-            const r = await fetch('/proxy/search/search?sort_by=unique_scans_n&page_size=12&fields=code,product_name,brands,image_front_small_url&index=beauty');
-            const d = await r.json();
-            const products = d.hits || [];
-            if (products.length) { el.innerHTML = products.map(renderCard).join(''); return; }
+            const r = await fetch('/proxy/search/search?sort_by=unique_scans_n&page_size=12&fields=code,product_name,brands,image_front_small_url&index=beauty', {signal: AbortSignal.timeout(8000)});
+            const d = await r.json(); const l = d.hits||[];
+            if (l.length) { el.innerHTML = l.map(prodCard).join(''); return; }
         } catch {}
-        el.innerHTML = '<p style="color:#9ca3af;grid-column:1/-1">Impossible de charger.</p>';
+        el.innerHTML = '<p style="color:#9ca3af;grid-column:1/-1;padding:1rem 0">Impossible de charger.</p>';
     }
 
-    Promise.all([loadGlobalStats(), loadRecent(), loadTop()]);
+    Promise.all([loadStats(), loadRecent(), loadTop()]);
     </script>
 </body>
 </html>

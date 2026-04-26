@@ -3,30 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mon tableau de bord — Halal Open Beauty Facts</title>
+    <title>Tableau de bord — Halal Open Beauty Facts</title>
     <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#16a34a">
     <link rel="stylesheet" href="assets/css/style.css">
     <style>
-        .dash-page { max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
-        .dash-page h1 { font-size: 1.8rem; margin-bottom: 0.3rem; }
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
-        .stat-card { background: #fff; border: 1px solid var(--border,#e5e7eb); border-radius: 16px; padding: 1.2rem; text-align: center; }
-        .stat-card__value { font-size: 2rem; font-weight: 800; color: var(--primary,#16a34a); }
-        .stat-card__label { font-size: 0.82rem; color: #6b7280; margin-top: 0.25rem; }
-        .badge-grid { display: flex; flex-wrap: wrap; gap: 0.75rem; margin: 1rem 0; }
-        .badge { padding: 0.5rem 1.1rem; border-radius: 999px; font-weight: 700; font-size: 0.82rem; }
-        .badge--bronze { background: #fef3c7; color: #92400e; }
-        .badge--silver { background: #f3f4f6; color: #374151; }
-        .badge--gold   { background: #fef9c3; color: #713f12; }
-        .badge--locked { background: #f9fafb; color: #d1d5db; }
-        .history-list { list-style: none; padding: 0; margin: 0; }
-        .history-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 0; border-bottom: 1px solid #f3f4f6; }
-        .history-item img { width: 40px; height: 40px; object-fit: contain; border-radius: 6px; background: #f9fafb; }
-        .history-item a { font-weight: 600; font-size: 0.88rem; text-decoration: none; color: inherit; }
-        .history-item a:hover { color: var(--primary,#16a34a); }
-        .history-item span { font-size: 0.75rem; color: #9ca3af; }
+        .dash { max-width: 960px; margin: 2rem auto; padding: 0 1rem; }
+        .dash h1 { font-size: 1.8rem; margin-bottom: 0.25rem; }
+        .dash__sub { color: #6b7280; margin-bottom: 2rem; }
         .section-card { background: #fff; border: 1px solid var(--border,#e5e7eb); border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; }
-        .section-card h2 { margin-top: 0; font-size: 1.1rem; }
+        .section-card h2 { margin: 0 0 1rem; font-size: 1.1rem; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap: 1rem; }
+        .stat-card { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 1.1rem; text-align: center; }
+        .stat-card--personal { background: #f9fafb; border-color: var(--border,#e5e7eb); }
+        .stat-card__icon { font-size: 1.8rem; margin-bottom: 0.3rem; }
+        .stat-card__value { font-size: 1.8rem; font-weight: 800; color: var(--primary,#16a34a); line-height: 1; }
+        .stat-card__label { font-size: 0.78rem; color: #6b7280; margin-top: 0.3rem; }
+        .badge-grid { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+        .badge { display:flex; align-items:center; gap:0.5rem; padding:0.5rem 1rem; border-radius:999px; font-weight:700; font-size:0.82rem; border:2px solid; opacity:0.35; transition:opacity .2s; }
+        .badge.earned { opacity: 1; }
+        .badge--bronze { border-color:#cd7f32; color:#92400e; background:#fef3c7; }
+        .badge--silver { border-color:#9ca3af; color:#374151; background:#f3f4f6; }
+        .badge--gold   { border-color:#f59e0b; color:#78350f; background:#fef9c3; }
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(145px,1fr)); gap: 1rem; }
+        .product-mini { border:1px solid var(--border,#e5e7eb); border-radius:10px; padding:0.75rem; background:#fff; text-align:center; }
+        .product-mini img { width:64px; height:64px; object-fit:contain; border-radius:6px; margin-bottom:0.5rem; }
+        .product-mini__name { font-size:0.8rem; font-weight:600; margin:0 0 0.2rem; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
+        .product-mini__brand { font-size:0.72rem; color:#9ca3af; margin:0; }
+        .product-mini a { text-decoration:none; color:inherit; display:block; }
+        .product-mini a:hover .product-mini__name { color:var(--primary,#16a34a); }
+        .history-list { list-style:none; padding:0; margin:0; }
+        .history-item { display:flex; align-items:center; gap:0.75rem; padding:0.6rem 0; border-bottom:1px solid #f3f4f6; }
+        .history-item img { width:42px; height:42px; object-fit:contain; border-radius:6px; background:#f9fafb; }
+        .history-item__info { flex:1; min-width:0; }
+        .history-item__name { font-weight:600; font-size:0.88rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .history-item__date { font-size:0.72rem; color:#9ca3af; margin-top:0.1rem; }
+        .history-item a { margin-left:auto; font-size:0.8rem; color:var(--primary,#16a34a); text-decoration:none; white-space:nowrap; }
+        .skeleton { background:#f3f4f6; border-radius:8px; height:150px; animation:shimmer 1.5s infinite; }
+        @keyframes shimmer { 0%,100%{opacity:1} 50%{opacity:.4} }
+        @media (prefers-color-scheme: dark) {
+            .section-card,.product-mini { background:#1f2937; border-color:#374151; }
+            .stat-card--personal { background:#111827; }
+            .stat-card { background:#064e3b; border-color:#065f46; }
+        }
     </style>
 </head>
 <body>
@@ -38,63 +57,195 @@
             </a>
             <nav class="primary-nav">
                 <a href="index.html" class="ghost-btn">← Catalogue</a>
-                <a href="my-lists.html" class="ghost-btn">📄 Mes listes</a>
+                <a href="my-lists.html" class="ghost-btn">📋 Mes listes</a>
             </nav>
         </div>
     </header>
-    <main class="dash-page">
-        <h1>📊 Mon tableau de bord</h1>
-        <p style="color:#6b7280">Vos statistiques d'utilisation Halal Open Beauty Facts.</p>
-        <div class="stats-grid" id="stats-grid"></div>
+    <main class="dash">
+        <h1>📊 Tableau de bord</h1>
+        <p class="dash__sub">Statistiques réelles du catalogue beauté halal et votre activité personnelle.</p>
+
         <div class="section-card">
-            <h2>🏅 Badges obtenus</h2>
-            <div class="badge-grid" id="badge-grid"></div>
+            <h2>🌍 Statistiques globales du catalogue (données réelles)</h2>
+            <div class="stats-grid">
+                <div class="stat-card"><div class="stat-card__icon">💄</div><div class="stat-card__value" id="val-total">…</div><div class="stat-card__label">Produits cosmétiques</div></div>
+                <div class="stat-card"><div class="stat-card__icon">✅</div><div class="stat-card__value" id="val-halal">…</div><div class="stat-card__label">Produits halal certifiés</div></div>
+                <div class="stat-card"><div class="stat-card__icon">🌐</div><div class="stat-card__value" id="val-countries">…</div><div class="stat-card__label">Pays couverts</div></div>
+                <div class="stat-card"><div class="stat-card__icon">👥</div><div class="stat-card__value" id="val-contrib">…</div><div class="stat-card__label">Contributeurs</div></div>
+            </div>
         </div>
+
         <div class="section-card">
-            <h2>🕒 Historique de consultation</h2>
-            <ul class="history-list" id="history-list"></ul>
+            <h2>👤 Votre activité personnelle</h2>
+            <div class="stats-grid">
+                <div class="stat-card stat-card--personal"><div class="stat-card__icon">🔍</div><div class="stat-card__value" id="stat-scans">0</div><div class="stat-card__label">Fiches consultées</div></div>
+                <div class="stat-card stat-card--personal"><div class="stat-card__icon">⭐</div><div class="stat-card__value" id="stat-fav">0</div><div class="stat-card__label">Favoris</div></div>
+                <div class="stat-card stat-card--personal"><div class="stat-card__icon">🛒</div><div class="stat-card__value" id="stat-cart">0</div><div class="stat-card__label">Ma liste</div></div>
+                <div class="stat-card stat-card--personal"><div class="stat-card__icon">🚫</div><div class="stat-card__value" id="stat-black">0</div><div class="stat-card__label">Blacklistés</div></div>
+            </div>
+        </div>
+
+        <div class="section-card">
+            <h2>🏅 Badges</h2>
+            <div class="badge-grid">
+                <div class="badge badge--bronze" id="badge-bronze">🥉 Exploratrice Bronze <small>(5 fiches)</small></div>
+                <div class="badge badge--silver" id="badge-silver">🥈 Exploratrice Argent <small>(25 fiches)</small></div>
+                <div class="badge badge--gold"   id="badge-gold">🥇 Exploratrice Or <small>(100 fiches)</small></div>
+            </div>
+            <p id="badge-hint" style="color:#6b7280;font-size:0.82rem;margin-top:0.75rem"></p>
+        </div>
+
+        <div class="section-card">
+            <h2>🆕 Produits récemment ajoutés</h2>
+            <div class="products-grid" id="recent-products">
+                <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
+                <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
+            </div>
+        </div>
+
+        <div class="section-card">
+            <h2>🔥 Produits les plus scannés</h2>
+            <div class="products-grid" id="top-products">
+                <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
+                <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
+            </div>
+        </div>
+
+        <div class="section-card">
+            <h2>🕐 Mon historique de consultation</h2>
+            <ul class="history-list" id="history-list">
+                <li style="color:#6b7280;padding:1rem 0">Aucun historique. <a href="index.html" style="color:var(--primary,#16a34a)">Explorez le catalogue →</a></li>
+            </ul>
+            <button id="btn-clear-history" class="ghost-btn" style="margin-top:1rem;color:#b91c1c;display:none">🗑 Effacer l'historique</button>
         </div>
     </main>
+
     <script>
-    const history = (() => { try { return JSON.parse(localStorage.getItem('beauty_scan_history')||'[]'); } catch { return []; } })();
-    const favs    = (() => { try { return JSON.parse(localStorage.getItem('beauty_list_fav')||'[]'); } catch { return []; } })();
-    const cart    = (() => { try { return JSON.parse(localStorage.getItem('beauty_list_cart')||'[]'); } catch { return []; } })();
-    const black   = (() => { try { return JSON.parse(localStorage.getItem('beauty_list_black')||'[]'); } catch { return []; } })();
+    const DEFAULT_IMG = 'https://static.openbeautyfacts.org/images/misc/product-default.png';
 
-    // Stats
-    document.getElementById('stats-grid').innerHTML = [
-        { label: 'Fiches consultées', value: history.length },
-        { label: 'Produits favoris', value: favs.length },
-        { label: 'Ma liste', value: cart.length },
-        { label: 'Blacklistés', value: black.length },
-    ].map(s => `<div class="stat-card"><div class="stat-card__value">${s.value}</div><div class="stat-card__label">${s.label}</div></div>`).join('');
+    function getList(k) { try { return JSON.parse(localStorage.getItem(k)||'[]'); } catch { return []; } }
+    function fmt(n) {
+        if (n >= 1e6) return (n/1e6).toFixed(1).replace('.0','')+' M';
+        if (n >= 1e3) return Math.round(n/1e3)+' K';
+        return String(n);
+    }
+    function setVal(id, v) { const e = document.getElementById(id); if(e) e.textContent = v; }
 
-    // Badges
-    const badges = [
-        { label: '🔍 Premier scan', earned: history.length >= 1, tier: 'bronze' },
-        { label: '💄 5 produits vus', earned: history.length >= 5, tier: 'bronze' },
-        { label: '⭐ Premier favori', earned: favs.length >= 1, tier: 'silver' },
-        { label: '🛒 Liste de 3', earned: cart.length >= 3, tier: 'silver' },
-        { label: '💅 Explorer (20 fiches)', earned: history.length >= 20, tier: 'gold' },
-        { label: '🏆 Connaisseur (50 fiches)', earned: history.length >= 50, tier: 'gold' },
-    ];
-    document.getElementById('badge-grid').innerHTML = badges.map(b =>
-        `<span class="badge badge--${b.earned ? b.tier : 'locked'}" title="${b.earned ? 'Obtenu' : 'Pas encore'}">${b.earned ? '' : '🔒 '}${b.label}</span>`
-    ).join('');
+    function renderCard(p) {
+        const img = p.image_front_small_url || p.image_front_url || DEFAULT_IMG;
+        const name = p.product_name || p.code || '—';
+        const brand = Array.isArray(p.brands) ? p.brands[0] : (p.brands||'');
+        return `<div class="product-mini"><a href="product.html?code=${p.code}">
+            <img src="${img}" onerror="this.src='${DEFAULT_IMG}'" alt="${name}">
+            <p class="product-mini__name">${name}</p>
+            <p class="product-mini__brand">${brand}</p>
+        </a></div>`;
+    }
 
-    // History
-    const el = document.getElementById('history-list');
-    if (!history.length) { el.innerHTML = '<li style="color:#9ca3af;padding:1rem 0">Aucune fiche consultée pour le moment.</li>'; }
-    else {
-        el.innerHTML = history.slice(0, 20).map(p => `
+    // ── Personal stats
+    const scans  = getList('beauty_scan_history');
+    const favs   = getList('beauty_list_fav');
+    const cartL  = getList('beauty_list_cart');
+    const blacks = getList('beauty_list_black');
+    setVal('stat-scans', scans.length);
+    setVal('stat-fav',   favs.length);
+    setVal('stat-cart',  cartL.length);
+    setVal('stat-black', blacks.length);
+
+    if (scans.length >=   5) document.getElementById('badge-bronze').classList.add('earned');
+    if (scans.length >=  25) document.getElementById('badge-silver').classList.add('earned');
+    if (scans.length >= 100) document.getElementById('badge-gold').classList.add('earned');
+    setVal('badge-hint',
+        scans.length < 5   ? (5-scans.length)+' fiche(s) avant le badge Bronze' :
+        scans.length < 25  ? (25-scans.length)+' fiche(s) avant le badge Argent' :
+        scans.length < 100 ? (100-scans.length)+' fiche(s) avant le badge Or' : '🎉 Tous les badges obtenus !'
+    );
+
+    const histEl = document.getElementById('history-list');
+    if (scans.length) {
+        document.getElementById('btn-clear-history').style.display = '';
+        histEl.innerHTML = scans.slice(-20).reverse().map(p => `
             <li class="history-item">
-                <img src="${p.img||'https://static.openfoodfacts.org/images/misc/product-default.png'}" alt="${p.name}">
-                <div>
-                    <a href="product.html?code=${p.code}">${p.name}</a><br>
-                    <span>${p.brand||''} · ${new Date(p.date).toLocaleDateString('fr-FR')}</span>
+                <img src="${p.img||DEFAULT_IMG}" onerror="this.src='${DEFAULT_IMG}'" alt="">
+                <div class="history-item__info">
+                    <div class="history-item__name">${p.name||p.code}</div>
+                    <div class="history-item__date">${new Date(p.date).toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'})}</div>
                 </div>
+                <a href="product.html?code=${p.code}">Voir →</a>
             </li>`).join('');
     }
+    document.getElementById('btn-clear-history').addEventListener('click', () => {
+        if (!confirm('Effacer tout l\'historique ?')) return;
+        localStorage.removeItem('beauty_scan_history');
+        location.reload();
+    });
+
+    // ── Global API stats
+    async function loadGlobalStats() {
+        try {
+            const r = await fetch('/proxy/v2/search?page_size=1&fields=code');
+            const d = await r.json();
+            if (d.count > 0) setVal('val-total', fmt(d.count));
+        } catch {}
+
+        try {
+            const r = await fetch('/proxy/v2/search?page_size=1&fields=code&labels_tags=en:halal');
+            const d = await r.json();
+            if (d.count >= 0) setVal('val-halal', fmt(d.count));
+        } catch {}
+
+        try {
+            const r = await fetch('/proxy/facets/countries.json');
+            const d = await r.json();
+            const n = d.tags ? d.tags.length : (Array.isArray(d) ? d.length : 0);
+            if (n > 0) setVal('val-countries', fmt(n));
+        } catch {}
+
+        try {
+            const r = await fetch('/proxy/facets/contributors.json');
+            const d = await r.json();
+            const n = d.tags ? d.tags.length : (Array.isArray(d) ? d.length : 0);
+            if (n > 0) setVal('val-contrib', fmt(n));
+        } catch {}
+    }
+
+    // ── Recent products
+    async function loadRecent() {
+        const el = document.getElementById('recent-products');
+        try {
+            const r = await fetch('/proxy/v2/search?sort_by=created_t&page_size=12&fields=code,product_name,brands,image_front_small_url,image_front_url');
+            const d = await r.json();
+            const products = d.products || [];
+            if (products.length) { el.innerHTML = products.map(renderCard).join(''); return; }
+        } catch {}
+        try {
+            const r = await fetch('/proxy/search/search?sort_by=created_t&page_size=12&fields=code,product_name,brands,image_front_small_url&index=beauty');
+            const d = await r.json();
+            const products = d.hits || [];
+            if (products.length) { el.innerHTML = products.map(renderCard).join(''); return; }
+        } catch {}
+        el.innerHTML = '<p style="color:#9ca3af;grid-column:1/-1">Impossible de charger les produits récents.</p>';
+    }
+
+    // ── Top scanned
+    async function loadTop() {
+        const el = document.getElementById('top-products');
+        try {
+            const r = await fetch('/proxy/v2/search?sort_by=unique_scans_n&page_size=12&fields=code,product_name,brands,image_front_small_url,image_front_url');
+            const d = await r.json();
+            const products = d.products || [];
+            if (products.length) { el.innerHTML = products.map(renderCard).join(''); return; }
+        } catch {}
+        try {
+            const r = await fetch('/proxy/search/search?sort_by=unique_scans_n&page_size=12&fields=code,product_name,brands,image_front_small_url&index=beauty');
+            const d = await r.json();
+            const products = d.hits || [];
+            if (products.length) { el.innerHTML = products.map(renderCard).join(''); return; }
+        } catch {}
+        el.innerHTML = '<p style="color:#9ca3af;grid-column:1/-1">Impossible de charger.</p>';
+    }
+
+    Promise.all([loadGlobalStats(), loadRecent(), loadTop()]);
     </script>
 </body>
 </html>

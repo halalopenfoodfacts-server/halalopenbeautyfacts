@@ -1,75 +1,116 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-portal="beauty">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tableau de bord — Halal Open Beauty Facts</title>
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#16a34a">
+    <meta name="theme-color" content="#008c86">
     <link rel="stylesheet" href="assets/css/style.css">
     <style>
+        /* ── Layout ── */
         .dash-page { max-width: 980px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+
+        /* ── Hero band ── */
         .dash-hero {
-            background: linear-gradient(135deg, rgba(0,140,134,.08), rgba(255,255,255,.98));
-            border: 1px solid var(--border,#e5e7eb);
-            border-radius: 20px; padding: 2rem 2.5rem; margin-bottom: 2rem;
+            background: var(--hero-surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem 2.5rem;
+            margin-bottom: 2rem;
             display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;
         }
         .dash-hero__icon { font-size: 3.5rem; line-height: 1; flex-shrink: 0; }
-        .dash-hero__title { font-size: 2rem; font-weight: 800; color: #0f172a; margin-bottom: 0.2rem; }
-        .dash-hero__sub { color: #64748b; font-size: 0.9rem; }
+        .dash-hero__title { font-family: var(--font-display,sans-serif); font-size: 2rem; font-weight: 800; color: var(--text); margin-bottom: 0.2rem; }
+        .dash-hero__sub   { color: var(--muted); font-size: 0.9rem; }
+
+        /* ── Section titles ── */
         .dash-section { margin-bottom: 2rem; }
         .dash-section__title {
+            font-family: var(--font-display,sans-serif);
             font-size: 0.72rem; font-weight: 700; letter-spacing: .1em;
-            text-transform: uppercase; color: #64748b;
+            text-transform: uppercase; color: var(--muted);
             margin-bottom: 1rem; padding-bottom: 0.5rem;
-            border-bottom: 2px solid var(--border,#e5e7eb);
+            border-bottom: 2px solid var(--border);
         }
-        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap: 1rem; }
+
+        /* ── Global KPIs ── */
+        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px,1fr)); gap: 1rem; }
         .kpi-card {
-            background: #fff; border: 1px solid var(--border,#e5e7eb); border-radius: 16px;
-            padding: 1.4rem 1.2rem; display: flex; flex-direction: column; align-items: center;
-            text-align: center; gap: 0.3rem; position: relative; overflow: hidden;
-            box-shadow: 0 1px 4px rgba(0,0,0,.05); transition: transform .18s, box-shadow .18s;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px; padding: 1.4rem 1.2rem;
+            display: flex; flex-direction: column; align-items: center; text-align: center;
+            gap: 0.3rem; position: relative; overflow: hidden;
+            box-shadow: 0 1px 4px var(--card-glow);
+            transition: transform .18s, box-shadow .18s;
         }
-        .kpi-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,.09); }
-        .kpi-card::before { content:''; position:absolute; inset:0; opacity:.05; background:var(--primary,#16a34a); border-radius:inherit; }
+        .kpi-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px var(--card-glow); }
+        .kpi-card::before { content:''; position:absolute; inset:0; opacity:.06; background:var(--primary); border-radius:inherit; }
         .kpi-card__emoji { font-size: 2rem; }
-        .kpi-card__value { font-size: 2.2rem; font-weight: 800; color: var(--primary,#16a34a); line-height: 1; }
-        .kpi-card__label { font-size: 0.78rem; color: #64748b; font-weight: 500; }
-        .kpi-card--loading .kpi-card__value { color: #e5e7eb; }
+        .kpi-card__value { font-family: var(--font-display,sans-serif); font-size: 2.2rem; font-weight: 800; color: var(--primary); line-height: 1; }
+        .kpi-card__label { font-size: 0.78rem; color: var(--muted); font-weight: 500; }
+        .kpi-card--loading .kpi-card__value { color: var(--border); }
+        /* Variants colorés */
+        .kpi-card--halal    { border-color: rgba(0,140,134,0.35); }
+        .kpi-card--halal    .kpi-card__value { color: var(--primary); }
+        .kpi-card--excluded { border-color: rgba(180,40,40,0.28); }
+        .kpi-card--excluded .kpi-card__value { color: #b91c1c; }
+        .kpi-card--excluded::before { background: #b91c1c !important; }
+
+        /* ── Personal mini stats ── */
         .mini-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 0.75rem; }
         @media (max-width: 600px) { .mini-grid { grid-template-columns: repeat(2,1fr); } }
-        .mini-stat { background: #f8fafc; border: 1px solid var(--border,#e5e7eb); border-radius: 12px; padding: 1rem; text-align: center; }
-        .mini-stat__val { font-size: 1.7rem; font-weight: 800; color: var(--primary,#16a34a); }
-        .mini-stat__lbl { font-size: 0.76rem; color: #64748b; margin-top: 0.2rem; }
+        .mini-stat {
+            background: var(--card-strong);
+            border: 1px solid var(--border);
+            border-radius: 12px; padding: 1rem; text-align: center;
+        }
+        .mini-stat__val { font-family: var(--font-display,sans-serif); font-size: 1.7rem; font-weight: 800; color: var(--primary); }
+        .mini-stat__lbl { font-size: 0.76rem; color: var(--muted); margin-top: 0.2rem; }
+
+        /* ── Badges ── */
         .badges-row { display: flex; gap: 0.75rem; flex-wrap: wrap; }
         .badge-pill { display:flex; align-items:center; gap:.45rem; padding:.5rem 1.1rem; border-radius:999px; font-size:.84rem; font-weight:700; border:2px solid; opacity:.3; transition:opacity .2s,transform .2s; }
         .badge-pill.earned { opacity:1; transform:scale(1.03); }
         .badge-pill--bronze { border-color:#cd7f32; color:#78350f; background:#fef3c7; }
         .badge-pill--silver { border-color:#9ca3af; color:#374151; background:#f8fafc; }
         .badge-pill--gold   { border-color:#f59e0b; color:#78350f; background:#fefce8; }
-        .badge-hint { font-size: 0.82rem; color: #64748b; margin-top: 0.75rem; }
+        .badge-hint { font-size: 0.82rem; color: var(--muted); margin-top: 0.75rem; }
+
+        /* ── Product grid ── */
         .prod-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px,1fr)); gap: 0.85rem; }
-        .prod-card { background:#fff; border:1px solid var(--border,#e5e7eb); border-radius:12px; padding:.85rem .75rem; text-align:center; transition:transform .15s,box-shadow .15s; box-shadow:0 1px 3px rgba(0,0,0,.04); }
-        .prod-card:hover { transform:translateY(-3px); box-shadow:0 6px 18px rgba(0,0,0,.1); }
-        .prod-card a { text-decoration:none; color:inherit; display:block; }
-        .prod-card img { width:62px; height:62px; object-fit:contain; border-radius:8px; margin-bottom:.5rem; background:#f8fafc; }
-        .prod-card__name { font-size:.78rem; font-weight:700; color:#0f172a; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; margin-bottom:.2rem; }
-        .prod-card__brand { font-size:.7rem; color:#9ca3af; }
-        .prod-card:hover .prod-card__name { color:var(--primary,#16a34a); }
+        .prod-card {
+            background: var(--card);
+            border: 1px solid var(--border); border-radius: 12px;
+            padding: 0.85rem 0.75rem; text-align: center;
+            transition: transform .15s, box-shadow .15s;
+            box-shadow: 0 1px 3px var(--card-glow);
+        }
+        .prod-card:hover { transform: translateY(-3px); box-shadow: 0 6px 18px var(--card-glow); }
+        .prod-card a { text-decoration: none; color: inherit; display: block; }
+        .prod-card img { width:62px; height:62px; object-fit:contain; border-radius:8px; margin-bottom:.5rem; background:var(--bg); }
+        .prod-card__name  { font-size:.78rem; font-weight:700; color:var(--text); overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; margin-bottom:.2rem; }
+        .prod-card__brand { font-size:.7rem; color:var(--muted); }
+        .prod-card:hover .prod-card__name { color:var(--primary); }
+
+        /* ── History ── */
         .history-list { list-style:none; padding:0; margin:0; }
-        .history-item { display:flex; align-items:center; gap:.85rem; padding:.7rem 0; border-bottom:1px solid var(--border,#e5e7eb); }
+        .history-item { display:flex; align-items:center; gap:.85rem; padding:.7rem 0; border-bottom:1px solid var(--border); }
         .history-item:last-child { border-bottom:none; }
-        .history-item img { width:44px; height:44px; object-fit:contain; border-radius:8px; background:#f8fafc; border:1px solid #e5e7eb; flex-shrink:0; }
+        .history-item img { width:44px; height:44px; object-fit:contain; border-radius:8px; background:var(--bg); border:1px solid var(--border); flex-shrink:0; }
         .history-item__info { flex:1; min-width:0; }
         .history-item__name { font-weight:600; font-size:.88rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-        .history-item__meta { font-size:.73rem; color:#9ca3af; margin-top:.1rem; }
-        .history-item a.link { margin-left:auto; font-size:.8rem; color:var(--primary,#16a34a); text-decoration:none; font-weight:600; white-space:nowrap; }
-        .skel { border-radius:10px; height:145px; background:linear-gradient(90deg,#f3f4f6 25%,#e9ecef 50%,#f3f4f6 75%); background-size:200% 100%; animation:skel 1.6s infinite; }
+        .history-item__meta { font-size:.73rem; color:var(--muted); margin-top:.1rem; }
+        .history-item a.link { margin-left:auto; font-size:.8rem; color:var(--primary); text-decoration:none; font-weight:600; white-space:nowrap; }
+
+        /* ── Skeleton ── */
+        .skel { border-radius:10px; height:145px; background:linear-gradient(90deg,var(--border) 25%,var(--accent) 50%,var(--border) 75%); background-size:200% 100%; animation:skel 1.6s infinite; }
         @keyframes skel { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
-        .source-note { display:inline-flex; align-items:center; gap:.3rem; font-size:.72rem; color:#9ca3af; margin-top:.5rem; }
-        .source-note::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--primary,#16a34a); display:inline-block; animation:pulse 2s infinite; }
+
+        /* ── Source note ── */
+        .source-note { display:inline-flex; align-items:center; gap:.3rem; font-size:.72rem; color:var(--muted); margin-top:.5rem; }
+        .source-note::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--primary); display:inline-block; animation:pulse 2s infinite; }
         @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
     </style>
 </head>
@@ -88,6 +129,7 @@
     </header>
 
     <main class="dash-page">
+        <!-- Hero -->
         <div class="dash-hero">
             <div class="dash-hero__icon">📊</div>
             <div>
@@ -96,6 +138,7 @@
             </div>
         </div>
 
+        <!-- Global KPIs -->
         <section class="dash-section">
             <div class="dash-section__title">🌍 Catalogue mondial — données en temps réel</div>
             <div class="kpi-grid">
@@ -104,10 +147,15 @@
                     <span class="kpi-card__value" id="val-total">…</span>
                     <span class="kpi-card__label">Produits cosmétiques</span>
                 </div>
-                <div class="kpi-card kpi-card--loading">
+                <div class="kpi-card kpi-card--loading kpi-card--halal">
                     <span class="kpi-card__emoji">✅</span>
                     <span class="kpi-card__value" id="val-halal">…</span>
                     <span class="kpi-card__label">Produits halal certifiés</span>
+                </div>
+                <div class="kpi-card kpi-card--loading kpi-card--excluded">
+                    <span class="kpi-card__emoji">🚫</span>
+                    <span class="kpi-card__value" id="val-excluded">…</span>
+                    <span class="kpi-card__label">Produits exclus signalés</span>
                 </div>
                 <div class="kpi-card kpi-card--loading">
                     <span class="kpi-card__emoji">🌐</span>
@@ -123,6 +171,7 @@
             <p class="source-note">Open Beauty Facts · mise à jour en continu</p>
         </section>
 
+        <!-- Personal stats -->
         <section class="dash-section">
             <div class="dash-section__title">👤 Votre activité personnelle</div>
             <div class="mini-grid">
@@ -133,6 +182,7 @@
             </div>
         </section>
 
+        <!-- Badges -->
         <section class="dash-section">
             <div class="dash-section__title">🏅 Vos badges</div>
             <div class="badges-row">
@@ -143,6 +193,7 @@
             <p class="badge-hint" id="badge-hint"></p>
         </section>
 
+        <!-- Recent products -->
         <section class="dash-section">
             <div class="dash-section__title">🆕 Produits récemment ajoutés</div>
             <div class="prod-grid" id="recent-products">
@@ -151,6 +202,7 @@
             </div>
         </section>
 
+        <!-- Top products -->
         <section class="dash-section">
             <div class="dash-section__title">🔥 Produits les plus scannés</div>
             <div class="prod-grid" id="top-products">
@@ -159,12 +211,13 @@
             </div>
         </section>
 
+        <!-- Personal history -->
         <section class="dash-section">
             <div class="dash-section__title">🕐 Mon historique de consultation</div>
             <ul class="history-list" id="history-list">
-                <li style="color:#9ca3af;padding:1.5rem 0;text-align:center">
+                <li style="color:var(--muted);padding:1.5rem 0;text-align:center">
                     Aucun historique encore.
-                    <a href="index.html" style="color:var(--primary,#16a34a);font-weight:600"> Explorez le catalogue →</a>
+                    <a href="index.html" style="color:var(--primary);font-weight:600"> Explorez le catalogue →</a>
                 </li>
             </ul>
             <button id="btn-clear-history" class="ghost-btn" style="margin-top:1rem;color:#b91c1c;display:none">🗑 Effacer l'historique</button>
@@ -172,12 +225,15 @@
     </main>
 
     <script>
+    'use strict';
     const DEFAULT_IMG = 'https://static.openbeautyfacts.org/images/misc/product-default.png';
 
     function getList(k) { try { return JSON.parse(localStorage.getItem(k)||'[]'); } catch { return []; } }
+    function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
     function fmt(n) {
+        if (!Number.isFinite(n)) return '—';
         if (n >= 1e6) return (n/1e6).toFixed(1).replace(/\.0$/,'')+'\u00a0M';
-        if (n >= 1e3) return (n/1e3).toFixed(0)+'\u00a0K';
+        if (n >= 1e3) return Math.round(n/1e3)+'\u00a0K';
         return n.toLocaleString('fr-FR');
     }
     function setVal(id, v) {
@@ -187,16 +243,19 @@
         e.closest('.kpi-card')?.classList.remove('kpi-card--loading');
     }
     function prodCard(p) {
-        const img = p.image_front_small_url || p.image_front_url || DEFAULT_IMG;
-        const name = p.product_name || p.code || '—';
-        const brand = Array.isArray(p.brands) ? p.brands[0] : (p.brands||'');
-        return `<div class="prod-card"><a href="product.html?code=${p.code}" title="${name}">
+        if (!p || !p.code) return '';
+        const code  = esc(p.code);
+        const img   = esc(p.image_front_small_url || p.image_front_url || DEFAULT_IMG);
+        const name  = esc(p.product_name || p.code || '—');
+        const brand = esc(Array.isArray(p.brands) ? p.brands[0] : (p.brands||''));
+        return `<div class="prod-card"><a href="product.html?code=${code}" title="${name}">
             <img src="${img}" onerror="this.src='${DEFAULT_IMG}'" alt="${name}" loading="lazy">
             <div class="prod-card__name">${name}</div>
             <div class="prod-card__brand">${brand}</div>
         </a></div>`;
     }
 
+    /* ── Personal stats ── */
     const scans  = getList('beauty_scan_history');
     const favs   = getList('beauty_list_fav');
     const cartL  = getList('beauty_list_cart');
@@ -209,99 +268,132 @@
     if (scans.length >=   5) document.getElementById('badge-bronze').classList.add('earned');
     if (scans.length >=  25) document.getElementById('badge-silver').classList.add('earned');
     if (scans.length >= 100) document.getElementById('badge-gold').classList.add('earned');
-    document.getElementById('badge-hint').textContent = scans.length < 5
-        ? `Plus que ${5-scans.length} fiche(s) pour débloquer le badge Bronze`
-        : scans.length < 25 ? `Plus que ${25-scans.length} fiche(s) pour le badge Argent`
-        : scans.length < 100 ? `Plus que ${100-scans.length} fiche(s) pour le badge Or`
-        : '🎉 Tous les badges sont débloqués !';
+    document.getElementById('badge-hint').textContent =
+        scans.length <   5 ? `Plus que ${5  - scans.length} fiche(s) pour débloquer le badge Bronze` :
+        scans.length <  25 ? `Plus que ${25 - scans.length} fiche(s) pour le badge Argent` :
+        scans.length < 100 ? `Plus que ${100- scans.length} fiche(s) pour le badge Or` :
+        '🎉 Tous les badges sont débloqués !';
 
     const histEl = document.getElementById('history-list');
-    if (scans.length) {
+    if (scans.length > 0) {
         document.getElementById('btn-clear-history').style.display = '';
-        histEl.innerHTML = scans.slice(-25).reverse().map(p => `
-            <li class="history-item">
-                <img src="${p.img||DEFAULT_IMG}" onerror="this.src='${DEFAULT_IMG}'" alt="" loading="lazy">
+        histEl.innerHTML = scans.slice(-25).reverse().map(p => {
+            if (!p || !p.code) return '';
+            const img  = esc(p.img || DEFAULT_IMG);
+            const name = esc(p.name || p.code || '');
+            const meta = esc(p.brand || '');
+            const date = (() => { try { return new Date(p.date).toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'}); } catch { return ''; } })();
+            return `<li class="history-item">
+                <img src="${img}" onerror="this.src='${DEFAULT_IMG}'" alt="" loading="lazy">
                 <div class="history-item__info">
-                    <div class="history-item__name">${p.name||p.code}</div>
-                    <div class="history-item__meta">${p.brand||''} · ${new Date(p.date).toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'})}</div>
+                    <div class="history-item__name">${name}</div>
+                    <div class="history-item__meta">${meta}${meta&&date?' · ':''}${date}</div>
                 </div>
-                <a href="product.html?code=${p.code}" class="link">Voir →</a>
-            </li>`).join('');
+                <a href="product.html?code=${esc(p.code)}" class="link">Voir →</a>
+            </li>`;
+        }).join('');
     }
     document.getElementById('btn-clear-history').addEventListener('click', () => {
-        if (!confirm('Effacer l\'historique ?')) return;
+        if (!confirm('Effacer tout l\'historique de consultation ?')) return;
         localStorage.removeItem('beauty_scan_history');
         location.reload();
     });
 
-    async function loadStats() {
-        try {
-            const r = await fetch('/proxy/v2/search?page_size=1&fields=code', {signal: AbortSignal.timeout(6000)});
-            if (r.ok) {
-                const d = await r.json();
-                setVal('val-total', d.count > 10000 ? fmt(d.count) : '> 250\u00a0K');
-            } else throw new Error();
-        } catch { setVal('val-total', '> 250\u00a0K'); }
+    /* ── API helpers ── */
+    async function apiFetch(url, timeout = 7000) {
+        const r = await fetch(url, { signal: AbortSignal.timeout(timeout) });
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+    }
 
+    /* ── Global stats ── */
+    async function loadStats() {
+        // Total products
         try {
-            const r = await fetch('/proxy/v2/search?page_size=1&fields=code&labels_tags=en:halal', {signal: AbortSignal.timeout(6000)});
-            if (r.ok) {
-                const d = await r.json();
-                if (typeof d.count === 'number') setVal('val-halal', fmt(d.count));
-            } else throw new Error();
+            const d = await apiFetch('/proxy/v2/search?page_size=1&fields=code');
+            setVal('val-total', Number.isFinite(d.count) && d.count > 10000 ? fmt(d.count) : '> 250\u00a0K');
+        } catch {
+            setVal('val-total', '> 250\u00a0K');
+        }
+
+        // Halal certified
+        try {
+            const d = await apiFetch('/proxy/v2/search?page_size=1&fields=code&labels_tags=en:halal');
+            if (Number.isFinite(d.count)) setVal('val-halal', fmt(d.count));
+            else throw new Error();
         } catch {
             try {
-                const r = await fetch('/proxy/search/search?page_size=1&sort_by=unique_scans_n&filters=labels_tags%3Aen%3Ahalal&index=beauty', {signal: AbortSignal.timeout(6000)});
-                const d = await r.json();
-                const exact = d.is_count_exact !== false;
-                setVal('val-halal', exact ? fmt(d.count) : (d.count >= 10000 ? '> 10\u00a0K' : fmt(d.count)));
+                const d = await apiFetch('/proxy/search/search?page_size=1&sort_by=unique_scans_n&filters=labels_tags%3Aen%3Ahalal&index=beauty');
+                setVal('val-halal', Number.isFinite(d.count)
+                    ? (d.is_count_exact === false && d.count >= 10000 ? '> 10\u00a0K' : fmt(d.count))
+                    : '—');
             } catch { setVal('val-halal', '—'); }
         }
 
+        // Excluded (non-halal / contient alcool)
         try {
-            const r = await fetch('/proxy/facets/countries.json', {signal: AbortSignal.timeout(6000)});
-            const d = await r.json();
+            const d = await apiFetch('/proxy/v2/search?page_size=1&fields=code&labels_tags=en:non-vegan');
+            // Pour beauty: produits contenant des ingrédients d'origine animale
+            if (Number.isFinite(d.count) && d.count > 0) setVal('val-excluded', fmt(d.count));
+            else throw new Error();
+        } catch {
+            try {
+                // Fallback: compter produits avec alcool dans les ingrédients
+                const d = await apiFetch('/proxy/search/search?page_size=1&sort_by=unique_scans_n&q=alcohol&index=beauty');
+                setVal('val-excluded', Number.isFinite(d.count)
+                    ? (d.is_count_exact === false && d.count >= 10000 ? '> 10\u00a0K' : fmt(d.count))
+                    : '—');
+            } catch { setVal('val-excluded', '—'); }
+        }
+
+        // Countries
+        try {
+            const d = await apiFetch('/proxy/facets/countries.json');
             const n = d.tags?.length || (Array.isArray(d) ? d.length : 0);
             setVal('val-countries', n > 0 ? fmt(n) : '—');
         } catch { setVal('val-countries', '—'); }
 
+        // Contributors
         try {
-            const r = await fetch('/proxy/facets/contributors.json', {signal: AbortSignal.timeout(6000)});
-            const d = await r.json();
+            const d = await apiFetch('/proxy/facets/contributors.json');
             const n = d.tags?.length || (Array.isArray(d) ? d.length : 0);
             setVal('val-contrib', n > 0 ? fmt(n) : '—');
         } catch { setVal('val-contrib', '—'); }
     }
 
+    /* ── Recent products ── */
     async function loadRecent() {
         const el = document.getElementById('recent-products');
         try {
-            const r = await fetch('/proxy/v2/search?sort_by=created_t&page_size=12&fields=code,product_name,brands,image_front_small_url,image_front_url', {signal: AbortSignal.timeout(8000)});
-            if (r.ok) { const d = await r.json(); const l = d.products||[]; if(l.length){el.innerHTML=l.map(prodCard).join('');return;} }
+            const d = await apiFetch('/proxy/v2/search?sort_by=created_t&page_size=12&fields=code,product_name,brands,image_front_small_url,image_front_url');
+            const list = Array.isArray(d.products) ? d.products.filter(Boolean) : [];
+            if (list.length) { el.innerHTML = list.map(prodCard).join(''); return; }
         } catch {}
         try {
-            const r = await fetch('/proxy/search/search?sort_by=created_t&page_size=12&fields=code,product_name,brands,image_front_small_url&index=beauty', {signal: AbortSignal.timeout(8000)});
-            const d = await r.json(); const l = d.hits||[];
-            if (l.length) { el.innerHTML = l.map(prodCard).join(''); return; }
+            const d = await apiFetch('/proxy/search/search?sort_by=created_t&page_size=12&fields=code,product_name,brands,image_front_small_url&index=beauty');
+            const list = Array.isArray(d.hits) ? d.hits.filter(Boolean) : [];
+            if (list.length) { el.innerHTML = list.map(prodCard).join(''); return; }
         } catch {}
-        el.innerHTML = '<p style="color:#9ca3af;grid-column:1/-1;padding:1rem 0">Impossible de charger les produits récents.</p>';
+        el.innerHTML = '<p style="color:var(--muted);grid-column:1/-1;padding:1rem 0">Produits récents indisponibles pour le moment.</p>';
     }
 
+    /* ── Top products ── */
     async function loadTop() {
         const el = document.getElementById('top-products');
         try {
-            const r = await fetch('/proxy/v2/search?sort_by=unique_scans_n&page_size=12&fields=code,product_name,brands,image_front_small_url,image_front_url', {signal: AbortSignal.timeout(8000)});
-            if (r.ok) { const d = await r.json(); const l = d.products||[]; if(l.length){el.innerHTML=l.map(prodCard).join('');return;} }
+            const d = await apiFetch('/proxy/v2/search?sort_by=unique_scans_n&page_size=12&fields=code,product_name,brands,image_front_small_url,image_front_url');
+            const list = Array.isArray(d.products) ? d.products.filter(Boolean) : [];
+            if (list.length) { el.innerHTML = list.map(prodCard).join(''); return; }
         } catch {}
         try {
-            const r = await fetch('/proxy/search/search?sort_by=unique_scans_n&page_size=12&fields=code,product_name,brands,image_front_small_url&index=beauty', {signal: AbortSignal.timeout(8000)});
-            const d = await r.json(); const l = d.hits||[];
-            if (l.length) { el.innerHTML = l.map(prodCard).join(''); return; }
+            const d = await apiFetch('/proxy/search/search?sort_by=unique_scans_n&page_size=12&fields=code,product_name,brands,image_front_small_url&index=beauty');
+            const list = Array.isArray(d.hits) ? d.hits.filter(Boolean) : [];
+            if (list.length) { el.innerHTML = list.map(prodCard).join(''); return; }
         } catch {}
-        el.innerHTML = '<p style="color:#9ca3af;grid-column:1/-1;padding:1rem 0">Impossible de charger.</p>';
+        el.innerHTML = '<p style="color:var(--muted);grid-column:1/-1;padding:1rem 0">Produits populaires indisponibles pour le moment.</p>';
     }
 
-    Promise.all([loadStats(), loadRecent(), loadTop()]);
+    Promise.all([loadStats(), loadRecent(), loadTop()]).catch(() => {});
     </script>
 </body>
 </html>

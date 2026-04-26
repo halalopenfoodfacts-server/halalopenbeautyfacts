@@ -1192,6 +1192,30 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // F6 — Géolocalisation automatique (IP-based, silencieuse)
+    (async function autoGeolocate() {
+        const storedCountry = localStorage.getItem('hobf_country');
+        if (storedCountry) return;
+        try {
+            const r = await fetch('https://ipapi.co/json/', { signal: AbortSignal.timeout(4000) });
+            if (!r.ok) return;
+            const geo = await r.json();
+            const code = (geo.country_name || '').toLowerCase().replace(/\s+/g, '-');
+            if (!code) return;
+            const sel = document.getElementById('country-select');
+            if (!sel) return;
+            const opts = Array.from(sel.options).map(o => o.value);
+            const match = opts.find(v => v && code.includes(v)) || opts.find(v => v && v.includes(code.split('-')[0]));
+            if (match) {
+                sel.value = match;
+                sel.dispatchEvent(new Event('change', { bubbles: true }));
+                const chip = document.getElementById('country-chip');
+                if (chip) chip.textContent = sel.options[sel.selectedIndex]?.text || '';
+                console.log('[GEO] Pays détecté automatiquement :', match);
+            }
+        } catch (e) { /* silencieux */ }
+    })();
+
     window.addEventListener('locale:country-change', (event) => {
         const country = event.detail?.country || '';
         const countryLabel = event.detail?.countryLabel || (window.LocaleState && window.LocaleState.countryLabel) || '';

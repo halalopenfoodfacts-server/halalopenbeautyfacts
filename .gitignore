@@ -1,0 +1,36 @@
+# Secrets
+.env
+*.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+.venv/
+venv/
+env/
+
+# Django
+staticfiles/
+media/
+*.log
+db.sqlite3
+
+# Docker volumes
+postgres_data/
+redis_data/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp

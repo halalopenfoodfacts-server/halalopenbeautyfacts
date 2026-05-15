@@ -624,10 +624,35 @@ main {
     grid-column: 1 / -1;
 }
 
+.stat-card-link {
+    display: contents;
+    text-decoration: none;
+    color: inherit;
+}
+.stat-card-link .stat-card {
+    cursor: pointer;
+}
+.stat-card-link .stat-card:hover .stat-card__cta {
+    opacity: 1;
+    transform: translateX(0);
+}
+.stat-card__cta {
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-top: 0.3rem;
+    opacity: 0;
+    transform: translateX(-6px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+.stat-card--halal .stat-card__cta   { color: #1a7f3c; }
+.stat-card--excluded .stat-card__cta { color: #d93025; }
+
 .stat-card {
     position: relative;
-    background: rgba(255,255,255,0.95);
-    border: 1px solid rgba(0,140,134,0.13);
+    background: linear-gradient(145deg, rgba(224,241,228,0.7), rgba(248,254,248,0.95));
+    border: 1px solid rgba(0,140,134,0.18);
     border-radius: 24px;
     padding: 1.6rem 1.4rem 1.8rem;
     display: flex;

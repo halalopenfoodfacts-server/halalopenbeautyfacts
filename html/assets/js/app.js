@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const categorySelect = document.getElementById('category-select');
     const sortSelect = document.getElementById('sort-select');
     const productCountDisplay = document.getElementById('product-count');
+    const halalCountDisplay = document.getElementById('halal-count');
     const contributorsCountDisplay = document.getElementById('contributors-count');
     const countryCountDisplay = document.getElementById('country-count');
     const barcodeButton = document.getElementById('barcode-button');
@@ -476,13 +477,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 productCountDisplay.textContent = formatStatValue(inventoryCount, productCountDisplay.dataset.fallback);
             }
 
-            // Compteur produits exclus
-            const excludedEl = document.getElementById('excluded-count');
-            if (excludedEl && statsResponse.ok) {
+            // Compteur produits halal et exclus
+            if (statsResponse.ok) {
                 try {
                     const statsData = await statsResponse.json();
-                    excludedEl.textContent = formatStatValue(statsData.excluded || 0);
-                } catch(e) { excludedEl.textContent = '—'; }
+                    const excludedEl = document.getElementById('excluded-count');
+                    if (excludedEl) excludedEl.textContent = formatStatValue(statsData.excluded || 0);
+                    if (halalCountDisplay) halalCountDisplay.textContent = formatStatValue(statsData.halal || 0);
+                } catch(e) {}
             }
 
             if (contributorsCountDisplay) {

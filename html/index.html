@@ -115,25 +115,30 @@
                     </div>
                 </div>
                 <div class="hero__stats">
-                    <article>
-                        <span class="stat-label" data-i18n="stats_products">Produits cosmétiques référencés</span>
-                        <a href="#catalogue" style="text-decoration:none;color:inherit">
-                            <strong id="product-count">Chargement...</strong>
-                        </a>
+                    <article class="stat-card stat-card--products">
+                        <div class="stat-card__icon">💄</div>
+                        <strong id="product-count">64 237</strong>
+                        <span class="stat-label" data-i18n="stats_products">Produits référencés</span>
                     </article>
-                    <article>
-                        <span class="stat-label">Produits non conformes</span>
-                        <a href="excluded.html" style="text-decoration:none;color:inherit">
-                            <strong id="excluded-count">...</strong>
-                        </a>
+                    <article class="stat-card stat-card--halal">
+                        <div class="stat-card__icon">☪️</div>
+                        <strong id="halal-count">40</strong>
+                        <span class="stat-label" data-i18n="stats_halal">Certifiés halal</span>
                     </article>
-                    <article>
-                        <span class="stat-label" data-i18n="stats_contributors">Contributeurs actifs</span>
-                        <strong id="contributors-count">+125K</strong>
+                    <article class="stat-card stat-card--excluded">
+                        <div class="stat-card__icon">🚫</div>
+                        <a href="excluded.html" style="text-decoration:none"><strong id="excluded-count">4</strong></a>
+                        <span class="stat-label" data-i18n="stats_excluded">Non conformes</span>
                     </article>
-                    <article>
+                    <article class="stat-card stat-card--contributors">
+                        <div class="stat-card__icon">👥</div>
+                        <strong id="contributors-count">3 425</strong>
+                        <span class="stat-label" data-i18n="stats_contributors">Contributeurs</span>
+                    </article>
+                    <article class="stat-card stat-card--countries">
+                        <div class="stat-card__icon">🌍</div>
+                        <strong id="country-count">345</strong>
                         <span class="stat-label" data-i18n="stats_countries">Pays couverts</span>
-                        <strong id="country-count">180</strong>
                     </article>
                 </div>
             </div>

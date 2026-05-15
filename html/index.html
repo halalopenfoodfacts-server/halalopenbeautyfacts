@@ -116,8 +116,16 @@
                 </div>
                 <div class="hero__stats">
                     <article>
-                        <span class="stat-label" data-i18n="stats_products">Produits cosmétiques halal référencés</span>
-                        <strong id="product-count">Chargement...</strong>
+                        <span class="stat-label" data-i18n="stats_products">Produits cosmétiques référencés</span>
+                        <a href="#catalogue" style="text-decoration:none;color:inherit">
+                            <strong id="product-count">Chargement...</strong>
+                        </a>
+                    </article>
+                    <article>
+                        <span class="stat-label">Produits non conformes</span>
+                        <a href="excluded.html" style="text-decoration:none;color:inherit">
+                            <strong id="excluded-count">...</strong>
+                        </a>
                     </article>
                     <article>
                         <span class="stat-label" data-i18n="stats_contributors">Contributeurs actifs</span>
@@ -177,9 +185,10 @@
                 <p data-i18n="filters_desc">Sélectionnez vos critères et trouvez immédiatement des soins adaptés.</p>
             </div>
             <div class="filters__chips">
-                <button class="filter-btn" data-filter="vegan" data-i18n="filter_vegan">🌱 Vegan</button>
-                <button class="filter-btn" data-filter="vegetarian" data-i18n="filter_vegetarian">🥗 Végétarien</button>
-                <button class="filter-btn" data-filter="alcohol-free" data-i18n="filter_alcoholfree">🚫 Sans alcool</button>
+                <button class="filter-btn" data-filter="halal-only" data-i18n="filter_halal">☪️ Halal certifié</button>
+                        <button class="filter-btn" data-filter="vegan" data-i18n="filter_vegan">🌱 Vegan</button>
+                        <button class="filter-btn" data-filter="vegetarian" data-i18n="filter_vegetarian">🥗 Végétarien</button>
+                        <button class="filter-btn" data-filter="alcohol-free" data-i18n="filter_alcoholfree">🚫 Sans alcool</button>
             </div>
             <div class="filters__dropdowns">
                 <select id="category-select" class="filter-select">

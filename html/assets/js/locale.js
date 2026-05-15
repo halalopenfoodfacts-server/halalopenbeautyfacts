@@ -123,8 +123,9 @@
             insight_1_desc: 'Détection automatique des dérivés d’alcool, gélatine ou sources animales grâce aux taxonomies ouvertes.',
             insight_2_title: '📷 Scanner mobile',
             insight_2_desc: 'Connectez l’application officielle pour scanner les codes-barres et obtenir un verdict halal instantané.',
-            insight_3_title: '🤝 Données ouvertes',
-            insight_3_desc: 'API publique, exports CSV et widgets prêts à intégrer dans vos plateformes e-commerce.',
+            insight_3_title: '🗄️ Notre base de données',
+            insight_3_desc: 'Nos données sont hébergées sur notre propre infrastructure PostgreSQL — aucune dépendance à une API externe.',
+
             community_eyebrow: 'Communauté mondiale',
             community_title: 'Contribuez à la plus grande base Halal open source.',
             community_desc: 'Photographiez les packagings, traduisez les étiquettes et validez les ingrédients sensibles pour aider le monde entier.',
@@ -189,8 +190,9 @@
             insight_1_desc: 'Automatic detection of alcohol, gelatin or animal derivatives using open taxonomies.',
             insight_2_title: '📷 Mobile scanner',
             insight_2_desc: 'Use the official app to scan barcodes and receive instant halal verdicts.',
-            insight_3_title: '🤝 Open data',
-            insight_3_desc: 'Public API, CSV exports and widgets ready for your e-commerce stack.',
+            insight_3_title: '🗄️ Our database',
+            insight_3_desc: 'All data is hosted on our own PostgreSQL infrastructure — no dependency on any external API.',
+
             community_eyebrow: 'Global community',
             community_title: 'Contribute to the largest open halal database.',
             community_desc: 'Shoot packaging, translate labels and validate sensitive ingredients to help consumers.',
@@ -255,8 +257,9 @@
             insight_1_desc: 'رصد تلقائي لمشتقات الكحول والجيلاتين والمصادر الحيوانية.',
             insight_2_title: '📷 ماسح للهاتف',
             insight_2_desc: 'اربط التطبيق الرسمي لمسح الباركود والحصول على حكم فوري.',
-            insight_3_title: '🤝 بيانات مفتوحة',
-            insight_3_desc: 'واجهة برمجة، ملفات CSV وودجات جاهزة.',
+            insight_3_title: '🗄️ قاعدة بياناتنا',
+            insight_3_desc: 'جميع البيانات مستضافة على بنيتنا التحتية الخاصة — لا نعتمد على أي واجهة برمجية خارجية.',
+
             community_eyebrow: 'مجتمع عالمي',
             community_title: 'ساهم في أكبر قاعدة حلال مفتوحة.',
             community_desc: 'صوّر التغليف، ترجم الملصقات وحقّق في المكوّنات الحساسة.',
@@ -321,8 +324,9 @@
             insight_1_desc: 'Detección automática de alcoholes, gelatinas o derivados animales.',
             insight_2_title: '📷 Escáner móvil',
             insight_2_desc: 'Conecta la app oficial para escanear códigos y obtener veredictos al instante.',
-            insight_3_title: '🤝 Datos abiertos',
-            insight_3_desc: 'API pública, exportaciones CSV y widgets listos.',
+            insight_3_title: '🗄️ Nuestra base de datos',
+            insight_3_desc: 'Todos los datos están alojados en nuestra propia infraestructura PostgreSQL, sin dependencia de APIs externas.',
+
             community_eyebrow: 'Comunidad global',
             community_title: 'Contribuye a la mayor base halal abierta.',
             community_desc: 'Fotografía, traduce y valida ingredientes para ayudar al mundo.',
@@ -349,7 +353,7 @@
 
     const EXTRA_TRANSLATIONS = {
         fr: {
-            stats_excluded: 'Produits exclus',
+            stats_excluded: 'Produits non conformes',
             nav_back_home: 'Retour accueil',
             nav_back: 'Retour',
             nav_back_catalog: '← Retour au catalogue',
@@ -487,7 +491,7 @@
 <p>Dernière mise à jour : 1er janvier 2026.</p>`
         },
         en: {
-            stats_excluded: 'Excluded products',
+            stats_excluded: 'Non-compliant products',
             nav_back_home: 'Back to home',
             nav_back: 'Back',
             nav_back_catalog: '← Back to catalog',
@@ -625,7 +629,7 @@
 <p>Last update: 1 January 2026.</p>`
         },
         ar: {
-            stats_excluded: 'منتجات مستبعدة',
+            stats_excluded: 'منتجات غير متوافقة',
             nav_back_home: 'عودة إلى الصفحة الرئيسية',
             nav_back: 'عودة',
             nav_back_catalog: '← عودة إلى الفهرس',
@@ -763,7 +767,7 @@
 <p>آخر تحديث: 1 يناير 2026.</p>`
         },
         es: {
-            stats_excluded: 'Productos excluidos',
+            stats_excluded: 'Productos no conformes',
             nav_back_home: 'Volver al inicio',
             nav_back: 'Volver',
             nav_back_catalog: '← Volver al catálogo',

@@ -90,30 +90,70 @@ document.addEventListener('DOMContentLoaded', () => {
     async function parseApiJsonResponse(response, contextLabel = 'API request') {
         const rawText = await response.text();
         try {
+            // Détecter une page HTML d'erreur retournée avec HTTP 200 (backend en panne)
+            if (rawText.includes('<!DOCTYPE html>') || rawText.includes('<html')) {
+                throw new Error(`${contextLabel}: réponse HTML reçue (backend indisponible)`);
+            }
             return JSON.parse(rawText);
         } catch (error) {
+            if (error.message.includes('réponse HTML')) throw error;
             const snippet = rawText.slice(0, 140).replace(/\s+/g, ' ').trim();
             throw new Error(`${contextLabel}: réponse JSON invalide (${response.status}) ${snippet}`);
         }
     }
 
     async function fetchProductDetails(code) {
+        // --- 1. RÉSEAU : récupérer les données du produit ---
+        let productData = null;
         try {
-            const response = await fetch(`https://world.openbeautyfacts.org/api/v0/product/${code}.json`);
-            if (!response.ok) {
-                throw new Error(`Product request failed with status ${response.status}`);
+            const localResponse = await fetch(`/proxy/v2/product/${code}.json`);
+            if (localResponse.ok) {
+                let localData;
+                try {
+                    localData = await parseApiJsonResponse(localResponse, 'Fiche produit locale');
+                } catch (parseError) {
+                    console.warn('Réponse non-JSON du proxy:', parseError.message);
+                    localData = null;
+                }
+                if (localData && localData.product) {
+                    productData = localData.product;
+                }
             }
-            const data = await parseApiJsonResponse(response, 'Fiche produit');
-
-            if (data.status === 1 && data.product) {
-                displayProduct(data.product);
-            } else {
-                productContent.innerHTML = '<p class="product-empty">Ce produit est introuvable pour le moment.</p>';
-            }
-        } catch (error) {
-            console.error('Error fetching product:', error);
-            productContent.innerHTML = '<p class="product-empty">Erreur réseau lors du chargement de la fiche produit.</p>';
+        } catch (networkError) {
+            console.error('Erreur réseau:', networkError);
+            productContent.innerHTML = `<p class="product-empty">Connexion impossible. Vérifiez votre réseau. <button onclick="location.reload()" style="margin-left:.5rem;padding:.3rem .7rem;cursor:pointer;border-radius:6px;border:1px solid #ccc">🔄 Réessayer</button></p>`;
+            return;
         }
+
+        // --- 2. Si produit absent ---
+        if (!productData) {
+            productContent.innerHTML = '<p class="product-empty">Ce produit n\'est pas encore dans notre base de données. Vous pouvez le retrouver sur <a href="https://world.openbeautyfacts.org/product/' + code + '" target="_blank">Open Beauty Facts</a>.</p>';
+            return;
+        }
+
+        // --- 3. RENDU : afficher le produit (erreurs de rendu isolées) ---
+        try {
+            displayProduct(productData);
+        } catch (renderError) {
+            console.error('Erreur de rendu produit:', renderError);
+            // Afficher quand même les infos de base en cas d'erreur de rendu
+            const name = productData.product_name || 'Produit';
+            const brand = productData.brands || '';
+            const img = productData.image_front_url || productData.image_front_small_url || '';
+            productContent.innerHTML = `
+                <div style="padding:2rem;max-width:600px;margin:0 auto;text-align:center">
+                    ${img ? `<img src="${img}" alt="${name}" style="max-height:200px;object-fit:contain;margin-bottom:1rem">` : ''}
+                    <h2 style="margin-bottom:.5rem">${name}</h2>
+                    ${brand ? `<p style="color:#888;margin-bottom:1rem">${brand}</p>` : ''}
+                    <p style="color:#b91c1c;margin-bottom:1rem">⚠️ Une partie de la fiche n'a pas pu être affichée.</p>
+                    <a href="https://world.openbeautyfacts.org/product/${code}" target="_blank" class="solid-btn" style="margin-right:.5rem">Voir sur Open Beauty Facts</a>
+                    <button onclick="location.reload()" class="ghost-btn">🔄 Réessayer</button>
+                </div>`;
+        }
+    }
+
+    function safeGet(fn, fallback) {
+        try { return fn(); } catch(e) { console.warn('displayProduct safe fallback:', e.message); return fallback; }
     }
 
     function displayProduct(product) {
@@ -121,62 +161,47 @@ document.addEventListener('DOMContentLoaded', () => {
         const productName = product.product_name || 'Produit halal à compléter';
         const brand = product.brands || 'Marque à confirmer';
         const quantity = product.quantity || product.serving_quantity || '';
-        const categories = formatList(product.categories_tags, product.categories || 'Non renseigné');
-        const countriesHtml = renderTagPills(product.countries_tags, product.countries || 'Aucun pays indiqué');
-        const labelsHtml = renderTagPills(product.labels_tags, 'Aucun label confirmé');
-        const analysisHtml = renderTagPills(product.ingredients_analysis_tags, 'Analyse automatique en attente');
-        const allergens = formatList(product.allergens_tags, 'Aucun allergène signalé');
-        const additives = formatList(product.additives_tags, 'Non renseigné');
-        const traces = formatList(product.traces_tags, product.traces || 'Non renseigné');
+        const categories = safeGet(() => formatList(product.categories_tags, product.categories || 'Non renseigné'), 'Non renseigné');
+        const countriesHtml = safeGet(() => renderTagPills(product.countries_tags, product.countries || 'Aucun pays indiqué'), '—');
+        const labelsHtml = safeGet(() => renderTagPills(product.labels_tags, 'Aucun label confirmé'), '—');
+        const analysisHtml = safeGet(() => renderTagPills(product.ingredients_analysis_tags, 'Analyse automatique en attente'), '—');
+        const allergens = safeGet(() => formatList(product.allergens_tags, 'Aucun allergène signalé'), '—');
+        const additives = safeGet(() => formatList(product.additives_tags, 'Non renseigné'), '—');
+        const traces = safeGet(() => formatList(product.traces_tags, product.traces || 'Non renseigné'), '—');
         const ingredients = formatMultiline(product.ingredients_text_fr || product.ingredients_text || 'Ajoutez la liste INCI pour aider la communauté.');
-        const barcodeImage = product.code ? `https://barcodeapi.org/api/auto/${product.code}?text=${product.code}` : null;
+        const barcodeImage = null; // rendu via canvas après affichage
         const editUrl = product.code ? `https://world.openbeautyfacts.org/product/${product.code}` : 'https://world.openbeautyfacts.org';
         const nutriments = product.nutriments || {};
-        const veganProfile = describeVeganStatus(product.ingredients_analysis_tags);
-        const palmSummary = summarizePalmUsage(product.ingredients_from_palm_oil_tags, product.ingredients_that_may_be_from_palm_oil_tags);
-        const allergenSummary = summarizeAllergens(product.allergens_tags);
-        const metricCardsHtml = renderMetricCards([
-            {
-                label: 'Profil vegan',
-                value: veganProfile.value,
-                hint: veganProfile.hint,
-                modifier: 'nutri'
-            },
-            {
-                label: 'Huile de palme',
-                value: palmSummary.value,
-                hint: palmSummary.hint,
-                modifier: 'nova'
-            },
-            {
-                label: 'Allergènes',
-                value: allergenSummary.value,
-                hint: allergenSummary.hint,
-                modifier: 'eco'
-            }
-        ]);
-        const insightRows = renderMacroBreakdown([
+        const veganProfile = safeGet(() => describeVeganStatus(product.ingredients_analysis_tags), { value: '—', hint: '—' });
+        const palmSummary = safeGet(() => summarizePalmUsage(product.ingredients_from_palm_oil_tags, product.ingredients_that_may_be_from_palm_oil_tags), { value: '—', hint: '—' });
+        const allergenSummary = safeGet(() => summarizeAllergens(product.allergens_tags), { value: '0', hint: '—', detail: '—' });
+        const metricCardsHtml = safeGet(() => renderMetricCards([
+            { label: 'Profil vegan', value: veganProfile.value, hint: veganProfile.hint, modifier: 'nutri' },
+            { label: 'Huile de palme', value: palmSummary.value, hint: palmSummary.hint, modifier: 'nova' },
+            { label: 'Allergènes', value: allergenSummary.value, hint: allergenSummary.hint, modifier: 'eco' }
+        ]), '');
+        const insightRows = safeGet(() => renderMacroBreakdown([
             { label: 'Traces signalées', value: traces },
             { label: 'Allergènes majeurs', value: allergenSummary.detail },
             { label: 'Additifs surveillés', value: additives }
-        ]);
-        const halalVerdict = computeHalalVerdict(product, {
+        ]), '');
+        const halalVerdict = safeGet(() => computeHalalVerdict(product, {
             analysisTags: product.ingredients_analysis_tags,
             states: product.states_tags,
             labels: product.labels_tags,
             warningKeywords: HALAL_CAUTION_KEYWORDS,
             alertKeywords: HALAL_ALERT_KEYWORDS,
             positiveLabels: HALAL_POSITIVE_LABELS
-        });
-        const palmStatus = renderPalmStatus(product.ingredients_from_palm_oil_tags, product.ingredients_that_may_be_from_palm_oil_tags);
-        const halalLabelsHtml = renderHalalLabels(product.labels_tags, HALAL_POSITIVE_LABELS);
-        const origins = formatList(product.origins_tags, product.origins || 'Non renseigné');
+        }), { level: 'warning', title: 'En cours d\'analyse', message: 'Fiche en cours de complétion.', score: 50, bullets: [], icon: '⏳' });
+        const palmStatus = safeGet(() => renderPalmStatus(product.ingredients_from_palm_oil_tags, product.ingredients_that_may_be_from_palm_oil_tags), '—');
+        const halalLabelsHtml = safeGet(() => renderHalalLabels(product.labels_tags, HALAL_POSITIVE_LABELS), '—');
+        const origins = safeGet(() => formatList(product.origins_tags, product.origins || 'Non renseigné'), '—');
         const manufacturingPlaces = product.manufacturing_places || 'Non renseigné';
         const conservation = product.conservation_conditions_fr || product.conservation_conditions || 'Non renseigné';
-        const packaging = formatList(product.packaging_tags, product.packaging || 'Non renseigné');
+        const packaging = safeGet(() => formatList(product.packaging_tags, product.packaging || 'Non renseigné'), '—');
         const stores = product.stores || 'Non renseigné';
-        const contributors = formatList(product.editors_tags, 'Communauté Halal Open Beauty Facts');
-        const completionStatus = describeCompletion(product.states_tags);
+        const contributors = safeGet(() => formatList(product.editors_tags, 'Communauté Halal Open Beauty Facts'), 'Communauté Halal Open Beauty Facts');
+        const completionStatus = safeGet(() => describeCompletion(product.states_tags), '—');
         const rawDownloadCount = typeof product.unique_scans_n === 'number' ? product.unique_scans_n : product.scans_n || 0;
         const downloadHistory = buildDownloadHistory(rawDownloadCount, product.code);
         const totalDownloads = downloadHistory.reduce((sum, entry) => sum + entry.value, 0);
@@ -201,7 +226,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             <article>
                                 <span class="meta-label">Code-barres</span>
                                 <strong>${product.code || '—'}</strong>
-                                ${barcodeImage ? `<img src="${barcodeImage}" alt="Code-barres ${product.code}" class="barcode-visual">` : ''}
+                                ${product.code ? `<svg id="barcode-svg" class="barcode-visual"></svg>` : ''}
                             </article>
                             <article>
                                 <span class="meta-label">Catégories</span>
@@ -301,6 +326,16 @@ document.addEventListener('DOMContentLoaded', () => {
         injectCertifications(product);
         injectComments(product.code);
         initListButtons();
+        // Rendre le code-barres en SVG via JsBarcode
+        if (product.code) {
+            const svgEl = document.getElementById('barcode-svg');
+            if (svgEl && typeof JsBarcode !== 'undefined') {
+                try {
+                    const barcodeFormat = product.code.length === 8 ? 'EAN8' : product.code.length === 13 ? 'EAN13' : 'CODE128';
+                    JsBarcode(svgEl, product.code, { format: barcodeFormat, lineColor: '#222', width: 2, height: 60, displayValue: false, margin: 6 });
+                } catch(e) { svgEl.style.display = 'none'; }
+            }
+        }
     }
 
     // F9 — Certifications visuelles

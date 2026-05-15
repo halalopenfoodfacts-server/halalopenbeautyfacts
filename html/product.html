@@ -71,7 +71,7 @@
                                 <input type="text" id="edit-api-key" name="user_token" placeholder="Coller votre clé API ou token OAuth" autocomplete="off" required>
                                 <button type="button" class="ghost-btn ghost-btn--tight" id="oauth-sync">🔐 Synchroniser ma session</button>
                             </div>
-                            <p class="api-connect__hint">Connectez-vous sur <a href="https://world.openbeautyfacts.org/cgi/login.pl" target="_blank" rel="noopener">world.openbeautyfacts.org</a> dans un autre onglet, puis cliquez sur « Synchroniser » pour récupérer un token sans partager votre mot de passe.</p>
+                            <p class="api-connect__hint">1. Connectez-vous sur <a href="https://world.openbeautyfacts.org/cgi/login.pl" target="_blank" rel="noopener">world.openbeautyfacts.org</a> (source des données importées dans notre base), 2. copiez votre token, 3. collez-le ci-dessus et cliquez sur « Synchroniser ».</p>
                             <label class="remember-toggle">
                                 <input type="checkbox" id="remember-api-key" checked>
                                 Mémoriser cette clé sur cet appareil
@@ -200,6 +200,7 @@
 
     <script src="assets/js/nav.js"></script>
     <script src="assets/js/locale.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
     <script src="assets/js/product.js"></script>
 </body>
 </html>

@@ -90,9 +90,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 heures
     const RETRY_INTERVAL = 30000; // 30 secondes
     const FALLBACK_STATS = {
-        products: 58500,
-        contributors: 125000,
-        countries: 180
+        products: 64237,
+        contributors: 3424,
+        countries: 867
     };
     const NOVA_TAG_MAP = {
         '1': 'en:1-unprocessed-or-minimally-processed-foods',
@@ -108,6 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
         category: '',
         sort: 'popularity',
         country: '',
+        halalOnly: false,
         advanced: createEmptyAdvancedFilters()
     };
     let recentLiveFeedProducts = [];
@@ -284,6 +285,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
             tagIndex = appendAdvancedFilters(params, tagIndex);
 
+            // Filtre halal certifié uniquement
+            if (currentFilters.halalOnly) {
+                params.append('is_halal', '1');
+            }
+
             // Add sorting
             if (currentFilters.sort) {
                 if (currentFilters.sort === 'popularity') {
@@ -293,7 +299,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
-            const url = `${API_URL}?${params.toString()}`;
+            const url = `${CATALOGUE_API_URL}?${params.toString()}`;
             console.log('Fetching from URL:', url);
             
             const response = await fetch(url);
@@ -437,28 +443,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function fetchInventoryCount(country = '') {
-        const params = new URLSearchParams({
-            action: 'process',
-            search_simple: 1,
-            search_terms: '',
-            page_size: 1,
-            json: 1,
-            fields: 'code'
-        });
+        // Utiliser /proxy/stats qui retourne les vrais totaux de notre base locale
+        const url = country
+            ? `/proxy/v2/search?page_size=1&fields=code&tagtype_1=countries&tag_contains_1=contains&tag_1=en:${encodeURIComponent(country)}`
+            : '/proxy/stats';
 
-        if (country) {
-            params.append('tagtype_1', 'countries');
-            params.append('tag_contains_1', 'contains');
-            params.append('tag_1', `en:${country}`);
-        }
-
-        const response = await fetch(`${API_URL}?${params.toString()}`);
+        const response = await fetch(url);
         if (!response.ok) {
-            throw new Error(`Inventory count request failed with status ${response.status}`);
+            throw new Error(`Stats request failed with status ${response.status}`);
         }
 
         const data = await parseApiJsonResponse(response, 'Stats inventaire');
-        return typeof data.count === 'number' ? data.count : null;
+        // /proxy/stats retourne { total: N }, /proxy/v2/search retourne { count: N }
+        return typeof data.total === 'number' ? data.total :
+               typeof data.count === 'number' ? data.count : null;
     }
 
     async function hydrateStats(selectedCountry = '') {
@@ -468,13 +466,23 @@ document.addEventListener('DOMContentLoaded', () => {
         setApiLiveState('stats', 'pending');
 
         try {
-            const [inventoryCount, contributorsResponse] = await Promise.all([
+            const [inventoryCount, contributorsResponse, statsResponse] = await Promise.all([
                 fetchInventoryCount(selectedCountry),
-                fetch(CONTRIBUTORS_FACET_ENDPOINT)
+                fetch(CONTRIBUTORS_FACET_ENDPOINT),
+                fetch('/proxy/stats')
             ]);
 
             if (productCountDisplay && typeof inventoryCount === 'number') {
                 productCountDisplay.textContent = formatStatValue(inventoryCount, productCountDisplay.dataset.fallback);
+            }
+
+            // Compteur produits exclus
+            const excludedEl = document.getElementById('excluded-count');
+            if (excludedEl && statsResponse.ok) {
+                try {
+                    const statsData = await statsResponse.json();
+                    excludedEl.textContent = formatStatValue(statsData.excluded || 0);
+                } catch(e) { excludedEl.textContent = '—'; }
             }
 
             if (contributorsCountDisplay) {
@@ -836,7 +844,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 params.append('tag_1', `en:${countryOverride}`);
             }
 
-            const response = await fetch(`${API_URL}?${params.toString()}`, { signal });
+            const response = await fetch(`${CATALOGUE_API_URL}?${params.toString()}`, { signal });
             if (!response.ok) {
                 throw new Error(`Live feed request failed with status ${response.status}`);
             }
@@ -1057,10 +1065,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (filter === 'vegan') currentFilters.tags.push('en:vegan');
                     if (filter === 'vegetarian') currentFilters.tags.push('en:vegetarian');
                     if (filter === 'alcohol-free') currentFilters.tags.push('en:no-alcohol');
+                    if (filter === 'halal-only') currentFilters.halalOnly = true;
                 } else {
                     if (filter === 'vegan') currentFilters.tags = currentFilters.tags.filter(t => t !== 'en:vegan');
                     if (filter === 'vegetarian') currentFilters.tags = currentFilters.tags.filter(t => t !== 'en:vegetarian');
                     if (filter === 'alcohol-free') currentFilters.tags = currentFilters.tags.filter(t => t !== 'en:no-alcohol');
+                    if (filter === 'halal-only') currentFilters.halalOnly = false;
                 }
                 
                 currentPage = 1;

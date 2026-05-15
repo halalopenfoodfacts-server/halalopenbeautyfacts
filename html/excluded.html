@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="fr" data-portal="beauty">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produits non conformes — Halal Open Beauty Facts</title>
+    <link rel="stylesheet" href="assets/css/style.css?v=20251229">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#16a34a">
+    <style>
+        .excluded-hero {
+            background: linear-gradient(135deg, #fff5f5 0%, #fef2f2 100%);
+            border-bottom: 2px solid #fecaca;
+            padding: 2.5rem 1.5rem 2rem;
+            text-align: center;
+        }
+        .excluded-hero h1 { font-size: 1.8rem; color: #991b1b; margin-bottom: .5rem; }
+        .excluded-hero p  { color: #6b7280; max-width: 520px; margin: 0 auto; }
+        .excluded-badge {
+            display: inline-block;
+            background: #fee2e2;
+            color: #b91c1c;
+            border-radius: 999px;
+            padding: .3rem .9rem;
+            font-size: .85rem;
+            font-weight: 600;
+            margin-top: .8rem;
+        }
+        .excluded-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.2rem;
+            padding: 2rem 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .excluded-card {
+            background: #fff;
+            border: 1.5px solid #fecaca;
+            border-radius: 14px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: box-shadow .2s, transform .2s;
+        }
+        .excluded-card:hover { box-shadow: 0 4px 16px rgba(185,28,28,.12); transform: translateY(-2px); }
+        .excluded-card img {
+            width: 100%; height: 160px;
+            object-fit: contain; border-radius: 8px;
+            background: #fef2f2;
+        }
+        .excluded-card__name { font-weight: 600; margin: .6rem 0 .2rem; font-size: .9rem; color: #1f2937; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .excluded-card__brand { font-size: .78rem; color: #9ca3af; }
+        .excluded-card__reason {
+            margin-top: .5rem;
+            font-size: .75rem;
+            background: #fee2e2;
+            color: #b91c1c;
+            border-radius: 999px;
+            padding: .15rem .6rem;
+            display: inline-block;
+        }
+        .excl-pagination { display: flex; justify-content: center; gap: .5rem; padding: 1.5rem; flex-wrap: wrap; }
+        .excl-pagination button {
+            border: 1px solid #e5e7eb; border-radius: 8px;
+            padding: .4rem .9rem; cursor: pointer; background: #fff;
+            font-size: .85rem; transition: background .15s;
+        }
+        .excl-pagination button.active, .excl-pagination button:hover { background: #b91c1c; color: #fff; border-color: #b91c1c; }
+        .excl-pagination button:disabled { opacity: .4; cursor: default; }
+        .excl-empty { text-align: center; padding: 4rem 1rem; color: #6b7280; }
+        .excl-loading { text-align: center; padding: 4rem 1rem; color: #9ca3af; font-size: 1.1rem; }
+        .excl-toolbar {
+            display: flex; align-items: center; gap: 1rem;
+            max-width: 1200px; margin: 1.5rem auto 0; padding: 0 1.5rem;
+            flex-wrap: wrap;
+        }
+        .excl-toolbar input {
+            flex: 1; min-width: 180px; padding: .5rem .9rem;
+            border: 1px solid #e5e7eb; border-radius: 8px; font-size: .9rem;
+        }
+        .excl-toolbar select {
+            padding: .5rem .9rem; border: 1px solid #e5e7eb;
+            border-radius: 8px; font-size: .85rem; background: #fff;
+        }
+        .excl-count { font-size: .85rem; color: #6b7280; }
+    </style>
+</head>
+<body>
+    <div class="top-strip">
+        <div class="top-strip__content">
+            <div class="top-strip__left">
+                <select id="country-select" class="top-strip__select">
+                    <option value="">🌍 Choisir un pays</option>
+                </select>
+                <select id="language-select" class="top-strip__select">
+                    <option value="">🌐 Choisir une langue</option>
+                </select>
+            </div>
+            <p class="top-strip__notice">Projet communautaire 100% open source · Soutenez la transparence 💚</p>
+        </div>
+    </div>
+
+    <header class="site-header">
+        <div class="site-header__inner">
+            <a class="brand brand--hero" href="index.html">
+                <img src="assets/images/h.png" alt="Logo" class="brand__logo">
+                <div class="brand__text">
+                    <span class="brand__name">Halal Open Beauty Facts</span>
+                </div>
+            </a>
+            <nav class="site-header__nav" id="main-nav"></nav>
+            <div class="site-header__actions">
+                <a href="index.html" class="btn btn--ghost">← Retour au catalogue</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="excluded-hero">
+            <h1>🚫 Produits non conformes</h1>
+            <p>Ces produits contiennent des ingrédients identifiés comme incompatibles avec les exigences halal (alcool, porc, labels haram…).</p>
+            <span class="excluded-badge" id="excl-total-badge">Chargement…</span>
+        </div>
+
+        <div class="excl-toolbar">
+            <input type="search" id="excl-search" placeholder="🔍 Rechercher un produit exclu…" />
+            <select id="excl-sort">
+                <option value="unique_scans_n">⭐ Popularité</option>
+                <option value="product_name">🔤 Nom</option>
+                <option value="last_modified_t">🕐 Récents</option>
+            </select>
+            <span class="excl-count" id="excl-count-info"></span>
+        </div>
+
+        <div class="excluded-grid" id="excl-grid">
+            <div class="excl-loading">⏳ Chargement des produits…</div>
+        </div>
+
+        <div class="excl-pagination" id="excl-pagination"></div>
+    </main>
+
+    <footer class="site-footer">
+        <p class="site-footer__copy">© 2025 Halal Open Beauty Facts · Licence Open Database.</p>
+    </footer>
+
+    <script src="assets/js/nav.js"></script>
+    <script src="assets/js/locale.js"></script>
+    <script>
+    (function () {
+        const grid       = document.getElementById('excl-grid');
+        const pagination = document.getElementById('excl-pagination');
+        const badge      = document.getElementById('excl-total-badge');
+        const countInfo  = document.getElementById('excl-count-info');
+        const searchInput= document.getElementById('excl-search');
+        const sortSelect = document.getElementById('excl-sort');
+
+        const PAGE_SIZE = 24;
+        let currentPage = 1;
+        let totalCount  = 0;
+        let searchTerm  = '';
+        const fmt = new Intl.NumberFormat('fr-FR');
+
+        function buildUrl(page) {
+            const params = new URLSearchParams({
+                is_excluded: '1',
+                page_size: PAGE_SIZE,
+                page,
+                sort_by: sortSelect.value
+            });
+            if (searchTerm) params.append('search_terms', searchTerm);
+            return `/proxy/v2/search?${params}`;
+        }
+
+        function reasonLabel(product) {
+            const labels = (product.labels_tags || '').toLowerCase();
+            if (labels.includes('haram'))   return '🐷 Haram détecté';
+            if (labels.includes('alcohol')) return '🍷 Alcool détecté';
+            if (labels.includes('non-halal')) return '⛔ Non-halal';
+            const ing = (product.ingredients_text || '').toLowerCase();
+            if (ing.includes('alcool') || ing.includes('alcohol')) return '🍷 Alcool dans les ingrédients';
+            if (ing.includes('porc') || ing.includes('pork'))      return '🐷 Porc dans les ingrédients';
+            return '⚠️ Ingrédient non conforme';
+        }
+
+        function renderCard(product) {
+            const name  = product.product_name || 'Produit';
+            const brand = product.brands || '—';
+            const img   = product.image_front_small_url || product.image_front_url
+                        || 'https://static.openfoodfacts.org/images/misc/product-default.png';
+            const reason = reasonLabel(product);
+            const card = document.createElement('div');
+            card.className = 'excluded-card';
+            card.innerHTML = `
+                <img src="${img}" alt="${name}" loading="lazy"
+                     onerror="this.src='https://static.openfoodfacts.org/images/misc/product-default.png'">
+                <div class="excluded-card__name" title="${name}">${name}</div>
+                <div class="excluded-card__brand">${brand}</div>
+                <span class="excluded-card__reason">${reason}</span>
+            `;
+            card.addEventListener('click', () => {
+                window.location.href = `product.html?code=${product.code}`;
+            });
+            return card;
+        }
+
+        function renderPagination(total, page) {
+            pagination.innerHTML = '';
+            const totalPages = Math.ceil(total / PAGE_SIZE);
+            if (totalPages <= 1) return;
+
+            const prev = document.createElement('button');
+            prev.textContent = '← Précédent';
+            prev.disabled = page <= 1;
+            prev.addEventListener('click', () => loadPage(page - 1));
+            pagination.appendChild(prev);
+
+            const start = Math.max(1, page - 2);
+            const end   = Math.min(totalPages, page + 2);
+            for (let i = start; i <= end; i++) {
+                const btn = document.createElement('button');
+                btn.textContent = i;
+                if (i === page) btn.classList.add('active');
+                btn.addEventListener('click', () => loadPage(i));
+                pagination.appendChild(btn);
+            }
+
+            const next = document.createElement('button');
+            next.textContent = 'Suivant →';
+            next.disabled = page >= totalPages;
+            next.addEventListener('click', () => loadPage(page + 1));
+            pagination.appendChild(next);
+        }
+
+        async function loadPage(page) {
+            currentPage = page;
+            grid.innerHTML = '<div class="excl-loading">⏳ Chargement…</div>';
+            pagination.innerHTML = '';
+
+            try {
+                const resp = await fetch(buildUrl(page));
+                if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+                const data = await resp.json();
+
+                totalCount = data.count || 0;
+                const products = data.products || [];
+
+                badge.textContent = `${fmt.format(totalCount)} produit${totalCount > 1 ? 's' : ''} non conforme${totalCount > 1 ? 's' : ''}`;
+                countInfo.textContent = `Page ${page} · ${fmt.format(products.length)} produits affichés`;
+
+                if (!products.length) {
+                    grid.innerHTML = '<div class="excl-empty">✅ Aucun produit non conforme trouvé pour ce filtre.</div>';
+                    return;
+                }
+
+                grid.innerHTML = '';
+                products.forEach(p => grid.appendChild(renderCard(p)));
+                renderPagination(totalCount, page);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            } catch (err) {
+                console.error(err);
+                grid.innerHTML = `<div class="excl-empty">❌ Erreur de chargement. <button onclick="loadPage(${page})">Réessayer</button></div>`;
+            }
+        }
+
+        // Search debounce
+        let searchTimer;
+        searchInput.addEventListener('input', () => {
+            clearTimeout(searchTimer);
+            searchTimer = setTimeout(() => {
+                searchTerm = searchInput.value.trim();
+                loadPage(1);
+            }, 400);
+        });
+
+        sortSelect.addEventListener('change', () => loadPage(1));
+
+        loadPage(1);
+    })();
+    </script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/service-worker.js').catch(() => {});
+        }
+    </script>
+</body>
+</html>

@@ -1,3 +1,20 @@
+// ── Sécurité : encodage HTML pour prévenir le XSS ──────────
+function esc(str) {
+    if (str == null) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#x27;')
+        .replace(/`/g, '&#x60;');
+}
+// ── Sanitisation des barcodes (chiffres uniquement) ──────────
+function sanitizeBarcode(code) {
+    if (!code) return '';
+    return String(code).replace(/[^0-9A-Za-z_-]/g, '');
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const urlParams = new URLSearchParams(window.location.search);
     const barcode = urlParams.get('code');
@@ -106,7 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // --- 1. RÉSEAU : récupérer les données du produit ---
         let productData = null;
         try {
-            const localResponse = await fetch(`/proxy/v2/product/${code}.json`);
+            const localResponse = await fetch(`/proxy/v2/product/${sanitizeBarcode(code)}.json`);
             if (localResponse.ok) {
                 let localData;
                 try {

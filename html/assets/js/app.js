@@ -1,3 +1,20 @@
+// ── Sécurité : encodage HTML pour prévenir le XSS ──────────
+function esc(str) {
+    if (str == null) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#x27;')
+        .replace(/`/g, '&#x60;');
+}
+// ── Sanitisation des barcodes (chiffres uniquement) ──────────
+function sanitizeBarcode(code) {
+    if (!code) return '';
+    return String(code).replace(/[^0-9A-Za-z_-]/g, '');
+}
+
 // Main application logic
 console.log('=== APP.JS LOADED ===');
 
@@ -678,13 +695,13 @@ document.addEventListener('DOMContentLoaded', () => {
             productCard.innerHTML = `
                 <img src="${imageUrl}" alt="${productName}" loading="lazy" onerror="this.onerror=null;this.src='${DEFAULT_PRODUCT_IMAGE}';">
                 <div class="product-info">
-                    <h3>${productName}</h3>
-                    <p>${brand}</p>
+                    <h3>${esc(productName)}</h3>
+                    <p>${esc(brand)}</p>
                 </div>
             `;
             
             productCard.addEventListener('click', () => {
-                window.location.href = `product.html?code=${barcode}`;
+                window.location.href = `product.html?code=${sanitizeBarcode(barcode)}`;
             });
             
             fragment.appendChild(productCard);
@@ -800,7 +817,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const navigateToProduct = () => {
                 if (!code) return;
-                window.location.href = `product.html?code=${code}`;
+                window.location.href = `product.html?code=${sanitizeBarcode(code)}`;
             };
 
             item.addEventListener('click', navigateToProduct);

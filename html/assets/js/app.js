@@ -694,6 +694,7 @@ document.addEventListener('DOMContentLoaded', () => {
             productCard.className = 'product-card';
             productCard.innerHTML = `
                 <img src="${imageUrl}" alt="${productName}" loading="lazy" onerror="this.onerror=null;this.src='${DEFAULT_PRODUCT_IMAGE}';">
+                <span class="product-card__cta">Voir →</span>
                 <div class="product-info">
                     <h3>${esc(productName)}</h3>
                     <p>${esc(brand)}</p>

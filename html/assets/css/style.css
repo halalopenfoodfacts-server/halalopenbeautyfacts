@@ -2681,3 +2681,97 @@ select:focus-visible,
 }
 
 html { scroll-behavior: smooth; }
+
+/* === PHASE 1b - Typographie, rythme des sections & harmonisation des couleurs de marque === */
+
+.eyebrow,
+.hero__eyebrow {
+    display: inline-block;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--primary-dark);
+    margin-bottom: 0.6rem;
+}
+
+.hero h1 {
+    line-height: 1.12;
+    font-weight: 700;
+    max-width: 26ch;
+}
+
+main h2 {
+    font-size: clamp(1.6rem, 2.6vw, 2.2rem);
+    line-height: 1.2;
+    margin-bottom: 0.6rem;
+    max-width: 34ch;
+}
+
+main h3 {
+    font-size: 1.1rem;
+    line-height: 1.35;
+    margin-bottom: 0.4rem;
+}
+
+main p {
+    max-width: 62ch;
+}
+
+.hero__subtitle {
+    max-width: 52ch;
+    font-size: 1.05rem;
+    line-height: 1.65;
+}
+
+/* Rythme vertical homogene entre les grandes sections de la page */
+main > section {
+    margin-top: 3.5rem;
+    margin-bottom: 3.5rem;
+}
+main > section:first-child { margin-top: 0; }
+main > section:last-child { margin-bottom: 0; }
+
+/* La bandeau Mode Voyage et le pill "App mobile" suivent desormais
+   la couleur de marque du portail (food = vert/orange, beauty = sa propre palette)
+   plutot qu'un vert fige, pour une identite coherente sur tout le site. */
+.voyage-section {
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 60%, var(--primary-dark) 100%);
+}
+.pill-btn--app {
+    background: linear-gradient(120deg, var(--primary-dark), var(--primary));
+    box-shadow: 0 18px 30px var(--primary-soft);
+}
+
+/* ============================================================
+   PALETTE DEDIEE HALAL OPEN BEAUTY FACTS
+   Correction : le portail beauty heritait par erreur de la palette
+   orange du portail food (regle fusionnee). Il recoit ici sa propre
+   identite visuelle : rose poudre / prune, plus adaptee a la beaute.
+   Cette regle est volontairement placee en fin de fichier pour
+   primer sur l'ancienne regle fusionnee (meme specificite CSS).
+   ============================================================ */
+html[data-portal="beauty"],
+body[data-portal="beauty"] {
+    --bg: #fdf5f8;
+    --bg-gradient: linear-gradient(180deg, #fdf5f8 0%, #f6e9f0 100%);
+    --card: #ffffff;
+    --card-strong: #fbeaf1;
+    --text: #341321;
+    --muted: #7a5164;
+    --primary: #b5316b;
+    --primary-dark: #6f1d43;
+    --accent: rgba(181, 49, 107, 0.12);
+    --accent-strong: rgba(181, 49, 107, 0.22);
+    --border: rgba(181, 49, 107, 0.18);
+    --search-bg: #ffffff;
+    --search-chip: rgba(181, 49, 107, 0.14);
+    --glow-emerald: rgba(214, 158, 46, 0.22);
+    --gradient-hero: radial-gradient(circle at 0% 20%, rgba(214, 158, 46, 0.18), transparent 55%), radial-gradient(circle at 100% 0%, rgba(181, 49, 107, 0.18), transparent 45%);
+    --hero-surface: linear-gradient(135deg, rgba(181, 49, 107, 0.10), rgba(255, 247, 251, 0.98));
+    --filters-surface: linear-gradient(150deg, rgba(255, 255, 255, 0.92), rgba(181, 49, 107, 0.10));
+    --panel-surface: rgba(52, 19, 33, 0.05);
+    --primary-soft: rgba(181, 49, 107, 0.2);
+    --secondary-soft: rgba(214, 158, 46, 0.18);
+    --card-glow: rgba(52, 19, 33, 0.08);
+}

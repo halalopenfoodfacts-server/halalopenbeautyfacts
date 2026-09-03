@@ -190,8 +190,17 @@ def stats(request):
                 unique_countries.add(tag)
     countries_count = len(unique_countries)
 
+    # Normalisation casse/espaces : "John", "john ", "JOHN" ne doivent
+    # compter que comme UN seul contributeur (bug historique corrige ici).
+    from django.db.models.functions import Lower, Trim
     contributors_count = (
-        qs.exclude(creator='').values('creator').distinct().count()
+        qs.exclude(creator='')
+        .exclude(creator__isnull=True)
+        .annotate(creator_normalized=Lower(Trim('creator')))
+        .exclude(creator_normalized='')
+        .values('creator_normalized')
+        .distinct()
+        .count()
     )
 
     data = {

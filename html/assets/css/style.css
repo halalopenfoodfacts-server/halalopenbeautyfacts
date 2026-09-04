@@ -2419,15 +2419,11 @@ html[data-portal="food"] .app-callout__badges {
     z-index: 1;
 }
 
-.stat-card {
-    background: rgba(255,255,255,0.07);
-    border-color: rgba(255,255,255,0.1);
-}
-.stat-card--products strong { color: #4dd9d3; }
-.stat-card--halal strong    { color: #4ade80; }
-.stat-card--excluded strong { color: #f87171; }
-.stat-card--contributors strong { color: #c4b5fd; }
-.stat-card--countries strong { color: #fcd34d; }
+/* NOTE: .stat-card garde sa definition originale (fond blanc, bordures
+   colorees) qui reste parfaitement lisible sur le theme clair. L'ancienne
+   surcharge "theme sombre" (fond quasi transparent + texte pastel) a ete
+   retiree ici car elle rendait les cartes de stats delavees et peu
+   lisibles sur le fond clair actuel. */
 
 .badge {
     background: rgba(255,255,255,0.6);

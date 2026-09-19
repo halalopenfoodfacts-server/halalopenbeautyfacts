@@ -42,7 +42,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const HALAL_CAUTION_KEYWORDS = ['gélatine', 'gelatine', 'e441', 'e904', 'mono- et diglycérides', 'mono and diglycerides', 'glycérine', 'e471', 'vin', 'parfum'];
     const HALAL_POSITIVE_LABELS = ['halal', 'halâl', 'halal-cert'];
     const OB_EDIT_ENDPOINT = 'https://world.openbeautyfacts.org/cgi/product_jqm2.pl';
-    const OB_SESSION_ENDPOINT = 'https://world.openbeautyfacts.org/cgi/session.pl?json=1';
+    // DT-06 fix : utiliser le proxy local au lieu de l'endpoint externe (bloqué par CSP en prod)
+    const OB_SESSION_ENDPOINT = '/proxy/session';
     const OB_IMAGE_ENDPOINT = 'https://world.openbeautyfacts.org/cgi/product_image_upload.pl';
     const API_KEY_STORAGE_KEY = 'hobf_edit_api_key';
     let currentProductData = null;
@@ -174,10 +175,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function displayProduct(product) {
+        // BUG-D fix : appliquer esc() sur toutes les valeurs injectables pour éviter les XSS
         const imageUrl = product.image_front_url || product.image_url || 'https://static.openfoodfacts.org/images/misc/product-default.png';
-        const productName = product.product_name || 'Produit halal à compléter';
-        const brand = product.brands || 'Marque à confirmer';
-        const quantity = product.quantity || product.serving_quantity || '';
+        const productName = esc(product.product_name || 'Produit halal à compléter');
+        const brand = esc(product.brands || 'Marque à confirmer');
+        const quantity = esc(product.quantity || product.serving_quantity || '');
         const categories = safeGet(() => formatList(product.categories_tags, product.categories || 'Non renseigné'), 'Non renseigné');
         const countriesHtml = safeGet(() => renderTagPills(product.countries_tags, product.countries || 'Aucun pays indiqué'), '—');
         const labelsHtml = safeGet(() => renderTagPills(product.labels_tags, 'Aucun label confirmé'), '—');
@@ -187,7 +189,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const traces = safeGet(() => formatList(product.traces_tags, product.traces || 'Non renseigné'), '—');
         const ingredients = formatMultiline(product.ingredients_text_fr || product.ingredients_text || 'Ajoutez la liste INCI pour aider la communauté.');
         const barcodeImage = null; // rendu via canvas après affichage
-        const editUrl = product.code ? `https://world.openbeautyfacts.org/product/${product.code}` : 'https://world.openbeautyfacts.org';
+        // Le code-barres est sanitizé, editUrl construit depuis celui-ci est donc sûr
+        const safeCode = sanitizeBarcode(product.code || '');
+        const editUrl = safeCode ? `https://world.openbeautyfacts.org/product/${safeCode}` : 'https://world.openbeautyfacts.org';
         const nutriments = product.nutriments || {};
         const veganProfile = safeGet(() => describeVeganStatus(product.ingredients_analysis_tags), { value: '—', hint: '—' });
         const palmSummary = safeGet(() => summarizePalmUsage(product.ingredients_from_palm_oil_tags, product.ingredients_that_may_be_from_palm_oil_tags), { value: '—', hint: '—' });

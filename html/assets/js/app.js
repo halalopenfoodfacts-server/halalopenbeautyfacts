@@ -258,13 +258,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Fetch and display products
     async function fetchProducts(page = 1) {
-        productGrid.innerHTML = '<p style="text-align: center; padding: 2rem;">Chargement des produits...</p>';
+        productGrid.innerHTML = renderSkeletonGrid(12);
         
-        console.log('=== FETCH PRODUCTS DEBUG ===');
-        console.log('Fetching products for page:', page);
-        console.log('Current filters:', currentFilters);
-        console.log('Current filters.country:', currentFilters.country);
-        console.log('Country filter active:', !!currentFilters.country);
         const requestStartedAt = performance.now();
         setApiLiveState('catalogue', 'pending');
         
@@ -317,9 +312,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
+            console.log('[API] Fetching page', page);
             const url = `${CATALOGUE_API_URL}?${params.toString()}`;
-            console.log('Fetching from URL:', url);
-            
             const response = await fetch(url);
             
             if (!response.ok) {
@@ -327,8 +321,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             
             const data = await parseApiJsonResponse(response, 'Catalogue');
-            console.log('Received data:', data);
-            console.log('Number of products:', data.products ? data.products.length : 0);
             
             // Succès - sauvegarder dans le cache
             if (data.products && data.products.length > 0) {
@@ -673,42 +665,113 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Display products in grid
+    // ── Skeleton loading ─────────────────────────────────────
+    function renderSkeletonGrid(count = 12) {
+        let html = '';
+        for (let i = 0; i < count; i++) {
+            html += `<div class="product-card product-card--skeleton" aria-hidden="true">
+                <div class="skeleton-img"></div>
+                <div class="product-info">
+                    <div class="skeleton-line skeleton-line--title"></div>
+                    <div class="skeleton-line skeleton-line--sub"></div>
+                    <div class="skeleton-line skeleton-line--badge"></div>
+                </div>
+            </div>`;
+        }
+        return html;
+    }
+
+    function getNutriScoreColor(grade) {
+        const colors = { a: '#038141', b: '#85bb2f', c: '#ffcc00', d: '#ee8100', e: '#e63312' };
+        return colors[(grade || '').toLowerCase()] || null;
+    }
+
+    function getNovaColor(group) {
+        const colors = { '1': '#038141', '2': '#85bb2f', '3': '#ee8100', '4': '#e63312' };
+        return colors[String(group)] || null;
+    }
+
     function displayProducts(products) {
         productGrid.innerHTML = '';
         
         if (!products || products.length === 0) {
-            productGrid.innerHTML = '<p style="text-align: center; padding: 2rem;">Aucun produit trouvé pour ces filtres.</p>';
+            productGrid.innerHTML = '<div class="product-grid__empty"><p>Aucun produit trouvé pour ces filtres.</p><p class="product-grid__empty-hint">Essayez de réinitialiser les filtres ou de modifier votre recherche.</p></div>';
             return;
         }
 
-        // Utiliser DocumentFragment pour affichage plus rapide
         const fragment = document.createDocumentFragment();
 
         products.forEach(product => {
-            const productName = product.product_name || 'Unknown Product';
-            const brand = product.brands || 'Unknown Brand';
+            const productName = product.product_name || 'Produit halal';
+            const brand = Array.isArray(product.brands) ? product.brands.join(', ') : (product.brands || '');
             const imageUrl = product.image_front_small_url || product.image_front_url || DEFAULT_PRODUCT_IMAGE;
             const barcode = product.code || '';
+            const nutriGrade = (product.nutriscore_grade || '').toLowerCase();
+            const novaGroup = String(product.nova_group || '');
 
             const productCard = document.createElement('div');
             productCard.className = 'product-card';
-            productCard.innerHTML = `
-                <img src="${imageUrl}" alt="${productName}" loading="lazy" onerror="this.onerror=null;this.src='${DEFAULT_PRODUCT_IMAGE}';">
-                <span class="product-card__cta">Voir →</span>
-                <div class="product-info">
-                    <h3>${esc(productName)}</h3>
-                    <p>${esc(brand)}</p>
-                </div>
-            `;
-            
+
+            const imgWrap = document.createElement('div');
+            imgWrap.className = 'product-card__img-wrap';
+
+            const img = document.createElement('img');
+            img.alt = productName;
+            img.loading = 'lazy';
+            img.src = imageUrl;
+            img.addEventListener('error', () => { img.src = DEFAULT_PRODUCT_IMAGE; img.onerror = null; });
+            imgWrap.appendChild(img);
+
+            if (nutriGrade && getNutriScoreColor(nutriGrade)) {
+                const badge = document.createElement('span');
+                badge.className = 'product-card__nutri-badge';
+                badge.textContent = `NS-${nutriGrade.toUpperCase()}`;
+                badge.style.background = getNutriScoreColor(nutriGrade);
+                badge.title = `Nutri-Score ${nutriGrade.toUpperCase()}`;
+                imgWrap.appendChild(badge);
+            }
+            if (novaGroup && getNovaColor(novaGroup)) {
+                const novaBadge = document.createElement('span');
+                novaBadge.className = 'product-card__nova-badge';
+                novaBadge.textContent = `N${novaGroup}`;
+                novaBadge.style.background = getNovaColor(novaGroup);
+                novaBadge.title = `NOVA groupe ${novaGroup}`;
+                imgWrap.appendChild(novaBadge);
+            }
+
+            const cta = document.createElement('span');
+            cta.className = 'product-card__cta';
+            cta.textContent = 'Voir →';
+
+            const info = document.createElement('div');
+            info.className = 'product-info';
+            const h3 = document.createElement('h3');
+            h3.textContent = productName;
+            const p = document.createElement('p');
+            p.textContent = brand;
+            info.appendChild(h3);
+            info.appendChild(p);
+
+            productCard.appendChild(imgWrap);
+            productCard.appendChild(cta);
+            productCard.appendChild(info);
+
+            productCard.setAttribute('role', 'button');
+            productCard.setAttribute('tabindex', '0');
+            productCard.setAttribute('aria-label', `${productName}${brand ? ' — ' + brand : ''}`);
             productCard.addEventListener('click', () => {
                 window.location.href = `product.html?code=${sanitizeBarcode(barcode)}`;
+            });
+            productCard.addEventListener('keyup', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    window.location.href = `product.html?code=${sanitizeBarcode(barcode)}`;
+                }
             });
             
             fragment.appendChild(productCard);
         });
 
-        // Ajouter tout d'un coup pour affichage plus rapide
         productGrid.appendChild(fragment);
     }
 
@@ -914,8 +977,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         for (let i = startPage; i <= endPage; i++) {
             const pageBtn = document.createElement('button');
+            pageBtn.className = 'pagination__btn' + (i === currentPage ? ' pagination__btn--active' : '');
             pageBtn.textContent = i;
-            pageBtn.classList.toggle('active', i === currentPage);
+            // BUG-J fix : aria-current proprement géré
+            if (i === currentPage) {
+                pageBtn.setAttribute('aria-current', 'page');
+            } else {
+                pageBtn.removeAttribute('aria-current');
+            }
+            pageBtn.setAttribute('aria-label', `Page ${i}`);
             pageBtn.addEventListener('click', () => {
                 fetchProducts(i);
             });
@@ -1075,13 +1145,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Filter buttons functionality
+    // BUG-A fix : 'is-active' cohérent avec le CSS
     if (filterButtons && filterButtons.length) {
         filterButtons.forEach(btn => {
             btn.addEventListener('click', () => {
                 const filter = btn.dataset.filter;
-                btn.classList.toggle('active');
-                
-                if (btn.classList.contains('active')) {
+                btn.classList.toggle('is-active');
+
+                if (btn.classList.contains('is-active')) {
                     if (filter === 'vegan') currentFilters.tags.push('en:vegan');
                     if (filter === 'vegetarian') currentFilters.tags.push('en:vegetarian');
                     if (filter === 'alcohol-free') currentFilters.tags.push('en:no-alcohol');
@@ -1092,7 +1163,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (filter === 'alcohol-free') currentFilters.tags = currentFilters.tags.filter(t => t !== 'en:no-alcohol');
                     if (filter === 'halal-only') currentFilters.halalOnly = false;
                 }
-                
+
                 currentPage = 1;
                 fetchProducts(currentPage);
             });

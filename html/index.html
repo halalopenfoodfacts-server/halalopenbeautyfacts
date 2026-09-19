@@ -46,8 +46,10 @@
                 <span id="barcode-manual-prompt" class="visually-hidden" data-i18n="barcode_manual_prompt">Entrez un code-barres pour ouvrir la fiche produit.</span>
                 <div class="barcode-overlay" id="barcode-overlay" hidden>
                     <div class="barcode-overlay__panel">
-                        <button type="button" class="barcode-overlay__close" id="barcode-cancel" data-i18n="barcode_scan_cancel" aria-label="Fermer le scanner">Fermer</button>
-                        <video id="barcode-video" class="barcode-overlay__video" autoplay playsinline muted></video>
+                        <button type="button" class="barcode-overlay__close" id="barcode-cancel" data-i18n="barcode_scan_cancel" aria-label="Fermer le scanner">✕ Fermer</button>
+                        <div class="barcode-overlay__video-wrap">
+                          <video id="barcode-video" class="barcode-overlay__video" autoplay playsinline muted></video>
+                        </div>
                         <p class="barcode-overlay__helper" data-i18n="barcode_scan_helper">Cadrez le code-barres dans le cadre. La capture se lance automatiquement.</p>
                     </div>
                 </div>

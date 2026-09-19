@@ -78,11 +78,50 @@ img{max-width:100%;display:block;}
 .account-chip__label{margin:0;color:var(--ink-soft);font-size:.72rem;}
 
 /* Barcode overlay */
-.barcode-overlay{position:fixed;inset:0;background:rgba(20,33,31,.88);z-index:200;display:flex;align-items:center;justify-content:center;padding:1em;}
-.barcode-overlay__panel{background:var(--paper-raised);border-radius:8px;padding:1.4em;max-width:420px;width:100%;text-align:center;position:relative;border-top:4px solid var(--sauge);}
-.barcode-overlay__close{position:absolute;top:.6em;right:.6em;background:none;border:none;font-size:.85rem;cursor:pointer;color:var(--ink-soft);}
-.barcode-overlay__video{width:100%;border-radius:6px;background:#000;aspect-ratio:4/3;object-fit:cover;}
-.barcode-overlay__helper{font-size:.85rem;margin-top:.8em;}
+.barcode-overlay{position:fixed;inset:0;background:rgba(42,19,32,.82);z-index:200;display:flex;align-items:center;justify-content:center;padding:1em;backdrop-filter:blur(4px);}
+.barcode-overlay[hidden]{display:none !important;}
+.barcode-overlay__panel{background:var(--paper-raised);border-radius:12px;padding:1.6em;max-width:400px;width:100%;text-align:center;position:relative;border-top:4px solid var(--sauge);box-shadow:0 24px 48px rgba(42,19,32,.35);}
+.barcode-overlay__close{position:absolute;top:.7em;right:.8em;background:none;border:none;font-size:.85rem;cursor:pointer;color:var(--ink-soft);font-weight:600;padding:.3em .5em;border-radius:4px;transition:background .15s;}
+.barcode-overlay__close:hover{background:var(--sauge-light);color:var(--sauge-dark);}
+/* Zone caméra : fond neutre clair, cadre de visée */
+.barcode-overlay__video-wrap{
+  position:relative;
+  width:100%;
+  aspect-ratio:4/3;
+  border-radius:8px;
+  overflow:hidden;
+  background:var(--paper);
+  border:1.5px solid var(--line);
+  display:flex;align-items:center;justify-content:center;
+}
+.barcode-overlay__video-wrap::before{
+  content:'📷';
+  font-size:2.8rem;
+  opacity:.25;
+  position:absolute;
+  z-index:0;
+}
+/* Cadre de visée animé */
+.barcode-overlay__video-wrap::after{
+  content:'';
+  position:absolute;
+  inset:16px;
+  border:2px solid var(--sauge);
+  border-radius:6px;
+  opacity:.5;
+  animation:scan-frame 2s ease-in-out infinite;
+  z-index:1;
+  pointer-events:none;
+}
+@keyframes scan-frame{0%,100%{opacity:.5;transform:scale(1);}50%{opacity:.9;transform:scale(.97);}}
+.barcode-overlay__video{
+  width:100%;height:100%;
+  object-fit:cover;
+  border-radius:6px;
+  position:relative;z-index:2;
+  background:transparent;
+}
+.barcode-overlay__helper{font-size:.82rem;margin-top:.9em;color:var(--ink-soft);}
 .scan-verdict__header{display:flex;align-items:center;gap:.8em;text-align:left;margin-bottom:.8em;}
 .scan-verdict__img{width:48px;height:48px;object-fit:cover;border-radius:4px;}
 .scan-verdict__name{margin:0;font-weight:700;}

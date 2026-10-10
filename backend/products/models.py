@@ -69,6 +69,8 @@ class SyncLog(models.Model):
     products_updated = models.IntegerField(default=0)
     status = models.CharField(max_length=20, default='running')  # 'running', 'success', 'error'
     error_message = models.TextField(blank=True, default='')
+    # Fin (timestamp unix) du dernier fichier delta OFF appliqué — sert de point de reprise
+    last_file_end_t = models.BigIntegerField(null=True, blank=True)
 
     class Meta:
         ordering = ['-started_at']

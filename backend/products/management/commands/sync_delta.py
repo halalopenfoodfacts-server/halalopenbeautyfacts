@@ -6,53 +6,71 @@ En production : lancé automatiquement par Celery Beat toutes les heures.
 Les deltas OFF sont disponibles à :
   Food   : https://static.openfoodfacts.org/data/delta/
   Beauty : https://static.openbeautyfacts.org/data/delta/
+
+Format réel (vérifié oct. 2026) :
+  - liste des fichiers dans <base>/index.txt (pas de page HTML)
+  - noms : <site>_products_<start_unix>_<end_unix>.json.gz (≈ 1 fichier / jour)
+  - contenu : JSONL gzip, 1 produit par ligne
+  - OFF ne conserve que ~14 jours de fichiers
 """
 import gzip
 import io
 import json
+import re
 import time
 import urllib.request
 from datetime import datetime, timezone, timedelta
 
 from django.core.management.base import BaseCommand
+from django.db.models import Max
 from django.utils import timezone as tz
 
 from products.models import Product, SyncLog
 from products.management.commands.import_food import (
-    row_to_product, detect_halal_excluded, BATCH_SIZE
+    row_to_product, detect_halal_excluded, BATCH_SIZE, Command as ImportFoodCommand
 )
 
 DELTA_URLS = {
     'food':   'https://static.openfoodfacts.org/data/delta/',
     'beauty': 'https://static.openbeautyfacts.org/data/delta/',
 }
+USER_AGENT = 'HalalOpenFoodFacts/1.0'
 
 
-def list_delta_files(base_url: str, since_hours: int = 25) -> list[str]:
-    """Récupère la liste des fichiers delta des dernières N heures"""
-    req = urllib.request.Request(base_url, headers={'User-Agent': 'HalalOpenFoodFacts/1.0'})
-    try:
-        with urllib.request.urlopen(req, timeout=30) as r:
-            html = r.read().decode()
-    except Exception:
-        return []
+DELTA_NAME_RE = re.compile(r'^[a-z]+_products_(\d+)_(\d+)\.json\.gz$')
 
-    # Parse les liens .jsonl.gz dans la page index
-    import re
-    files = re.findall(r'href="([^"]+\.jsonl\.gz)"', html)
-    cutoff = datetime.now(timezone.utc) - timedelta(hours=since_hours)
+
+def list_delta_files(base_url: str) -> list[tuple[str, int, int]]:
+    """
+    Liste les fichiers delta disponibles via <base>/index.txt.
+    Retourne [(url, start_ts, end_ts), ...] trié par start_ts.
+    Lève une exception en cas d'erreur réseau (pour qu'elle soit journalisée).
+    """
+    req = urllib.request.Request(base_url + 'index.txt', headers={'User-Agent': USER_AGENT})
+    with urllib.request.urlopen(req, timeout=30) as r:
+        names = r.read().decode().split()
 
     result = []
-    for f in files:
-        # Nom format: YYYYMMDD_HHMM_products.jsonl.gz
-        try:
-            date_str = f.split('_')[0] + f.split('_')[1]
-            dt = datetime.strptime(date_str, '%Y%m%d%H%M').replace(tzinfo=timezone.utc)
-            if dt >= cutoff:
-                result.append(base_url + f)
-        except Exception:
-            pass
-    return sorted(result)
+    for name in names:
+        m = DELTA_NAME_RE.match(name.strip())
+        if m:
+            result.append((base_url + name.strip(), int(m.group(1)), int(m.group(2))))
+    return sorted(result, key=lambda x: x[1])
+
+
+def get_watermark(portal: str) -> int | None:
+    """
+    Timestamp (unix) jusqu'auquel les deltas ont déjà été appliqués :
+    le plus récent entre
+      - la fin du dernier fichier delta traité avec succès
+      - le last_modified_t max des produits (ex : après un import complet)
+    """
+    last_delta = (SyncLog.objects
+                  .filter(portal=portal, sync_type='delta', last_file_end_t__isnull=False)
+                  .aggregate(m=Max('last_file_end_t'))['m'])
+    last_product = Product.objects.filter(portal=portal).aggregate(m=Max('last_modified_t'))['m']
+    candidates = [v for v in (last_delta, last_product) if v]
+    return max(candidates) if candidates else None
 
 
 def process_jsonl_line(line: bytes, portal: str) -> Product | None:
@@ -133,66 +151,111 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('--portal', type=str, default='both', help='food, beauty ou both')
-        parser.add_argument('--hours', type=int, default=25, help='Nombre d\'heures de delta à récupérer')
+        parser.add_argument('--hours', type=int, default=None,
+                            help="Forcer le retraitement des fichiers des N dernières heures "
+                                 "(par défaut : reprise automatique depuis le dernier fichier traité)")
 
     def handle(self, *args, **options):
         portals = ['food', 'beauty'] if options['portal'] == 'both' else [options['portal']]
-        hours = options['hours']
-
         for portal in portals:
-            self._sync_portal(portal, hours)
+            self._sync_portal(portal, options['hours'])
 
-    def _sync_portal(self, portal: str, hours: int):
+    def _sync_portal(self, portal: str, hours: int | None):
         base_url = DELTA_URLS[portal]
-        self.stdout.write(f'[{portal}] Recherche des fichiers delta des {hours} dernières heures...')
 
-        delta_files = list_delta_files(base_url, hours)
-        if not delta_files:
-            self.stdout.write(f'  Aucun fichier delta trouvé.')
+        if hours is not None:
+            since = int(time.time()) - hours * 3600
+            self.stdout.write(f'[{portal}] Mode forcé : fichiers des {hours} dernières heures')
+        else:
+            since = get_watermark(portal) or 0
+            self.stdout.write(f'[{portal}] Reprise depuis {datetime.fromtimestamp(since, timezone.utc):%Y-%m-%d %H:%M} UTC')
+
+        try:
+            available = list_delta_files(base_url)
+        except Exception as e:
+            SyncLog.objects.create(portal=portal, sync_type='delta', status='error',
+                                   finished_at=tz.now(), error_message=f'index.txt: {e}')
+            self.stderr.write(f'  ❌ Impossible de lire {base_url}index.txt : {e}')
             return
 
-        self.stdout.write(f'  {len(delta_files)} fichier(s) trouvé(s)')
+        if not available:
+            self.stderr.write('  ❌ index.txt vide ou format inattendu.')
+            return
+
+        todo = [f for f in available if f[2] > since]
+        if not todo:
+            self.stdout.write('  ✓ Déjà à jour, aucun nouveau fichier.')
+            return
+
+        # Trou de données : les fichiers entre `since` et le plus ancien disponible ont expiré chez OFF
+        gap_msg = ''
+        oldest_start = available[0][1]
+        if since and since < oldest_start - 3600:
+            gap_days = (oldest_start - since) / 86400
+            gap_msg = (f'TROU de {gap_days:.0f} jours ({datetime.fromtimestamp(since, timezone.utc):%Y-%m-%d} → '
+                       f'{datetime.fromtimestamp(oldest_start, timezone.utc):%Y-%m-%d}) : '
+                       f'deltas expirés chez OFF, un import complet est nécessaire pour combler.')
+            self.stderr.write(f'  ⚠️ {gap_msg}')
+
+        self.stdout.write(f'  {len(todo)} fichier(s) à traiter')
         log = SyncLog.objects.create(portal=portal, sync_type='delta')
         total_added = total_updated = 0
+        errors = []
 
-        for file_url in delta_files:
+        for file_url, _start, end in todo:
             self.stdout.write(f'  ↓ {file_url.split("/")[-1]}')
             try:
-                req = urllib.request.Request(file_url, headers={'User-Agent': 'HalalOpenFoodFacts/1.0'})
-                with urllib.request.urlopen(req, timeout=120) as response:
-                    with gzip.GzipFile(fileobj=response) as gz:
-                        batch = []
-                        for line in gz:
-                            line = line.strip()
-                            if not line:
-                                continue
-                            product = process_jsonl_line(line, portal)
-                            if product:
-                                batch.append(product)
-                            if len(batch) >= BATCH_SIZE:
-                                a, u = self._upsert(batch, portal)
-                                total_added += a
-                                total_updated += u
-                                batch = []
-                        if batch:
-                            a, u = self._upsert(batch, portal)
-                            total_added += a
-                            total_updated += u
+                a, u = self._process_file(file_url, portal)
+                total_added += a
+                total_updated += u
+                # Avance le watermark fichier par fichier (reprise possible en cas d'échec)
+                log.last_file_end_t = end
+                log.products_added = total_added
+                log.products_updated = total_updated
+                log.save(update_fields=['last_file_end_t', 'products_added', 'products_updated'])
             except Exception as e:
+                errors.append(f'{file_url.split("/")[-1]}: {e}')
                 self.stderr.write(f'  ⚠️ Erreur sur {file_url}: {e}')
-                continue
+                break  # on s'arrête pour ne pas sauter de fichier ; reprise au prochain run
 
-        log.status = 'success'
+        # _upsert remet search_vector à NULL : on recalcule pour que la recherche full-text
+        # retrouve les produits ajoutés / modifiés
+        if total_added or total_updated:
+            ImportFoodCommand._update_search_vectors(self, portal)
+
+        log.status = 'error' if errors else 'success'
+        log.error_message = '\n'.join(filter(None, [gap_msg] + errors))
         log.finished_at = tz.now()
-        log.products_added = total_added
-        log.products_updated = total_updated
         log.save()
 
-        self.stdout.write(
-            self.style.SUCCESS(
-                f'[{portal}] ✅ Delta sync : +{total_added} / ~{total_updated} mis à jour'
-            )
-        )
+        style = self.style.ERROR if errors else self.style.SUCCESS
+        self.stdout.write(style(
+            f'[{portal}] {"❌" if errors else "✅"} Delta sync : +{total_added} / ~{total_updated} mis à jour'
+        ))
+
+    def _process_file(self, file_url: str, portal: str) -> tuple[int, int]:
+        added = updated = 0
+        req = urllib.request.Request(file_url, headers={'User-Agent': USER_AGENT})
+        with urllib.request.urlopen(req, timeout=300) as response:
+            with gzip.GzipFile(fileobj=response) as gz:
+                batch = []
+                for line in gz:
+                    line = line.strip()
+                    if not line:
+                        continue
+                    product = process_jsonl_line(line, portal)
+                    if product:
+                        batch.append(product)
+                    if len(batch) >= BATCH_SIZE:
+                        a, u = self._upsert(batch, portal)
+                        added += a
+                        updated += u
+                        batch = []
+                if batch:
+                    a, u = self._upsert(batch, portal)
+                    added += a
+                    updated += u
+        return added, updated
 
     def _upsert(self, batch: list, portal: str):
         from django.contrib.postgres.search import SearchVector

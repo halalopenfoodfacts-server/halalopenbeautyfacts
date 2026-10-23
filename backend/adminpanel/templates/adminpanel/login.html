@@ -3,8 +3,13 @@
 {% block body %}
 <main class="wrap" style="max-width: 420px; padding-top: 12vh;">
   <div class="card">
-    <h1>Espace de gestion</h1>
-    <p class="lead">Accès réservé. Session fermée après 30 minutes d'inactivité.</p>
+    <h1>Espace administrateur</h1>
+    <div role="note" class="alert-admin">
+      <strong>⚠ Accès réservé à l'administrateur.</strong>
+      Si vous êtes administrateur, veuillez vous identifier avec votre code d'accès.
+      Toutes les tentatives de connexion sont enregistrées.
+    </div>
+    <p class="lead">Session fermée après 30 minutes d'inactivité. <a href="https://halalopenfoodfacts.org/">← Retour au site</a></p>
     {% if error %}<p role="alert" class="badge r-failure" style="display:block; padding: 8px 12px; border-radius: 8px;">{{ error }}</p>{% endif %}
     <form method="post" action="{% url 'adminpanel:login' %}">
       {% csrf_token %}

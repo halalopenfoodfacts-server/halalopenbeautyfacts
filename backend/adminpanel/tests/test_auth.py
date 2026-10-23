@@ -34,6 +34,7 @@ class LoginTests(AdminTestCase):
         self.assertEqual(response['Cache-Control'], 'no-store')
         self.assertContains(response, '<meta name="robots" content="noindex')
         self.assertNotContains(response, CODE)
+        self.assertContains(response, 'Accès réservé à l\'administrateur')
 
     def test_wrong_code_is_refused_and_logged(self):
         response = self.login('mauvais-code')

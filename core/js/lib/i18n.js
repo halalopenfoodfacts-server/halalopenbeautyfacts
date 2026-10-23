@@ -122,6 +122,7 @@ const DICT = {
     'footer.legal': { fr: 'Mentions légales', en: 'Legal notice', ar: 'إشعار قانوني', es: 'Aviso legal' },
     'footer.terms': { fr: 'Conditions d\'utilisation', en: 'Terms of use', ar: 'شروط الاستخدام', es: 'Condiciones de uso' },
     'footer.account': { fr: 'Compte contributeur', en: 'Contributor account', ar: 'حساب المساهم', es: 'Cuenta de colaborador' },
+    'footer.admin': { fr: 'Espace administrateur', en: 'Administrator area', ar: 'مساحة المسؤول', es: 'Área de administración' },
     'footer.source': { fr: 'Code source', en: 'Source code', ar: 'الشيفرة المصدرية', es: 'Código fuente' },
     'footer.license': { fr: 'Données sous licence ODbL', en: 'Data under ODbL licence', ar: 'البيانات بترخيص ODbL', es: 'Datos con licencia ODbL' },
     'footer.disclaimer': { fr: "Statuts calculés d'après les labels et les ingrédients déclarés par les contributeurs : vérifiez toujours l'emballage.", en: 'Statuses are based on the labels and ingredients entered by contributors: always check the packaging.', ar: 'تُحتسب الحالات من الملصقات والمكونات التي يُدخلها المساهمون: تحقّق دائمًا من العبوة.', es: 'Estados calculados a partir de las etiquetas e ingredientes declarados por los colaboradores: comprueba siempre el envase.' },

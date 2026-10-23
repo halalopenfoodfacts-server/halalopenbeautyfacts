@@ -6,6 +6,16 @@
   <h1>Ajouter ou corriger un produit</h1>
   <p>Nos fiches proviennent de {{site.upstream.name}}, la base collaborative libre. Toute contribution faite là-bas apparaît ici lors de la synchronisation suivante (quotidienne).</p>
 </header>
+<div class="container" style="margin-bottom:var(--space-5)">
+  <section class="todo-banner">
+    <svg aria-hidden="true"><use href="#i-flask"/></svg>
+    <div>
+      <h2>Indispensable : la liste des ingrédients</h2>
+      <p>Quand vous ajoutez un produit, <strong>photographiez toujours la liste des ingrédients</strong>. C'est elle qui permet de vérifier l'absence d'alcool et de porc. Sans elle, le produit reste « Non renseigné » et n'aide personne.</p>
+    </div>
+    <a class="btn btn--lg" href="/a-completer.html"><span>Produits à compléter</span><svg aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
+  </section>
+</div>
 <div class="container grid grid--2" style="align-items:start">
   <section class="panel">
     <h2><svg aria-hidden="true"><use href="#i-scan"/></svg>Le produit est-il déjà référencé ?</h2>
@@ -26,7 +36,7 @@
   <div class="stack">
     <section class="card">
       <h3>1. Avec l'application (recommandé)</h3>
-      <p>L'application {{site.upstream.name}} guide la prise de photos (face avant, ingrédients{{#if site.features.nutrition}}, tableau nutritionnel{{/if}}, labels). C'est le moyen le plus rapide.</p>
+      <p>L'application {{site.upstream.name}} guide la prise de photos (face avant, <strong>ingrédients</strong>{{#if site.features.nutrition}}, tableau nutritionnel{{/if}}, labels). C'est le moyen le plus rapide.</p>
       <div class="app-badges" style="margin-top:1rem">
         <a class="btn btn--sm" href="{{site.upstream.apps.ios}}" target="_blank" rel="noopener">App Store</a>
         <a class="btn btn--sm" href="{{site.upstream.apps.android}}" target="_blank" rel="noopener">Google Play</a>
@@ -35,7 +45,7 @@
     </section>
     <section class="card">
       <h3>2. Depuis un ordinateur</h3>
-      <p>Saisissez le code-barres ci-contre puis complétez la fiche sur le site {{site.upstream.name}}. Un compte gratuit est nécessaire.</p>
+      <p>Saisissez le code-barres ci-contre puis complétez la fiche sur le site {{site.upstream.name}}, <strong>sans oublier la liste des ingrédients</strong>. Un compte gratuit est nécessaire.</p>
     </section>
     <section class="card">
       <h3>Pour un statut halal fiable</h3>

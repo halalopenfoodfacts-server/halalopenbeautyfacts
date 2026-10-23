@@ -107,6 +107,7 @@ function renderProduct(product) {
     const svg = isValidGtin(product.code) ? barcodeSvg(product.code) : '';
     const ingredients = product.ingredients_text_fr || product.ingredients_text || '';
     const editUrl = `${SITE.upstream.productUrl}${encodeURIComponent(product.code)}`;
+    const ingredientsUrl = `${SITE.upstream.url}/cgi/product.pl?type=edit&code=${encodeURIComponent(product.code)}`;
     const quantity = product.quantity ? ` · ${product.quantity}` : '';
 
     setHtml(root, html`
@@ -131,6 +132,14 @@ function renderProduct(product) {
         </div>
 
         <div class="product-sections">
+            ${ingredients ? '' : html`<section class="span-all todo-banner">
+                ${raw(icon('i-flask'))}
+                <div>
+                    <h2>Il manque la liste des ingrédients</h2>
+                    <p>Sans elle, impossible de savoir si ce produit contient de l'alcool ou du porc. Vous l'avez sous la main ? Photographiez la liste des ingrédients : le statut halal sera calculé à la synchronisation suivante.</p>
+                </div>
+                <a class="btn btn--primary btn--lg" href="${ingredientsUrl}" target="_blank" rel="noopener">${raw(icon('i-plus'))}<span>Ajouter les ingrédients</span>${raw(icon('i-external'))}</a>
+            </section>`}
             <div class="span-all">${verdictPanel(product)}</div>
 
             <section class="panel" aria-labelledby="ingredients-title">

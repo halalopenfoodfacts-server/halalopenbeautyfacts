@@ -1,0 +1,14 @@
+---
+{"title": "Produits à compléter — {{site.name}}", "description": "Les {{site.noun.many}} dont la liste des ingrédients manque, du plus consulté au moins consulté : ajoutez-la pour que le statut halal soit calculé.", "script": "catalogue", "nav": "todo", "priority": 0.7, "preset": "unknown", "hideStatusFilter": true, "hideHeaderSearch": true}
+---
+<header class="container page-head">
+  <span class="eyebrow">À compléter</span>
+  <h1>Produits sans liste d'ingrédients</h1>
+  <p>Ces produits sont dans la base, mais leur fiche n'a pas de liste d'ingrédients : impossible de savoir s'ils contiennent de l'alcool ou du porc. Ils sont classés du plus consulté au moins consulté : commencez par le haut de la liste.</p>
+  <ol class="todo-steps">
+    <li><strong>Ouvrez un produit</strong> puis cliquez sur « Ajouter les ingrédients ».</li>
+    <li><strong>Photographiez la liste des ingrédients</strong> dans l'application {{site.upstream.name}} (ou recopiez-la sur le site).</li>
+    <li><strong>C'est tout :</strong> le statut halal est calculé ici à la synchronisation suivante.</li>
+  </ol>
+</header>
+{{> catalogue}}

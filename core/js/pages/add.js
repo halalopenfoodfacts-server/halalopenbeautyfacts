@@ -36,6 +36,7 @@ form.addEventListener('submit', async (event) => {
         const { product } = await api.product(code);
         setHtml(result, html`<div class="callout">${raw(icon('i-halal'))}<div class="stack" style="gap:.5rem">
             <span><strong>${product.product_name || code}</strong> est déjà dans la base. ${statusBadge(statusOf(product))}</span>
+            ${(product.ingredients_text_fr || product.ingredients_text) ? '' : html`<span><strong>Il manque la liste des ingrédients :</strong> ajoutez-la pour que le statut halal soit calculé.</span>`}
             <span class="cluster"><a class="btn btn--sm btn--primary" href="/product.html?code=${encodeURIComponent(code)}">Voir la fiche</a>
             <a class="btn btn--sm" href="${editUrl}" target="_blank" rel="noopener">Corriger sur ${SITE.upstream.name}</a></span>
         </div></div>`);

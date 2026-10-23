@@ -14,7 +14,8 @@ import { initShell } from '../ui/shell.js';
 initShell();
 
 const root = $('[data-catalogue]');
-const preset = root.dataset.preset === 'haram' ? { status: 'haram' } : {};
+// Pages à statut imposé : « Non conformes » (haram), « Produits à compléter » (unknown)
+const preset = ['haram', 'unknown'].includes(root.dataset.preset) ? { status: root.dataset.preset } : {};
 const results = $('[data-results]', root);
 const countLabel = $('[data-count]', root);
 const pagination = $('[data-pagination]', root);

@@ -23,6 +23,14 @@ export function applyTranslations(root = document, lang = currentLang()) {
     }
 }
 
+/** Change de langue : la page est rechargée pour être entièrement traduite. */
+export function switchLang(value) {
+    const lang = normalizeLang(value);
+    if (lang === currentLang()) return;
+    store.writeRaw(KEY, lang);
+    window.location.reload();
+}
+
 export function setLang(value) {
     const lang = normalizeLang(value);
     store.writeRaw(KEY, lang);

@@ -129,6 +129,20 @@ function buildManifest(site) {
     };
 }
 
+/** Catalogues de traduction core/i18n/<lang>.json → /assets/i18n/<lang>-<hash>.json (entrées traduites seulement). */
+function buildCatalogs() {
+    const urls = {};
+    mkdirSync(join(DIST, 'assets/i18n'), { recursive: true });
+    for (const file of listFiles(join(CORE, 'i18n'), '.json').filter((f) => basename(f) !== 'backend.json')) {
+        const entries = Object.entries(readJson(file)).filter(([, value]) => value != null && value !== '');
+        const content = JSON.stringify(Object.fromEntries(entries));
+        const url = `/assets/i18n/${basename(file, '.json')}-${hash(content)}.json`;
+        writeFileSync(join(DIST, url), content);
+        urls[basename(file, '.json')] = url;
+    }
+    return urls;
+}
+
 function buildServiceWorker(version, precache) {
     const template = readFileSync(join(CORE, 'templates/service-worker.js'), 'utf8');
     return template
@@ -164,6 +178,7 @@ export async function build({ quiet = false } = {}) {
         sensitiveIngredients: site.sensitiveIngredients,
     };
     const assets = await buildAssets(site, publicConfig);
+    assets.i18nUrls = JSON.stringify(buildCatalogs());
 
     // Fichiers statiques du site (images, icônes)
     cpSync(join(SITE, 'images'), join(DIST, 'assets/images'), { recursive: true });

@@ -99,3 +99,6 @@ hr { border: 0; border-top: 1px solid var(--line); margin: var(--space-6) 0; }
     }
     @view-transition { navigation: none; }
 }
+
+/* Langue autre que le français : page masquée le temps de la traduction (2,5 s au plus, voir layout.html) */
+.i18n-pending body { visibility: hidden; }

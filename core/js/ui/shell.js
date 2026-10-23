@@ -1,7 +1,8 @@
 // Comportements communs à toutes les pages.
 import { store } from '../lib/storage.js';
 import { $, $$, trapFocus } from './dom.js';
-import { currentLang, setLang, t } from './i18n-dom.js';
+import { currentLang, setLang, switchLang, t } from './i18n-dom.js';
+import { translatePage } from './translate-page.js';
 import { toast } from './toast.js';
 
 const THEME_KEY = 'hof-theme';
@@ -36,9 +37,10 @@ function initLang() {
     const lang = currentLang();
     for (const select of $$('[data-lang-select]')) {
         select.value = lang;
-        select.addEventListener('change', () => setLang(select.value));
+        select.addEventListener('change', () => switchLang(select.value));
     }
     if (lang !== 'fr') setLang(lang);
+    translatePage(lang);
 }
 
 function initMenu() {

@@ -336,7 +336,7 @@
 }
 .score--a { background: var(--ns-a); } .score--b { background: var(--ns-b); color: #1a2a07; }
 .score--c { background: var(--ns-c); color: #3a2c00; } .score--d { background: var(--ns-d); color: #2b1600; }
-.score--e { background: var(--ns-e); color: #2b0a00; }
+.score--e { background: var(--ns-e); color: #000; }
 .score--nova { background: var(--ink); color: var(--bg); }
 
 /* ── Skeletons ────────────────────────────────────────────── */

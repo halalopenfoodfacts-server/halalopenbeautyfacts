@@ -276,3 +276,5 @@
 .list-item > div { min-width: 0; }
 .list-item small { overflow-wrap: anywhere; }
 pre { max-width: 100%; overflow-x: auto; }
+/* Réserve la hauteur de la grille pendant le chargement : le pied de page ne saute pas (CLS) */
+[data-results][aria-busy='true'] { min-height: 120vh; }

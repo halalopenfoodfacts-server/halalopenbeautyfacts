@@ -107,7 +107,9 @@ def protect(response):
     """En-têtes communs à toutes les pages de gestion."""
     response['X-Robots-Tag'] = 'noindex, nofollow, noarchive'
     response['Cache-Control'] = 'no-store'
-    response['Referrer-Policy'] = 'no-referrer'
+    # same-origin et non no-referrer : avec no-referrer, le navigateur envoie « Origin: null »
+    # et la protection CSRF de Django refuse le formulaire de connexion (403).
+    response['Referrer-Policy'] = 'same-origin'
     return response
 
 

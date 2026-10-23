@@ -63,6 +63,19 @@ class LoginTests(AdminTestCase):
     def test_code_surrounding_spaces_are_ignored(self):
         self.assertEqual(self.login(f'  {CODE} ').status_code, 302)
 
+    def test_browser_form_post_passes_csrf(self):
+        """Envoi tel qu'un navigateur le fait en HTTPS : jeton du formulaire + en-tête Origin du site."""
+        client = Client(enforce_csrf_checks=True)
+        page = client.get('/gestion/connexion', secure=True)
+        self.assertEqual(page['Referrer-Policy'], 'same-origin')   # no-referrer → Origin: null → 403
+        self.assertNotContains(page, 'no-referrer')
+        token = page.context['csrf_token']
+        response = client.post('/gestion/connexion', {'code': CODE, 'csrfmiddlewaretoken': str(token)}, secure=True,
+                               HTTP_ORIGIN='https://halalopenfoodfacts.org', HTTP_HOST='halalopenfoodfacts.org',
+                               HTTP_X_REAL_IP=IP)
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(AuditLog.objects.filter(action='login.success').exists())
+
     def test_csrf_is_enforced(self):
         client = Client(enforce_csrf_checks=True)
         response = client.post('/gestion/connexion', {'code': CODE}, HTTP_X_REAL_IP=IP)

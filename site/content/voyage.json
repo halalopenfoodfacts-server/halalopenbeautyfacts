@@ -1,0 +1,62 @@
+[
+ {
+  "id": "france",
+  "flag": "🇫🇷",
+  "title": "France",
+  "text": "Retrouvez les cosmétiques vendus en France et vérifiez leur statut avant l'achat."
+ },
+ {
+  "id": "morocco",
+  "flag": "🇲🇦",
+  "title": "Maroc",
+  "text": "Retrouvez les cosmétiques vendus en Maroc et vérifiez leur statut avant l'achat."
+ },
+ {
+  "id": "algeria",
+  "flag": "🇩🇿",
+  "title": "Algérie",
+  "text": "Retrouvez les cosmétiques vendus en Algérie et vérifiez leur statut avant l'achat."
+ },
+ {
+  "id": "tunisia",
+  "flag": "🇹🇳",
+  "title": "Tunisie",
+  "text": "Retrouvez les cosmétiques vendus en Tunisie et vérifiez leur statut avant l'achat."
+ },
+ {
+  "id": "turkey",
+  "flag": "🇹🇷",
+  "title": "Turquie",
+  "text": "Retrouvez les cosmétiques vendus en Turquie et vérifiez leur statut avant l'achat."
+ },
+ {
+  "id": "saudi-arabia",
+  "flag": "🇸🇦",
+  "title": "Arabie Saoudite",
+  "text": "Retrouvez les cosmétiques vendus en Arabie Saoudite et vérifiez leur statut avant l'achat."
+ },
+ {
+  "id": "united-arab-emirates",
+  "flag": "🇦🇪",
+  "title": "Émirats arabes unis",
+  "text": "Retrouvez les cosmétiques vendus en Émirats arabes unis et vérifiez leur statut avant l'achat."
+ },
+ {
+  "id": "malaysia",
+  "flag": "🇲🇾",
+  "title": "Malaisie",
+  "text": "Retrouvez les cosmétiques vendus en Malaisie et vérifiez leur statut avant l'achat."
+ },
+ {
+  "id": "indonesia",
+  "flag": "🇮🇩",
+  "title": "Indonésie",
+  "text": "Retrouvez les cosmétiques vendus en Indonésie et vérifiez leur statut avant l'achat."
+ },
+ {
+  "id": "united-kingdom",
+  "flag": "🇬🇧",
+  "title": "Royaume-Uni",
+  "text": "Retrouvez les cosmétiques vendus en Royaume-Uni et vérifiez leur statut avant l'achat."
+ }
+]

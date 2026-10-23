@@ -77,6 +77,27 @@ Les numéros (B1, H2…) renvoient à `AUDIT.md`.
 | Secrets hors du dépôt (.env) (S1) | ✔ | ✔ | Corrigée | revue |
 | **Données** | | | | |
 | Images manquantes pour une partie des produits (dont Nutella) | ✔ | ✔ | **À revoir** : visuel de remplacement en place ; relancer `update_images` (P1) | V |
-| Performances Lighthouse > 90 | | | Voir la section « Mise en ligne » du README (mesure PageSpeed en production) | |
+| Performances Lighthouse > 90 (mobile) | ✔ | ✔ | Nouvelle | Lighthouse en production, voir ci-dessous |
 
-Le résultat des exécutions est donné dans le récapitulatif de mise en ligne (README, section « Vérifications »).
+## Résultats (23/10/2026, après mise en ligne)
+
+| Vérification | Résultat |
+|---|---|
+| Tests backend (`scripts/test-backend.sh`) | 30 / 30 ✔ |
+| Tests unitaires frontend (food, beauty) | 22 / 22 ✔ chacun |
+| E2E contre **https://halalopenfoodfacts.org** (desktop + mobile) | 78 / 78 ✔ (2 scénarios propres à un seul appareil ignorés sur l'autre) |
+| E2E contre **https://halalopenbeautyfacts.org** | 78 / 78 ✔ |
+| Build de production (`npm run build`, ×2) | sans erreur ni avertissement ✔ |
+| Socle commun identique food / beauty (`npm run check:shared`) | 91 fichiers identiques ✔ |
+
+Lighthouse 12, profil mobile, sur la production (HTTP/2, gzip) :
+
+| Page | Performance | Accessibilité | Bonnes pratiques | SEO | LCP | CLS |
+|---|---|---|---|---|---|---|
+| Accueil food | 98 | 100 | 100 | 100 | 1,7 s | 0 |
+| Catalogue food | 97 | 100 | 100 | 100 | 2,2 s | 0,013 |
+| Fiche produit food | 96 | 100 | 100 | 100 | 2,4 s | 0,041 |
+| Accueil beauty | 99 | 100 | 100 | 100 | 1,8 s | 0 |
+| Catalogue beauty | 97 | 100 | 100 | 100 | 2,5 s | 0,013 |
+
+Desktop (accueil food) : performance 100.

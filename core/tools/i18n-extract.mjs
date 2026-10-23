@@ -45,6 +45,11 @@ export function htmlStrings(html) {
     const cleaned = html
         .replace(/<!--[\s\S]*?-->/g, '')
         .replace(/<(script|style|svg|code|pre)\b[\s\S]*?<\/\1>/gi, ' ');
+    // Descriptions de page (moteurs de recherche, aperçus de partage)
+    for (const match of cleaned.matchAll(/<meta (?:name="description"|property="og:(?:title|description)") content="([^"]*)"/g)) {
+        const text = normalizeText(decode(match[1]));
+        if (isText(text)) out.add(text);
+    }
     for (const match of cleaned.matchAll(/\s(placeholder|aria-label|title|alt)="([^"]*)"/g)) {
         const text = normalizeText(decode(match[2]));
         if (isText(text)) out.add(text);
@@ -121,7 +126,9 @@ function looksLikeProse(text) {
 export function collect() {
     const strings = new Set();
     for (const dist of DISTS) {
-        for (const page of files(dist, '.html')) for (const s of htmlStrings(readFileSync(page, 'utf8'))) strings.add(s);
+        // Pages françaises uniquement (à la racine) : /en/, /ar/, /es/ en sont les traductions
+        const pages = readdirSync(dist).filter((name) => name.endsWith('.html')).map((name) => join(dist, name));
+        for (const page of pages) for (const s of htmlStrings(readFileSync(page, 'utf8'))) strings.add(s);
     }
     for (const script of files(join(ROOT, 'core/js'), '.js')) {
         if (script.endsWith('i18n.js') || script.endsWith('i18n-catalog.js')) continue;
@@ -148,7 +155,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
         if (write) {
             const next = {};
             for (const s of strings) next[s] = catalog[s] ?? null;
-            for (const k of unused) next[k] = catalog[k];
+            for (const k of unused) if (catalog[k] != null) next[k] = catalog[k];   // clés vides devenues inutiles : retirées
             writeFileSync(path, `${JSON.stringify(next, null, 1)}\n`);
         }
     }

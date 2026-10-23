@@ -46,7 +46,7 @@ export function createApi({
     backoffMs = 400,
     sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms)),
 } = {}) {
-    async function once(url, signal) {
+    async function once(url, signal, body) {
         const controller = new AbortController();
         const onAbort = () => controller.abort(signal.reason);
         signal?.addEventListener('abort', onAbort, { once: true });
@@ -54,7 +54,9 @@ export function createApi({
         const timer = setTimeout(() => { timedOut = true; controller.abort(); }, timeoutMs);
         let response;
         try {
-            response = await fetchImpl(url, { signal: controller.signal, headers: { Accept: 'application/json' } });
+            response = await fetchImpl(url, body === undefined
+                ? { signal: controller.signal, headers: { Accept: 'application/json' } }
+                : { signal: controller.signal, method: 'POST', body: JSON.stringify(body), headers: { Accept: 'application/json', 'Content-Type': 'application/json' } });
         } catch (error) {
             if (signal?.aborted) throw new ApiError('aborted', 'Requête annulée', { url });
             if (timedOut) throw new ApiError('timeout', 'Le serveur met trop de temps à répondre', { url });
@@ -65,22 +67,22 @@ export function createApi({
         }
 
         const type = response.headers.get('content-type') || '';
-        let body = null;
+        let data = null;
         if (type.includes('json')) {
-            try { body = await response.json(); } catch { body = null; }
+            try { data = await response.json(); } catch { data = null; }
         }
         if (!response.ok) {
             const retryAfter = Number(response.headers.get('retry-after')) || 0;
-            if (response.status === 503 && body?.status === 'computing') {
+            if (response.status === 503 && data?.status === 'computing') {
                 throw new ApiError('computing', 'Données en cours de calcul', { status: 503, retryAfter, url });
             }
             throw new ApiError(kindForStatus(response.status), `HTTP ${response.status}`, { status: response.status, retryAfter, url });
         }
         // Une page HTML servie en 200 (route absente du proxy) n'est pas une réponse valide
-        if (!type.includes('json') || body === null) {
+        if (!type.includes('json') || data === null) {
             throw new ApiError('invalid-response', 'Réponse inattendue du serveur', { status: response.status, url });
         }
-        return body;
+        return data;
     }
 
     async function get(path, params, { signal, retry = retries } = {}) {
@@ -99,14 +101,22 @@ export function createApi({
         }
     }
 
+    /** POST JSON, sans nouvel essai automatique (l'action ne doit pas être rejouée). */
+    const post = (path, body, { signal } = {}) => once(path, signal, body);
+
     return {
         get,
+        post,
         search: (params, options) => get('/proxy/v2/search', params, options),
         product: (code, options) => get(`/proxy/v2/product/${encodeURIComponent(code)}.json`, undefined, options),
         stats: (options) => get('/proxy/stats', undefined, { retry: 1, ...options }),
         facet: (type, options) => get(`/proxy/facets/${encodeURIComponent(type)}.json`, undefined, { retry: 1, ...options }),
         top: (pageSize = 12, options) => get('/proxy/top', { page_size: pageSize }, options),
         recent: (pageSize = 12, options) => get('/proxy/recent', { page_size: pageSize }, options),
+        alternatives: (code, options) => get(`/proxy/v2/alternatives/${encodeURIComponent(code)}`, undefined, { retry: 1, ...options }),
+        challenge: (options) => get('/proxy/v2/challenge', undefined, { retry: 1, ...options }),
+        classify: (text, options) => post('/proxy/v2/classify', { text }, options),
+        report: (code, reason, message, options) => post('/proxy/v2/report', { code, reason, message }, options),
     };
 }
 

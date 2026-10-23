@@ -8,6 +8,7 @@ import { copyFileSync, cpSync, existsSync, mkdirSync, readdirSync, readFileSync,
 import { basename, dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as esbuild from 'esbuild';
+import { alternateLinks, localizedPath, PAGE_LANGS, translateHtml } from './i18n-pages.mjs';
 import { render, splitFrontMatter } from './template.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
@@ -47,12 +48,33 @@ function loadPages() {
     return pages;
 }
 
+/**
+ * Lecture de texte sur photo (Tesseract.js) : moteur WebAssembly et modèles de langue
+ * (variantes compactes « best_int ») servis depuis le site — la CSP n'autorise que 'self'.
+ * Rien n'est téléchargé tant que l'utilisateur n'ouvre pas « Vérifier les ingrédients en photo ».
+ */
+function copyOcr() {
+    const modules = join(ROOT, 'node_modules');
+    const version = readJson(join(modules, 'tesseract.js/package.json')).version;
+    const base = `/assets/ocr/${version}`;
+    const out = join(DIST, base);
+    mkdirSync(join(out, 'lang'), { recursive: true });
+    for (const file of ['tesseract.esm.min.js', 'worker.min.js']) copyFileSync(join(modules, 'tesseract.js/dist', file), join(out, file));
+    for (const file of ['tesseract-core-lstm.wasm.js', 'tesseract-core-simd-lstm.wasm.js']) copyFileSync(join(modules, 'tesseract.js-core', file), join(out, file));
+    for (const lang of ['fra', 'eng', 'ara']) {
+        copyFileSync(join(modules, `@tesseract.js-data/${lang}/4.0.0_best_int/${lang}.traineddata.gz`), join(out, `lang/${lang}.traineddata.gz`));
+    }
+    return base;
+}
+
 async function buildAssets(site, publicConfig) {
     const vendorSource = join(ROOT, 'node_modules/@zxing/library/umd/index.min.js');
     const vendorCode = readFileSync(vendorSource);
     const zxingUrl = `/assets/vendor/zxing-${hash(vendorCode)}.js`;
     mkdirSync(join(DIST, 'assets/vendor'), { recursive: true });
     writeFileSync(join(DIST, zxingUrl), vendorCode);
+
+    const ocrBase = copyOcr();
 
     const entryPoints = Object.fromEntries(
         listFiles(join(CORE, 'js/pages'), '.js').map((file) => [basename(file, '.js'), file]),
@@ -73,6 +95,7 @@ async function buildAssets(site, publicConfig) {
         define: {
             __SITE__: JSON.stringify(publicConfig),
             __ZXING_URL__: JSON.stringify(zxingUrl),
+            __OCR_BASE__: JSON.stringify(ocrBase),
         },
         logLevel: 'warning',
     });
@@ -132,15 +155,17 @@ function buildManifest(site) {
 /** Catalogues de traduction core/i18n/<lang>.json → /assets/i18n/<lang>-<hash>.json (entrées traduites seulement). */
 function buildCatalogs() {
     const urls = {};
+    const entries = {};
     mkdirSync(join(DIST, 'assets/i18n'), { recursive: true });
     for (const file of listFiles(join(CORE, 'i18n'), '.json').filter((f) => basename(f) !== 'backend.json')) {
-        const entries = Object.entries(readJson(file)).filter(([, value]) => value != null && value !== '');
-        const content = JSON.stringify(Object.fromEntries(entries));
-        const url = `/assets/i18n/${basename(file, '.json')}-${hash(content)}.json`;
+        const lang = basename(file, '.json');
+        entries[lang] = Object.fromEntries(Object.entries(readJson(file)).filter(([, value]) => value != null && value !== ''));
+        const content = JSON.stringify(entries[lang]);
+        const url = `/assets/i18n/${lang}-${hash(content)}.json`;
         writeFileSync(join(DIST, url), content);
-        urls[basename(file, '.json')] = url;
+        urls[lang] = url;
     }
-    return urls;
+    return { urls, entries };
 }
 
 function buildServiceWorker(version, precache) {
@@ -178,7 +203,10 @@ export async function build({ quiet = false } = {}) {
         sensitiveIngredients: site.sensitiveIngredients,
     };
     const assets = await buildAssets(site, publicConfig);
-    assets.i18nUrls = JSON.stringify(buildCatalogs());
+    const catalogs = buildCatalogs();
+    assets.i18nUrls = JSON.stringify(catalogs.urls);
+    const pageLangs = PAGE_LANGS.filter((lang) => catalogs.entries[lang]);
+    for (const lang of pageLangs) mkdirSync(join(DIST, lang), { recursive: true });
 
     // Fichiers statiques du site (images, icônes)
     cpSync(join(SITE, 'images'), join(DIST, 'assets/images'), { recursive: true });
@@ -211,9 +239,16 @@ export async function build({ quiet = false } = {}) {
         if (meta.script && !assets.scripts[meta.script]) throw new Error(`${name} : script inconnu « ${meta.script} »`);
         const context = { site, content, json, page, build: buildInfo, assets, nav: { [meta.nav || page.name]: true } };
         const pageBody = render(body, context, partials);
-        const html = render(layout, { ...context, body: pageBody }, partials);
+        let html = render(layout, { ...context, body: pageBody }, partials);
+        if (!meta.noindex) {
+            html = html.replace(/(<link rel="canonical" href="[^"]*">)/, `$1\n${alternateLinks(path, site.domain, ['fr', ...pageLangs])}`);
+            sitemap.push({ path, priority: meta.priority ?? 0.5 });
+        }
         writeFileSync(join(DIST, name), html);
-        if (!meta.noindex) sitemap.push({ loc: page.url, priority: meta.priority ?? 0.5 });
+        // Versions traduites : /en/…, /ar/…, /es/…
+        for (const lang of pageLangs) {
+            writeFileSync(join(DIST, lang, name), translateHtml(html, catalogs.entries[lang], lang, { path, domain: site.domain }));
+        }
     }
 
     verifyCspHashes(readFileSync(join(DIST, 'index.html'), 'utf8'));
@@ -221,14 +256,18 @@ export async function build({ quiet = false } = {}) {
     writeFileSync(join(DIST, 'robots.txt'), `User-agent: *\nAllow: /\nDisallow: /proxy/\n\nSitemap: ${site.domain}/sitemap.xml\n`);
     writeFileSync(join(DIST, 'sitemap.xml'), [
         '<?xml version="1.0" encoding="UTF-8"?>',
-        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
-        ...sitemap.map(({ loc, priority }) => `  <url><loc>${loc}</loc><lastmod>${buildInfo.date}</lastmod><priority>${priority}</priority></url>`),
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">',
+        ...sitemap.flatMap(({ path, priority }) => ['fr', ...pageLangs].map((lang) => [
+            `  <url><loc>${site.domain}${localizedPath(path, lang)}</loc><lastmod>${buildInfo.date}</lastmod><priority>${priority}</priority>`,
+            ...['fr', ...pageLangs].map((alt) => `    <xhtml:link rel="alternate" hreflang="${alt}" href="${site.domain}${localizedPath(path, alt)}"/>`),
+            '  </url>',
+        ].join('\n'))),
         '</urlset>', '',
     ].join('\n'));
 
     const precache = [
         '/offline.html', assets.css, ...assets.allJs,
-        ...assets.fonts.filter((font) => !font.includes('-ext-')), '/assets/images/logo.webp', '/icons/icon-192.png',
+        ...assets.fonts.filter((font) => !font.includes('-ext-') && !font.includes('-arabic-')), '/assets/images/logo.webp', '/icons/icon-192.png',
     ];
     const version = hash(JSON.stringify(precache) + JSON.stringify([...pages.keys()]));
     writeFileSync(join(DIST, 'service-worker.js'), buildServiceWorker(version, [...new Set(precache)]));

@@ -11,4 +11,21 @@
     <li><strong>C'est tout :</strong> le statut halal est calculé ici à la synchronisation suivante.</li>
   </ol>
 </header>
+<section class="container challenge" data-challenge hidden aria-labelledby="challenge-title">
+  <div class="challenge__head">
+    <div>
+      <span class="eyebrow">Défi de la semaine</span>
+      <h2 id="challenge-title">Les produits à compléter en priorité</h2>
+      <p>Les produits sans ingrédients les plus scannés, choisis chaque lundi. Chaque fiche complétée sert à des milliers d'utilisateurs.</p>
+    </div>
+    <div class="challenge__score" aria-live="polite"><strong data-challenge-done>0</strong><span>/ <span data-challenge-total>0</span> complétés</span></div>
+  </div>
+  <div class="challenge__bar" aria-hidden="true"><span data-challenge-bar></span></div>
+  <div class="rail" data-challenge-products></div>
+  <div class="challenge__board" data-challenge-board hidden>
+    <h3>Bénévoles de la semaine</h3>
+    <ol class="leaderboard" data-challenge-leaders></ol>
+  </div>
+</section>
+<div class="container"><h2 class="section-title">Tous les produits à compléter</h2></div>
 {{> catalogue}}

@@ -2,9 +2,10 @@
 // à partir du catalogue site/i18n/<lang>.json, publié au build dans /assets/i18n/.
 // Les textes absents du catalogue restent en français ; les données produits (noms,
 // ingrédients) restent dans la langue de leur fiche.
-import { createCatalog } from '../lib/i18n-catalog.js';
+import { createCatalog, langFromPath, localizedPath } from '../lib/i18n-catalog.js';
 
 const ATTRIBUTES = ['placeholder', 'aria-label', 'title', 'alt'];
+const PATH_LANG = langFromPath(window.location.pathname);
 const SKIP = new Set(['SCRIPT', 'STYLE', 'CODE', 'PRE', 'TEXTAREA', 'INPUT', 'SELECT', 'OPTION', 'NOSCRIPT']);
 
 function skipped(element) {
@@ -19,6 +20,13 @@ function translateTextNode(node, catalog) {
 
 function translateAttributes(element, catalog) {
     if (skipped(element)) return;
+    if (PATH_LANG && element.tagName === 'A') {
+        const href = element.getAttribute('href');
+        if (href) {
+            const next = localizedPath(href, PATH_LANG);
+            if (next !== href) element.setAttribute('href', next);
+        }
+    }
     for (const name of ATTRIBUTES) {
         const value = element.getAttribute(name);
         if (!value) continue;

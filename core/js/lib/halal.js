@@ -34,6 +34,15 @@ export const STATUS_META = {
     },
 };
 
+// Motifs de site.config « sensitiveIngredients » qui rendent un produit non conforme (rouge) ;
+// les autres (gélatine, E120, E471…) le rendent douteux (orange). Même règle que products/halal.py.
+export const FORBIDDEN_PATTERNS = new Set([
+    'porc', 'porcine?', 'pork', 'saindoux', 'lard', 'lardons?', 'bacon', 'jambons?',
+    'alcool', 'alcohol', 'alcohol denat', 'ethanol', 'vins?', 'wine', 'bieres?', 'beer', 'rhum', 'rum',
+    'whisky', 'cognac', 'liqueurs?', 'kirsch',
+    '(?:[وبلف])?(?:ال)?خنزير\\p{L}*', '(?:[وبلف])?(?:ال)?كحول\\p{L}*', '(?:[وبلف])?(?:ال)?(?:نبيذ|خمر|بيرة)',
+]);
+
 export function statusOf(product) {
     const status = product?.halal_status;
     return STATUSES.includes(status) ? status : 'unknown';

@@ -117,8 +117,19 @@ function initReveal() {
     items.forEach((item) => observer.observe(item));
 }
 
+/** Boutons « Vérifier en photo » (data-ocr="<code facultatif>") : module chargé au premier clic. */
+function initIngredientScan() {
+    document.addEventListener('click', (event) => {
+        const button = event.target.closest('[data-ocr]');
+        if (!button) return;
+        event.preventDefault();
+        import('./ingredient-scan.js').then(({ openIngredientScan }) => openIngredientScan(button.dataset.ocr || ''));
+    });
+}
+
 export function initShell() {
     initHeader();
+    initIngredientScan();
     initTheme();
     initLang();
     initMenu();

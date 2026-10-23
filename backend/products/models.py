@@ -88,3 +88,37 @@ class SyncLog(models.Model):
 
     def __str__(self):
         return f'{self.portal} {self.sync_type} {self.started_at:%Y-%m-%d %H:%M} → {self.status}'
+
+
+class StatusReport(models.Model):
+    """Signalement d'un statut halal jugé erroné par un visiteur (traité par l'équipe dans l'admin)."""
+    REASONS = [
+        ('should-be-halal', 'Le produit est halal'),
+        ('should-be-haram', 'Le produit contient de l\'alcool ou du porc'),
+        ('wrong-ingredients', 'Les ingrédients sont faux ou incomplets'),
+        ('other', 'Autre'),
+    ]
+    portal = models.CharField(max_length=10, choices=Product.PORTAL_CHOICES)
+    code = models.CharField(max_length=100, db_index=True)
+    reason = models.CharField(max_length=20, choices=REASONS)
+    message = models.TextField(blank=True, default='')
+    status_shown = models.CharField(max_length=10, blank=True, default='')
+    created_at = models.DateTimeField(auto_now_add=True)
+    handled = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f'[{self.portal}] {self.code} — {self.get_reason_display()}'
+
+
+class WeeklyChallenge(models.Model):
+    """Défi de la semaine : produits populaires sans ingrédients, figés le lundi."""
+    portal = models.CharField(max_length=10, choices=Product.PORTAL_CHOICES)
+    week = models.CharField(max_length=8)   # « 2026-W43 »
+    codes = models.JSONField(default=list)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('portal', 'week')

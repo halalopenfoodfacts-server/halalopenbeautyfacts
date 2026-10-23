@@ -4,10 +4,10 @@ import { api } from '../lib/api.js';
 import { barcodeSvg, isValidGtin } from '../lib/barcode.js';
 import { cleanTag, formatDate, formatQuantity, tagList } from '../lib/format.js';
 import { html, raw, safeUrl } from '../lib/html.js';
-import { highlightRanges, STATUS_META, statusOf } from '../lib/halal.js';
+import { FORBIDDEN_PATTERNS, highlightRanges, STATUS_META, statusOf } from '../lib/halal.js';
 import { SITE } from '../lib/site.js';
 import { LISTS, lists } from '../lib/storage.js';
-import { bindImageFallbacks, productImage } from '../ui/card.js';
+import { bindImageFallbacks, productCard, productImage } from '../ui/card.js';
 import { $, $$, icon, setHtml } from '../ui/dom.js';
 import { currentLang, t } from '../ui/i18n-dom.js';
 import { initSearchBox } from '../ui/search-box.js';
@@ -39,17 +39,35 @@ function breadcrumb(name) {
     return html`<nav class="breadcrumb" aria-label="Fil d'Ariane"><a href="/">Accueil</a><span aria-hidden="true">/</span><a href="/catalogue.html">Catalogue</a><span aria-hidden="true">/</span><span aria-current="page">${name}</span></nav>`;
 }
 
-function highlightIngredients(text) {
-    const ranges = highlightRanges(text, SITE.sensitiveIngredients || []);
+/** Rouge : interdit (alcool, porc) ; orange : à vérifier (gélatine, E120, E471…). */
+function ingredientRanges(text) {
+    const words = SITE.sensitiveIngredients || [];
+    const forbidden = highlightRanges(text, words.filter((w) => FORBIDDEN_PATTERNS.has(w))).map((r) => [...r, 'haram']);
+    const doubtful = highlightRanges(text, words.filter((w) => !FORBIDDEN_PATTERNS.has(w))).map((r) => [...r, 'doubtful']);
+    const ranges = [...forbidden, ...doubtful].sort((a, b) => a[0] - b[0]);
+    return ranges.filter((range, index) => index === 0 || range[0] >= ranges[index - 1][1]);
+}
+
+function highlightIngredients(text, ranges) {
     if (!ranges.length) return html`${text}`;
     const parts = [];
     let last = 0;
-    for (const [start, end] of ranges) {
-        parts.push(html`${text.slice(last, start)}`, html`<mark class="flag">${text.slice(start, end)}</mark>`);
+    for (const [start, end, kind] of ranges) {
+        const title = kind === 'haram' ? 'Interdit : alcool ou porc' : 'À vérifier : origine incertaine';
+        parts.push(html`${text.slice(last, start)}`, html`<mark class="flag flag--${kind}" title="${title}">${text.slice(start, end)}</mark>`);
         last = end;
     }
     parts.push(html`${text.slice(last)}`);
     return html`${parts}`;
+}
+
+function flagLegend(ranges) {
+    if (!ranges.length) return '';
+    const kinds = new Set(ranges.map((range) => range[2]));
+    return html`<div class="flag-legend"><strong>Pourquoi ce statut ?</strong>
+        ${kinds.has('haram') ? html`<span><mark class="flag flag--haram">rouge</mark> interdit : alcool ou porc</span>` : ''}
+        ${kinds.has('doubtful') ? html`<span><mark class="flag flag--doubtful">orange</mark> à vérifier : origine animale possible</span>` : ''}
+    </div>`;
 }
 
 function tags(value, limit = 12) {
@@ -73,6 +91,25 @@ function verdictPanel(product) {
             <p class="verdict__summary">${info.summary || STATUS_META[status].description}</p>
             ${reasons.length ? html`<ul class="reasons">${reasons.map((reason) => html`<li class="r-${reason.type}">${raw(icon(REASON_ICON[reason.type] || 'i-info'))}<span>${reason.text}</span></li>`)}</ul>` : ''}
             <p class="verdict__note">Informations issues des contributeurs ${SITE.upstream.name}, sans vérification par un organisme. En cas de doute, fiez-vous au logo de certification présent sur l'emballage.</p>
+            <details class="report" data-report>
+                <summary>${raw(icon('i-info'))}<span>Ce statut vous semble faux ?</span></summary>
+                <form class="stack report__form" data-report-form>
+                    <div class="field">
+                        <label class="label" for="report-reason">Ce qui ne va pas</label>
+                        <select class="select" id="report-reason" name="reason" required>
+                            <option value="should-be-halal">Le produit est halal</option>
+                            <option value="should-be-haram">Le produit contient de l'alcool ou du porc</option>
+                            <option value="wrong-ingredients">Les ingrédients sont faux ou incomplets</option>
+                            <option value="other">Autre</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label class="label" for="report-message">Précisions (facultatif)</label>
+                        <textarea class="input" id="report-message" name="message" rows="3" maxlength="1000" placeholder="Ex. : le logo AVS figure sur l'emballage"></textarea>
+                    </div>
+                    <button class="btn btn--primary" type="submit">Envoyer à l'équipe</button>
+                </form>
+            </details>
         </div>
     </section>`;
 }
@@ -109,6 +146,7 @@ function renderProduct(product) {
     const editUrl = `${SITE.upstream.productUrl}${encodeURIComponent(product.code)}`;
     const ingredientsUrl = `${SITE.upstream.url}/cgi/product.pl?type=edit&code=${encodeURIComponent(product.code)}`;
     const quantity = product.quantity ? ` · ${product.quantity}` : '';
+    const ranges = ingredients ? ingredientRanges(ingredients) : [];
 
     setHtml(root, html`
         ${breadcrumb(name)}
@@ -138,14 +176,18 @@ function renderProduct(product) {
                     <h2>Il manque la liste des ingrédients</h2>
                     <p>Sans elle, impossible de savoir si ce produit contient de l'alcool ou du porc. Vous l'avez sous la main ? Photographiez la liste des ingrédients : le statut halal sera calculé à la synchronisation suivante.</p>
                 </div>
-                <a class="btn btn--primary btn--lg" href="${ingredientsUrl}" target="_blank" rel="noopener">${raw(icon('i-plus'))}<span>Ajouter les ingrédients</span>${raw(icon('i-external'))}</a>
+                <div class="todo-banner__actions">
+                    <button class="btn btn--primary btn--lg" type="button" data-ocr="${product.code}">${raw(icon('i-camera'))}<span>Vérifier en photo</span></button>
+                    <a class="btn btn--lg" href="${ingredientsUrl}" target="_blank" rel="noopener">${raw(icon('i-plus'))}<span>Ajouter les ingrédients</span>${raw(icon('i-external'))}</a>
+                </div>
             </section>`}
             <div class="span-all">${verdictPanel(product)}</div>
+            <section class="span-all panel alternatives" data-alternatives hidden aria-labelledby="alternatives-title"></section>
 
             <section class="panel" aria-labelledby="ingredients-title">
                 <h2 id="ingredients-title">${raw(icon('i-flask'))}${t('product.ingredients')}</h2>
                 ${ingredients
-                    ? html`<p class="ingredients-text">${highlightIngredients(ingredients)}</p>`
+                    ? html`<p class="ingredients-text">${highlightIngredients(ingredients, ranges)}</p>${flagLegend(ranges)}`
                     : html`<div class="callout callout--warn">${raw(icon('i-info'))}<span>La liste des ingrédients n'est pas renseignée. <a href="${editUrl}" target="_blank" rel="noopener">Ajoutez-la sur ${SITE.upstream.name}</a> pour fiabiliser le statut.</span></div>`}
                 <dl class="kv" style="margin-top:var(--space-4)">
                     ${kvRow('Allergènes', tags(product.allergens_tags))}
@@ -191,12 +233,46 @@ function bindActions(product) {
         toast(t(added ? 'list.added' : 'list.removed', { list: LISTS[key].label }), { type: added ? 'success' : 'info', action: added ? { label: t('nav.lists'), href: '/my-lists.html' } : null });
     }));
     $('[data-share]', root)?.addEventListener('click', async () => {
-        const data = { title: product.product_name || SITE.name, text: `${product.product_name || ''} — ${t(`status.${statusOf(product)}`)}`, url: window.location.href };
+        const url = `${window.location.origin}/p/${encodeURIComponent(product.code)}`;
+        const data = { title: product.product_name || SITE.name, text: `${product.product_name || ''} — ${t(`status.${statusOf(product)}`)}`, url };
         try {
             if (navigator.share) await navigator.share(data);
             else { await navigator.clipboard.writeText(data.url); toast(t('product.linkCopied'), { type: 'success' }); }
         } catch { /* partage annulé */ }
     });
+}
+
+function bindReport(product) {
+    const form = $('[data-report-form]', root);
+    form?.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const button = form.querySelector('[type="submit"]');
+        button.classList.add('is-loading');
+        try {
+            await api.report(product.code, form.elements.reason.value, form.elements.message.value.trim());
+            $('[data-report]', root).innerHTML = String(html`<p class="callout">${raw(icon('i-halal'))}<span>Merci ! Votre signalement a été transmis à l'équipe, qui vérifiera la fiche.</span></p>`);
+        } catch (error) {
+            toast(error.kind === 'rate-limit' ? 'Trop de signalements : réessayez plus tard.' : t('error.server'), { type: 'error' });
+        } finally {
+            button.classList.remove('is-loading');
+        }
+    });
+}
+
+/** Produits halal de la même catégorie (alternatives si le produit ne l'est pas). */
+async function loadAlternatives(product) {
+    const box = $('[data-alternatives]', root);
+    if (!box) return;
+    try {
+        const { products } = await api.alternatives(product.code);
+        if (!products.length) return;
+        const halal = statusOf(product) === 'halal';
+        setHtml(box, html`<h2 id="alternatives-title">${raw(icon('i-halal'))}${halal ? 'Produits similaires halal' : 'Alternatives halal'}</h2>
+            <p class="muted">${halal ? 'D\'autres produits halal de la même catégorie.' : 'Des produits halal de la même catégorie, parmi les plus consultés.'}</p>
+            <div class="rail">${products.map((item, index) => productCard(item, index))}</div>`);
+        box.hidden = false;
+        bindImageFallbacks(box);
+    } catch { /* bloc facultatif : la fiche reste complète sans lui */ }
 }
 
 function updateMeta(product) {
@@ -252,6 +328,8 @@ async function load() {
     try {
         renderProduct(product);
         bindActions(product);
+        bindReport(product);
+        loadAlternatives(product);
         updateMeta(product);
         lists.remember(product);
     } catch (error) {

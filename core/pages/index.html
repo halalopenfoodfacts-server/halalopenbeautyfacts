@@ -10,6 +10,7 @@
       {{> search-hero}}
       <div class="hero__hints">
         <button class="btn btn--ink hero__scan-cta" type="button" data-scan><svg aria-hidden="true"><use href="#i-scan"/></svg><span>Scanner un code-barres</span></button>
+        <button class="btn btn--soft" type="button" data-ocr><svg aria-hidden="true"><use href="#i-camera"/></svg><span>Vérifier une étiquette en photo</span></button>
         <span>Essayez :</span>
         {{#each site.searchExamples}}<a class="chip" href="/catalogue.html?q={{this}}">{{this}}</a>{{/each}}
       </div>
@@ -72,7 +73,16 @@
   <div class="container">
     <div class="section-head section-head--row">
       <div><span class="eyebrow">En direct de la base</span><h2 data-i18n="home.popular">Les plus consultés</h2></div>
-      <a class="btn" href="/catalogue.html"><span data-i18n="common.seeAll">Tout voir</span><svg aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
+      <div class="cluster">
+        <div class="country-pref">
+          <label for="home-country">Produits vendus en</label>
+          <select class="select select--sm select--auto" id="home-country" data-home-country>
+            <option value="">🌍 Tous les pays</option>
+            {{#each content.voyage}}<option value="{{this.id}}">{{this.flag}} {{this.title}}</option>{{/each}}
+          </select>
+        </div>
+        <a class="btn" href="/catalogue.html" data-rail-link="/catalogue.html"><span data-i18n="common.seeAll">Tout voir</span><svg aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
+      </div>
     </div>
     <div class="rail" data-rail="top" aria-busy="true"></div>
   </div>
@@ -82,7 +92,7 @@
   <div class="container">
     <div class="section-head section-head--row">
       <div><span class="eyebrow">Mises à jour</span><h2 data-i18n="home.recent">Dernières contributions</h2></div>
-      <a class="btn" href="/catalogue.html?tri=recent"><span data-i18n="common.seeAll">Tout voir</span><svg aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
+      <a class="btn" href="/catalogue.html?tri=recent" data-rail-link="/catalogue.html?tri=recent"><span data-i18n="common.seeAll">Tout voir</span><svg aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
     </div>
     <div class="rail" data-rail="recent" aria-busy="true"></div>
   </div>

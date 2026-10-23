@@ -1,10 +1,13 @@
 import { isRtl, normalizeLang, translate } from '../lib/i18n.js';
+import { langFromPath, localizedPath, stripLang } from '../lib/i18n-catalog.js';
 import { store } from '../lib/storage.js';
 
 const KEY = 'hof-lang';
 const LEGACY_KEYS = ['hobf_language', 'hoff_language'];
 
 export function currentLang() {
+    const fromPath = langFromPath(window.location.pathname);
+    if (fromPath) return fromPath;
     const stored = store.readRaw(KEY) || LEGACY_KEYS.map((key) => store.readRaw(key)).find(Boolean);
     return normalizeLang(stored || 'fr');
 }
@@ -23,12 +26,13 @@ export function applyTranslations(root = document, lang = currentLang()) {
     }
 }
 
-/** Change de langue : la page est rechargée pour être entièrement traduite. */
+/** Change de langue : ouvre la même page dans la langue choisie (/en/…, /ar/…, /es/… ou racine). */
 export function switchLang(value) {
     const lang = normalizeLang(value);
     if (lang === currentLang()) return;
     store.writeRaw(KEY, lang);
-    window.location.reload();
+    const { pathname, search, hash } = window.location;
+    window.location.assign(localizedPath(stripLang(pathname), lang) + search + hash);
 }
 
 export function setLang(value) {

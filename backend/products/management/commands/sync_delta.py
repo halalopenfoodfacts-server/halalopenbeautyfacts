@@ -109,7 +109,8 @@ def process_jsonl_line(line: bytes, portal: str) -> Product | None:
 
     # Extraire les champs dynamiques
     dynamic = {}
-    for field in ['nutriments', 'additives_tags', 'allergens_tags', 'nutriscore_grade',
+    # last_editor : crédite les bénévoles du défi de la semaine (fiche complétée)
+    for field in ['last_editor', 'nutriments', 'additives_tags', 'allergens_tags', 'nutriscore_grade',
                   'nova_group', 'ecoscore_grade', 'quantity', 'serving_size']:
         v = data.get(field)
         if v is not None:

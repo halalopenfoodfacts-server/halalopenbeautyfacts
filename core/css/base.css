@@ -102,3 +102,8 @@ hr { border: 0; border-top: 1px solid var(--line); margin: var(--space-6) 0; }
 
 /* Langue autre que le français : page masquée le temps de la traduction (2,5 s au plus, voir layout.html) */
 .i18n-pending body { visibility: hidden; }
+
+/* Arabe : l'espacement des lettres casse les liaisons ; texte un peu plus aéré */
+:root[lang='ar'] *, :root[lang='ar'] *::before { letter-spacing: normal !important; }
+:root[lang='ar'] body { line-height: 1.75; }
+:root[lang='ar'] h1, :root[lang='ar'] h2, :root[lang='ar'] h3 { font-family: var(--font-body); font-weight: 700; line-height: 1.35; }

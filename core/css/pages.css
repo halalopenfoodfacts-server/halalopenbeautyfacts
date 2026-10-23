@@ -335,3 +335,38 @@
 pre { max-width: 100%; overflow-x: auto; }
 /* Réserve la hauteur de la grille pendant le chargement : le pied de page ne saute pas (CLS) */
 [data-results][aria-busy='true'] { min-height: 120vh; }
+
+/* Pays préféré (accueil) */
+.country-pref { display: inline-flex; align-items: center; gap: 0.5rem; font-size: var(--text-sm); color: var(--ink-2); }
+
+/* Défi de la semaine (Produits à compléter) */
+.challenge { display: grid; gap: var(--space-4); margin-bottom: var(--space-7); padding-block: var(--space-5); }
+.challenge__head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--space-4); align-items: end; }
+.challenge__head p { max-width: 60ch; color: var(--ink-2); }
+.challenge__score { display: grid; justify-items: end; line-height: 1.1; }
+.challenge__score strong { font-family: var(--font-display); font-size: var(--text-3xl); color: var(--accent); }
+.challenge__score span { color: var(--ink-3); font-size: var(--text-sm); }
+.challenge__bar { height: 0.75rem; border-radius: var(--radius-pill); background: var(--bg-sunken); overflow: hidden; }
+.challenge__bar span { display: block; height: 100%; width: 0; border-radius: inherit; background: linear-gradient(90deg, var(--accent), var(--accent-2)); transition: width var(--dur-3) var(--ease-out); }
+.challenge__item { position: relative; }
+.challenge__item.is-done .product-card { opacity: 0.55; }
+.challenge__item.is-done::after {
+    content: '✓';
+    position: absolute;
+    inset-block-start: 0.5rem;
+    inset-inline-end: 0.5rem;
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: var(--halal);
+    color: #fff;
+    font-weight: 700;
+}
+.challenge__board h3 { font-size: var(--text-lg); margin-bottom: var(--space-2); }
+.leaderboard { display: grid; gap: 0.35rem; max-width: 26rem; padding-inline-start: 1.4rem; }
+.leaderboard li { display: flex; justify-content: space-between; gap: 1rem; }
+.leaderboard span { font-family: var(--font-mono); color: var(--ink-3); }
+.section-title { font-size: var(--text-xl); margin-bottom: var(--space-3); }
+@media (max-width: 760px) { .challenge__score { justify-items: start; } }

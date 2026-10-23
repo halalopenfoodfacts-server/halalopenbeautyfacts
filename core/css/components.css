@@ -632,3 +632,33 @@ html:not(.js) .reveal { opacity: 1; transform: none; }
 .select--auto { width: auto; }
 .mobile-menu__logo { height: 2.2rem; width: auto; }
 .tabs [role='tab'] { flex-shrink: 0; }
+
+/* Verdict plein écran (scanner, vérification en photo) : lisible d'un coup d'œil en rayon */
+.verdict-screen {
+    --tone: var(--unknown);
+    --tone-soft: var(--unknown-soft);
+    display: grid;
+    justify-items: center;
+    gap: 0.6rem;
+    padding: var(--space-6) var(--space-4);
+    border-radius: var(--radius-lg);
+    background: var(--tone-soft);
+    border: 2px solid color-mix(in srgb, var(--tone) 45%, transparent);
+    text-align: center;
+}
+.verdict-screen--halal { --tone: var(--halal); --tone-soft: var(--halal-soft); }
+.verdict-screen--haram { --tone: var(--haram); --tone-soft: var(--haram-soft); }
+.verdict-screen--doubtful { --tone: var(--doubtful); --tone-soft: var(--doubtful-soft); }
+.verdict-screen .seal { --seal-size: 9.5rem; }
+.verdict-screen__name { font-size: var(--text-xl); font-family: var(--font-display); }
+.verdict-screen__summary { max-width: 40ch; color: var(--ink); }
+.verdict-screen__actions { justify-content: center; margin-top: 0.4rem; }
+.verdict-screen .reason-list { text-align: start; font-size: var(--text-sm); display: grid; gap: 0.3rem; padding-inline-start: 1.1rem; }
+
+/* Vérification des ingrédients en photo */
+.ocr { width: min(36rem, calc(100vw - 2rem)); }
+.ocr__pick { cursor: pointer; justify-self: start; }
+.ocr__preview { max-height: 14rem; width: auto; max-width: 100%; border-radius: var(--radius); box-shadow: var(--shadow-1); justify-self: center; }
+.ocr__bar { height: 0.5rem; border-radius: var(--radius-pill); background: var(--bg-sunken); overflow: hidden; }
+.ocr__bar span { display: block; height: 100%; width: 0; background: var(--accent); transition: width var(--dur-2); }
+.ocr__text { min-height: 7rem; font-family: var(--font-body); resize: vertical; }

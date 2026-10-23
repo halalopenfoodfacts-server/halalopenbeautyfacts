@@ -1,4 +1,5 @@
 import { api } from '../lib/api.js';
+import { preferredCountry, savePreferredCountry } from '../lib/country.js';
 import { html } from '../lib/html.js';
 import { bindImageFallbacks, productCard, skeletonCards } from '../ui/card.js';
 import { countUp } from '../ui/countup.js';
@@ -62,7 +63,33 @@ function initVoyage() {
     });
 }
 
+/** Listes de l'accueil : produits vendus dans le pays choisi, ou dans le monde entier. */
+function loadRails(country) {
+    const tag = country ? `en:${country}` : '';
+    loadRail('top', () => (tag ? api.search({ countries_tags: tag, sort_by: 'unique_scans_n', page_size: 12 }) : api.top(12)));
+    loadRail('recent', () => (tag ? api.search({ countries_tags: tag, sort_by: 'last_modified_t', page_size: 12 }) : api.recent(12)));
+    const suffix = tag ? `pays=${encodeURIComponent(tag)}` : '';
+    $$('[data-rail-link]').forEach((link) => {
+        const base = link.dataset.railLink;
+        link.href = suffix ? `${base}${base.includes('?') ? '&' : '?'}${suffix}` : base;
+    });
+}
+
+function initCountry() {
+    const select = $('[data-home-country]');
+    const available = select ? [...select.options].map((option) => option.value).filter(Boolean) : [];
+    const country = preferredCountry(available);
+    if (select) {
+        select.value = country;
+        select.addEventListener('change', () => {
+            savePreferredCountry(select.value);
+            $$('[data-rail]').forEach((rail) => { rail.closest('section').hidden = false; });
+            loadRails(select.value);
+        });
+    }
+    loadRails(country);
+}
+
 loadStats();
-loadRail('top', () => api.top(12));
-loadRail('recent', () => api.recent(12));
+initCountry();
 initVoyage();

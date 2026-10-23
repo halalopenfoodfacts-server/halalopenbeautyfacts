@@ -23,7 +23,7 @@
 {{#each assets.preloadFonts}}<link rel="preload" href="{{this}}" as="font" type="font/woff2" crossorigin>{{/each}}
 <link rel="stylesheet" href="{{assets.css}}">
 <meta name="hof-i18n" content="{{assets.i18nUrls}}">
-<script>(function(){try{var t=localStorage.getItem('hof-theme');if(t==='dark'||t==='light')document.documentElement.dataset.theme=t;var m=/[?&]lang=(fr|en|ar|es)(&|$)/.exec(location.search);if(m)localStorage.setItem('hof-lang',m[1]);var l=localStorage.getItem('hof-lang');if(l&&l!=='fr'){document.documentElement.lang=l;if(l==='ar')document.documentElement.dir='rtl';document.documentElement.classList.add('i18n-pending');setTimeout(function(){document.documentElement.classList.remove('i18n-pending');},2500);}}catch(e){}document.documentElement.classList.add('js');})();</script>
+<script>(function(){try{var t=localStorage.getItem('hof-theme');if(t==='dark'||t==='light')document.documentElement.dataset.theme=t;var p=/^\/(en|ar|es)(\/|$)/.exec(location.pathname),m=/[?&]lang=(fr|en|ar|es)(&|$)/.exec(location.search);if(p||m)localStorage.setItem('hof-lang',(p||m)[1]);var l=p?p[1]:localStorage.getItem('hof-lang');if(!p&&/^(en|ar|es)$/.test(l||'')){location.replace('/'+l+location.pathname+location.search+location.hash);return;}if(l&&l!=='fr'){document.documentElement.lang=l;if(l==='ar')document.documentElement.dir='rtl';if(!p)document.documentElement.classList.add('i18n-pending');setTimeout(function(){document.documentElement.classList.remove('i18n-pending');},2500);}}catch(e){}document.documentElement.classList.add('js');})();</script>
 {{#if page.script}}<script type="module" src="{{page.script}}"></script>{{/if}}
 {{#if page.jsonld}}<script type="application/ld+json">{{{page.jsonld}}}</script>{{/if}}
 </head>

@@ -3,7 +3,9 @@
   "private": true,
   "description": "Frontend Halal Open Food Facts / Halal Open Beauty Facts — HTML/CSS/JS sans framework, build esbuild",
   "type": "module",
-  "engines": { "node": ">=20" },
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "build": "node core/tools/build.mjs",
     "dev": "node core/tools/build.mjs --watch & node core/tools/serve.mjs",
@@ -15,7 +17,11 @@
   },
   "devDependencies": {
     "@playwright/test": "1.48.2",
+    "@tesseract.js-data/ara": "1.0.0",
+    "@tesseract.js-data/eng": "1.0.0",
+    "@tesseract.js-data/fra": "1.0.0",
     "@zxing/library": "0.21.3",
-    "esbuild": "0.24.0"
+    "esbuild": "0.24.0",
+    "tesseract.js": "6.0.1"
   }
 }

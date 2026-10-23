@@ -41,8 +41,8 @@
     --ns-a: #038141; --ns-b: #85bb2f; --ns-c: #fecb02; --ns-d: #ee8100; --ns-e: #e63e11;
 
     /* Typographie */
-    --font-display: 'Fraunces', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
-    --font-body: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans Arabic', sans-serif;
+    --font-display: 'Fraunces', 'IBM Plex Sans Arabic', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
+    --font-body: 'IBM Plex Sans', 'IBM Plex Sans Arabic', system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans Arabic', sans-serif;
     --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
     --text-xs: 0.78rem;
     --text-sm: 0.875rem;

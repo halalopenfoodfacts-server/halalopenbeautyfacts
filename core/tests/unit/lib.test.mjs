@@ -129,3 +129,10 @@ test('i18n : toutes les clés traduites dans les 4 langues', () => {
     assert.equal(normalizeLang('de'), 'fr');
     assert.deepEqual(LANGS, ['fr', 'en', 'ar', 'es']);
 });
+
+test('pays deviné par le fuseau horaire', async () => {
+    const { guessCountry } = await import('../../js/lib/country.js');
+    assert.equal(guessCountry('Africa/Casablanca'), 'morocco');
+    assert.equal(guessCountry('Europe/Paris'), 'france');
+    assert.equal(guessCountry('Pacific/Fiji'), '');
+});

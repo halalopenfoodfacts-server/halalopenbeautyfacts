@@ -8,6 +8,7 @@ import { bindImageFallbacks, productCard, skeletonCards } from '../ui/card.js';
 import { $, $$, setHtml, trapFocus } from '../ui/dom.js';
 import { currentLang, t } from '../ui/i18n-dom.js';
 import { renderPagination } from '../ui/pagination.js';
+import { SITE } from '../lib/site.js';
 import { renderError, renderState } from '../ui/state.js';
 import { initShell } from '../ui/shell.js';
 
@@ -215,3 +216,25 @@ api.facet('countries', { retry: 0 }).then(({ tags = [] }) => {
 
 syncControls();
 load();
+
+// Page « Produits à compléter » : défi de la semaine
+async function loadChallenge() {
+    const box = $('[data-challenge]');
+    if (!box) return;
+    try {
+        const data = await api.challenge();
+        if (!data.total) return;
+        $('[data-challenge-done]', box).textContent = String(data.done);
+        $('[data-challenge-total]', box).textContent = String(data.total);
+        $('[data-challenge-bar]', box).style.width = `${Math.round((data.done / data.total) * 100)}%`;
+        const rail = $('[data-challenge-products]', box);
+        setHtml(rail, html`${data.products.map((product, index) => html`<div class="challenge__item${product.halal_status === 'unknown' ? '' : ' is-done'}">${productCard(product, index)}</div>`)}`);
+        bindImageFallbacks(rail);
+        if (data.leaderboard.length) {
+            setHtml($('[data-challenge-leaders]', box), html`${data.leaderboard.map((leader) => html`<li><a href="${SITE.upstream.url}/contributor/${encodeURIComponent(leader.name)}" target="_blank" rel="noopener">${leader.name}</a><span>${leader.count}</span></li>`)}`);
+            $('[data-challenge-board]', box).hidden = false;
+        }
+        box.hidden = false;
+    } catch { /* défi facultatif : la liste complète reste affichée */ }
+}
+loadChallenge();

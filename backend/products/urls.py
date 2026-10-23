@@ -1,5 +1,5 @@
 from django.urls import path
-from . import views
+from . import community, views
 
 urlpatterns = [
     # Compatible avec les appels frontend existants (remplace /proxy/v2/)
@@ -17,4 +17,12 @@ urlpatterns = [
     path('recent',                          views.recent_products, name='recent-products'),
     path('facets/<str:facet_type>',         views.facets,          name='facets'),
     path('sync/status',                     views.sync_status,     name='sync-status'),
+
+    # Aide à l'achat et communauté (products/community.py)
+    path('v2/classify',                     community.classify_text, name='classify'),
+    path('v2/alternatives/<str:code>',      community.alternatives,  name='alternatives'),
+    path('v2/report',                       community.report,        name='report'),
+    path('v2/challenge',                    community.challenge,     name='challenge'),
+    path('v2/share/<str:code>',             community.share_page,    name='share'),
+    path('v2/og/<str:code>',                community.og_image,      name='og-image'),
 ]

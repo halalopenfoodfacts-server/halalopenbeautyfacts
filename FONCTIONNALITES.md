@@ -72,6 +72,17 @@ Les numéros (B1, H2…) renvoient à `AUDIT.md`.
 | SEO : meta, Open Graph, canonical, sitemap.xml, robots.txt (P8) | ✔ | ✔ | Nouvelle | E |
 | CSP stricte (scripts autorisés par empreinte), polices auto-hébergées (P3) | ✔ | ✔ | Corrigée | E (CSP de prod appliquée) |
 | Build de production (`npm run build`) sans erreur ni avertissement | ✔ | ✔ | Nouvelle | build + CI |
+| **Aide à l'achat et communauté** | | | | |
+| Vérifier les ingrédients en photo (lecture sur l'appareil, Tesseract ; français, arabe, anglais) + verdict | ✔ | ✔ | Nouvelle | B (classify), U |
+| Alternatives halal de la même catégorie sur la fiche produit | ✔ | ✔ | Nouvelle | B |
+| Ingrédients surlignés : rouge (alcool, porc), orange (à vérifier) + « Pourquoi ce statut ? » | ✔ | ✔ | Nouvelle | V |
+| Verdict de scan plein écran, vibration propre à chaque statut | ✔ | ✔ | Nouvelle | V |
+| Signaler un statut erroné (admin Django « Status reports ») | ✔ | ✔ | Nouvelle | B |
+| Défi de la semaine + bénévoles de la semaine (page Produits à compléter) | ✔ | ✔ | Nouvelle | B |
+| Pays préféré sur l'accueil (deviné par le fuseau horaire, modifiable) | ✔ | ✔ | Nouvelle | U |
+| Partage : page /p/<code> avec image d'aperçu (statut + photo) pour WhatsApp / Facebook | ✔ | ✔ | Nouvelle | B |
+| Pages /en/, /ar/, /es/ générées au build (hreflang, sitemap multilingue) ; police arabe IBM Plex Sans Arabic | ✔ | ✔ | Nouvelle | U |
+| Détection des ingrédients écrits en arabe (خنزير، كحول، جيلاتين…) | ✔ | ✔ | Nouvelle | B |
 | **Backend** | | | | |
 | Paramètres invalides → plus d'erreur 500 (D1) | ✔ | ✔ | Corrigée | B |
 | statement_timeout 20 s côté web | ✔ | ✔ | Nouvelle | P |

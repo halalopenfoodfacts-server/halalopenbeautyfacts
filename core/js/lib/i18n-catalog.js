@@ -47,3 +47,25 @@ export function createCatalog(entries = {}) {
 
     return { lookup, translateText, size: exact.size + patterns.length };
 }
+
+// ── Pages par langue : /en/…, /ar/…, /es/… (le français reste à la racine) ──
+export const PATH_LANGS = ['en', 'ar', 'es'];
+// Liens qui ne sont pas des pages du site : jamais préfixés par la langue
+export const UNLOCALIZED = /^\/(assets|icons|proxy|p)\/|^\/(favicon\.png|manifest\.webmanifest|service-worker\.js|robots\.txt|sitemap\.xml)/;
+
+/** Langue indiquée par le chemin (« /ar/catalogue.html » → « ar »), sinon ''. */
+export function langFromPath(pathname) {
+    const match = /^\/(en|ar|es)(\/|$)/.exec(pathname);
+    return match ? match[1] : '';
+}
+
+/** Chemin sans préfixe de langue. */
+export function stripLang(pathname) {
+    return langFromPath(pathname) ? pathname.slice(3) || '/' : pathname;
+}
+
+/** URL d'une page du site dans une langue (le français reste à la racine). */
+export function localizedPath(path, lang) {
+    if (lang === 'fr' || !path.startsWith('/') || path.startsWith('//') || UNLOCALIZED.test(path) || langFromPath(path)) return path;
+    return `/${lang}${path}`;
+}

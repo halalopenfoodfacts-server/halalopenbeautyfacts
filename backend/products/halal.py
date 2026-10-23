@@ -60,6 +60,15 @@ _COMMON_SIGNALS = [
     ('présure / caillette', r'presure|rennet'),
 ]
 
+# Emballages en arabe (Maroc, Algérie, Golfe…) : préfixes collés au mot (و، ب، ل، ف، ال)
+_AR = r'(?:[وبلف])?(?:ال)?'
+_ARABIC_SIGNALS = [
+    ('porc', _AR + r'خنزير\w*'),
+    ('alcool', _AR + r'(?:كحول\w*|ايثانول|إيثانول)'),
+    ('vin / spiritueux', _AR + r'(?:نبيذ|خمر|خمور|بيرة|جعة)'),
+    ('gélatine', _AR + r'(?:جيلاتين\w*|جلاتين\w*)'),
+]
+
 _FOOD_SIGNALS = [
     ('vin / spiritueux', r'vins?|wine|bieres?|beer|rhum|rum|whisky|cognac|liqueurs?|kirsch|brandy|vodka|calvados'),
     ('shellac (E904)', r'e\s*904|shellac|gomme laque'),
@@ -98,8 +107,8 @@ def _compile(signals):
 HARAM_SIGNALS = {'porc', 'saindoux / lard', 'alcool', 'vin / spiritueux'}
 
 _SIGNALS = {
-    'food': _compile(_COMMON_SIGNALS + _FOOD_SIGNALS),
-    'beauty': _compile(_COMMON_SIGNALS + _BEAUTY_SIGNALS),
+    'food': _compile(_COMMON_SIGNALS + _FOOD_SIGNALS + _ARABIC_SIGNALS),
+    'beauty': _compile(_COMMON_SIGNALS + _BEAUTY_SIGNALS + _ARABIC_SIGNALS),
 }
 
 

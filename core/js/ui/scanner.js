@@ -146,19 +146,19 @@ async function lookup(rawCode) {
         const { product } = await api.product(code, { retry: 1 });
         const status = statusOf(product);
         lists.remember(product);
-        result.innerHTML = String(html`<div class="scan-result scan-result--full">
+        result.innerHTML = String(html`<div class="verdict-screen verdict-screen--${status}">
             ${seal(status, { stamp: true })}
-            <div class="stack" style="gap:.5rem">
-                <strong>${product.product_name || product.code}</strong>
-                <span class="muted">${product.brands || ''}</span>
-                <div class="cluster">
-                    <a class="btn btn--primary btn--sm" href="/product.html?code=${encodeURIComponent(product.code)}">${t('scan.view')}</a>
-                    <button class="btn btn--sm" type="button" data-scan-again>${t('scan.again')}</button>
-                </div>
+            <strong class="verdict-screen__name">${product.product_name || product.code}</strong>
+            ${product.brands ? html`<span class="muted">${product.brands}</span>` : ''}
+            <div class="cluster verdict-screen__actions">
+                <a class="btn btn--primary" href="/product.html?code=${encodeURIComponent(product.code)}">${t('scan.view')}</a>
+                ${status === 'unknown' ? html`<button class="btn" type="button" data-ocr="${product.code}">Vérifier en photo</button>` : ''}
+                <button class="btn" type="button" data-scan-again>${t('scan.again')}</button>
             </div>
         </div>`);
         bindImageFallbacks(result);
-        navigator.vibrate?.(status === 'haram' ? [90, 60, 90] : 40);
+        // Vibration propre à chaque verdict, perceptible sans regarder l'écran
+        navigator.vibrate?.({ halal: [60], doubtful: [60, 80, 60], haram: [220, 100, 220] }[status] || [40]);
     } catch (error) {
         const notFound = error.kind === 'not-found' || error.kind === 'bad-request';
         const message = notFound
@@ -168,7 +168,8 @@ async function lookup(rawCode) {
             <span>${message} <span class="mono">${code}</span></span>
         </div>
         <div class="cluster" style="margin-top:.75rem">
-            ${notFound && SITE.upstream.addUrl ? html`<a class="btn btn--primary btn--sm" href="${SITE.upstream.addUrl}${encodeURIComponent(code)}" target="_blank" rel="noopener">${t('scan.add')}</a>` : ''}
+            ${notFound ? html`<button class="btn btn--primary btn--sm" type="button" data-ocr="${code}">Vérifier en photo</button>` : ''}
+            ${notFound && SITE.upstream.addUrl ? html`<a class="btn btn--sm" href="${SITE.upstream.addUrl}${encodeURIComponent(code)}" target="_blank" rel="noopener">${t('scan.add')}</a>` : ''}
             ${notFound ? '' : html`<button class="btn btn--primary btn--sm" type="button" data-scan-retry>${t('common.retry')}</button>`}
             <button class="btn btn--sm" type="button" data-scan-again>${t('scan.again')}</button>
         </div>`);

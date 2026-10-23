@@ -15,7 +15,7 @@ test('fiche produit : statut, raisons, code-barres et métadonnées', async ({ p
 test('produit non conforme affiché comme tel (régression AUDIT H2)', async ({ page }) => {
     await page.goto(`/product.html?code=${FIX.haramProduct}`);
     await expect(page.locator('.verdict--haram')).toBeVisible();
-    await expect(page.locator('.verdict')).not.toContainText('Halal déclaré');
+    await expect(page.locator('.verdict--halal')).toHaveCount(0);
 });
 
 test('produit inconnu : message explicite et lien d\'ajout', async ({ page }) => {

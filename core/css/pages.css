@@ -32,6 +32,15 @@
     color: var(--accent);
     font-variation-settings: 'opsz' 144, 'SOFT' 100, 'WONK' 1;
 }
+.eyebrow--claim {
+    display: inline-flex;
+    padding: 0.35rem 0.85rem;
+    border-radius: var(--radius-pill);
+    background: var(--accent-soft);
+    color: var(--accent-ink);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+}
 .hero__lead { font-size: clamp(1.05rem, 0.95rem + 0.5vw, 1.3rem); max-width: 40ch; }
 .hero .search { margin-top: var(--space-5); max-width: 38rem; }
 .hero__hints { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: var(--space-4); align-items: center; font-size: var(--text-sm); color: var(--ink-3); }

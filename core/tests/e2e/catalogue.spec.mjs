@@ -1,10 +1,10 @@
 import { expect, test } from './helpers.mjs';
 
-test('filtre « Halal déclaré » : URL partageable et badges cohérents', async ({ page, isMobile }) => {
+test('filtre « Halal » : URL partageable et badges cohérents', async ({ page, isMobile }) => {
     await page.goto('/catalogue.html');
     await expect(page.locator('[data-results] .product-card').first()).toBeVisible();
     if (isMobile) await page.locator('[data-filters-open]').click();
-    await page.locator('.status-filter label').filter({ hasText: 'Halal déclaré' }).click();
+    await page.locator('.status-filter label').filter({ has: page.locator('input[value="halal"]') }).click();
     if (isMobile) await page.locator('.filters [data-filters-close]').last().click();
     await expect(page).toHaveURL(/statut=halal/);
     const badges = page.locator('[data-results] .product-card .status');

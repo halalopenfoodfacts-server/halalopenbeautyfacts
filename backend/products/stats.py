@@ -102,8 +102,8 @@ def compute_stats(portal, contributors_count=None, countries_count=None):
     (total, halal, excluded), = _fetchall(
         """
         SELECT COUNT(*),
-               COUNT(*) FILTER (WHERE is_halal),
-               COUNT(*) FILTER (WHERE is_excluded)
+               COUNT(*) FILTER (WHERE halal_status = 'halal'),
+               COUNT(*) FILTER (WHERE halal_status = 'haram')
         FROM products_product
         WHERE portal = %s
         """,

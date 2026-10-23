@@ -53,8 +53,9 @@ class SearchTests(ApiTestCase):
         statuses = {p['code']: p['halal_status'] for p in data['products']}
         self.assertEqual(statuses['5053990179039'], 'halal')
         self.assertEqual(statuses['8712000018825'], 'haram')
-        self.assertEqual(statuses['0012345678905'], 'doubtful')
-        self.assertEqual(statuses['3017620422003'], 'unknown')
+        self.assertEqual(statuses['0012345678905'], 'haram')     # gélatine de porc
+        self.assertEqual(statuses['3017620422003'], 'halal')     # ni alcool ni porc
+        self.assertEqual(statuses['4009308066394'], 'unknown')   # ingrédients absents
 
     def test_missing_image_is_empty_not_fabricated(self):
         product = self.get('/api/v2/search?q=nutella&page_size=1').json()['products'][0]
@@ -81,15 +82,16 @@ class SearchTests(ApiTestCase):
 
     def test_text_search_keeps_filters(self):
         # Régression F10 : filtres ignorés dès qu'un texte était saisi
-        self.assertEqual(self.get('/api/v2/search?q=nutella&is_halal=1').json()['count'], 0)
+        self.assertEqual(self.get('/api/v2/search?q=nutella&is_halal=1').json()['count'], 1)   # pâte : ni alcool ni porc
         self.assertEqual(self.get('/api/search/search?q=samoussas&is_halal=1').json()['hits'][0]['code'],
                          '5053990179039')
 
     def test_filters(self):
         def codes(qs):
             return {p['code'] for p in self.get('/api/v2/search?' + qs).json()['products']}
-        self.assertEqual(codes('is_halal=1'), {'5053990179039'})
-        self.assertEqual(codes('is_excluded=1'), {'8712000018825'})
+        self.assertEqual(codes('is_halal=1'), {'5053990179039', '3017620422003'})
+        self.assertEqual(codes('is_excluded=1'), {'8712000018825', '0012345678905', '7000000000001'})
+        self.assertEqual(codes('halal_status=unknown'), {'4009308066394'})
         self.assertEqual(codes('nutriscore=e'), {'3017620422003'})
         self.assertEqual(codes('nutriscore=d&nutriscore=e'), {'3017620422003', '4009308066394'})
         self.assertEqual(codes('nova=4'), {'3017620422003', '4009308066394'})   # texte « 4 » et nombre 4
@@ -145,7 +147,7 @@ class ProductDetailTests(ApiTestCase):
     def test_portal_isolation(self):
         self.assertEqual(self.get('/api/v2/product/3600523614462.json').status_code, 404)
         beauty = self.get('/api/v2/product/3600523614462', portal='beauty').json()['product']
-        self.assertEqual(beauty['halal_status'], 'unknown')   # cetearyl alcohol ≠ éthanol
+        self.assertEqual(beauty['halal_status'], 'halal')     # cetearyl alcohol ≠ éthanol
 
     def test_detail_accepts_ean_without_leading_zero(self):
         self.assertEqual(self.get('/api/v2/product/12345678905.json').json()['product']['code'], '0012345678905')
@@ -160,8 +162,8 @@ class StatsAndFacetsTests(ApiTestCase):
         refresh_portal('food')
         data = self.client.get('/api/stats?portal=food').json()
         self.assertEqual(data['total'], 6)
-        self.assertEqual(data['halal'], 1)
-        self.assertEqual(data['excluded'], 1)
+        self.assertEqual(data['halal'], 2)
+        self.assertEqual(data['excluded'], 3)
         self.assertEqual(cache.get(stats_key('food'))['total'], 6)
 
     def test_facets(self):
@@ -214,3 +216,15 @@ class MissingImageTests(ApiTestCase):
         self.assertIsNone(cache.get(image_queue_key('food', codes[2])))
         self.get('/api/recent?page_size=3')
         self.queue_images.assert_not_called()                              # pause : rien n'est envoyé
+
+
+class RefreshHalalStatusTests(ApiTestCase):
+    def test_command_recomputes_stored_status(self):
+        from django.core.management import call_command
+        Product.objects.update(halal_status='unknown')
+        call_command('refresh_halal_status', '--restart', '--pause', '0', stdout=open('/dev/null', 'w'))
+        stored = dict(Product.objects.values_list('code', 'halal_status'))
+        self.assertEqual(stored['3017620422003'], 'halal')
+        self.assertEqual(stored['0012345678905'], 'haram')
+        self.assertEqual(stored['4009308066394'], 'unknown')
+        self.assertEqual(stored['3600523614462'], 'halal')

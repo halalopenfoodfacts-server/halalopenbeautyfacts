@@ -19,6 +19,7 @@ from django.contrib.postgres.search import SearchVector
 from django.db import transaction
 from django.utils import timezone as tz
 
+from products.halal import stamp_statuses
 from products.models import Product, SyncLog
 
 FOOD_CSV_URL = 'https://static.openfoodfacts.org/data/en.openfoodfacts.org.products.csv.gz'
@@ -183,6 +184,7 @@ class Command(BaseCommand):
 
     def _flush(self, batch: list, portal: str):
         """Bulk upsert : insert ou update si le produit existe déjà"""
+        stamp_statuses(batch)
         codes = [p.code for p in batch]
         batch_by_code = {p.code: p for p in batch}
 
@@ -195,7 +197,7 @@ class Command(BaseCommand):
             'product_name', 'generic_name', 'brands', 'categories_tags', 'labels_tags',
             'countries_tags', 'ingredients_text', 'image_front_small_url', 'image_front_url',
             'image_ingredients_url', 'image_nutrition_url', 'unique_scans_n', 'last_modified_t',
-            'creator', 'contributors', 'is_halal', 'is_excluded', 'data',
+            'creator', 'contributors', 'is_halal', 'is_excluded', 'halal_status', 'data',
         ]
 
         # Pour les mises à jour, récupérer les objets DB (avec PK) et leur affecter les nouvelles valeurs

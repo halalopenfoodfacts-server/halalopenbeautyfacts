@@ -7,10 +7,22 @@ class ClassifyTests(SimpleTestCase):
     def status(self, labels=None, is_halal=None, is_excluded=None, ingredients='', portal='food'):
         return halal.classify(labels, is_halal, is_excluded, ingredients, portal)['status']
 
-    def test_no_information_is_never_halal(self):
-        # Régression H1 : « Halal confirmé » affiché sans aucun label
-        self.assertEqual(self.status([], None, None, 'Blé, sucre, sel'), halal.UNKNOWN)
+    def test_no_ingredients_is_unknown(self):
         self.assertEqual(self.status(), halal.UNKNOWN)
+        self.assertEqual(self.status([], None, None, '   '), halal.UNKNOWN)
+
+    def test_ingredients_without_alcohol_or_pork_are_halal(self):
+        # Règle de l'association : ni alcool ni porc dans les ingrédients → halal (viandes comprises)
+        self.assertEqual(self.status([], None, None, 'Blé, sucre, sel'), halal.HALAL)
+        self.assertEqual(self.status([], None, None, 'Filet de poulet, sel'), halal.HALAL)
+        self.assertEqual(self.status([], None, None, 'Jambon de dinde, eau, sel'), halal.HALAL)
+        self.assertEqual(self.status([], None, None, 'Vinaigre de vin, sans alcool'), halal.HALAL)
+
+    def test_alcohol_or_pork_in_ingredients_is_haram(self):
+        self.assertEqual(self.status([], None, None, 'Sucre, gélatine de porc'), halal.HARAM)
+        self.assertEqual(self.status([], None, None, 'Farine, saindoux'), halal.HARAM)
+        self.assertEqual(self.status([], None, None, 'Chocolat, rhum 2 %'), halal.HARAM)
+        self.assertEqual(self.status([], None, None, 'Alcohol Denat., Parfum', 'beauty'), halal.HARAM)
 
     def test_exclusion_label_is_haram(self):
         # Régression H2 : bière (label contains-alcohol, is_excluded) affichée « à vérifier »
@@ -34,7 +46,7 @@ class ClassifyTests(SimpleTestCase):
         self.assertEqual(result['reasons'][0]['type'], 'conflict')
 
     def test_sensitive_ingredient_without_label_is_doubtful(self):
-        self.assertEqual(self.status([], None, None, 'Sucre, gélatine de porc'), halal.DOUBTFUL)
+        self.assertEqual(self.status([], None, None, 'Sucre, gélatine'), halal.DOUBTFUL)
         self.assertEqual(self.status([], None, None, 'Sirop, E120'), halal.DOUBTFUL)
         self.assertEqual(self.status([], None, None, "mono- et diglycérides d'acides gras"), halal.DOUBTFUL)
 

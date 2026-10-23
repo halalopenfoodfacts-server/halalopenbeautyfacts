@@ -11,6 +11,7 @@ from rest_framework import status as http_status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
+from .halal import HALAL, HARAM, STATUSES
 from .models import Product
 from .serializers import ProductDetailSerializer, ProductListSerializer
 from .stats import FACET_TYPES, facet_key, stats_key
@@ -75,10 +76,14 @@ def _apply_filters(qs, request):
             # string_to_array(lower(col), ',') @> ARRAY[…] — servi par les index GIN de la migration 0003
             qs = qs.annotate(**{f'{column}_arr': _tag_array(column)}).filter(**{f'{column}_arr__contains': values})
 
+    # Statut calculé (labels + ingrédients, voir halal.py) : is_halal / is_excluded gardés pour les anciens clients
     if request.GET.get('is_halal') == '1':
-        qs = qs.filter(is_halal=True)
+        qs = qs.filter(halal_status=HALAL)
     if request.GET.get('is_excluded') == '1':
-        qs = qs.filter(is_excluded=True)
+        qs = qs.filter(halal_status=HARAM)
+    statuses = [s for s in _values(request, 'halal_status') if s in STATUSES]
+    if statuses:
+        qs = qs.filter(halal_status__in=statuses)
 
     grades = [g.lower() for g in _values(request, 'nutriscore') if g.lower() in 'abcde' and len(g) == 1]
     if grades:
@@ -93,7 +98,7 @@ def _apply_filters(qs, request):
 
 
 _FILTER_PARAMS = (
-    'labels_tags', 'categories_tags', 'countries_tags', 'is_halal', 'is_excluded',
+    'labels_tags', 'categories_tags', 'countries_tags', 'is_halal', 'is_excluded', 'halal_status',
     'nutriscore', 'nova', 'palm_oil_free',
 )
 

@@ -20,6 +20,7 @@ from django.contrib.postgres.search import SearchVector
 from django.db import transaction
 from django.utils import timezone as tz
 
+from products.halal import stamp_statuses
 from products.models import Product, SyncLog
 
 URLS = {
@@ -224,6 +225,7 @@ class Command(BaseCommand):
         ))
 
     def _flush(self, batch, portal, mode):
+        stamp_statuses(batch)
         codes = [p.code for p in batch]
         by_code = {p.code: p for p in batch}
 
@@ -236,7 +238,7 @@ class Command(BaseCommand):
             'image_front_small_url', 'image_front_url',
             'image_ingredients_url', 'image_nutrition_url',
             'unique_scans_n', 'last_modified_t',
-            'creator', 'contributors', 'is_halal', 'is_excluded', 'data',
+            'creator', 'contributors', 'is_halal', 'is_excluded', 'halal_status', 'data',
         ]
 
         to_create = [] if mode == 'update' else [p for p in batch if p.code not in existing_codes]

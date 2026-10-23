@@ -4,7 +4,7 @@
 <section class="hero">
   <div class="container hero__grid">
     <div>
-      <span class="eyebrow" data-i18n="home.eyebrow">Base de données ouverte et communautaire</span>
+      <span class="eyebrow eyebrow--claim" data-i18n="home.eyebrow.{{site.portal}}">{{site.tagline}}</span>
       <h1>{{{site.heroTitle}}}</h1>
       <p class="hero__lead">{{site.heroLead}}</p>
       {{> search-hero}}
@@ -32,7 +32,7 @@
   <div class="container">
     <div class="stats-band" data-stats>
       <a class="stat" href="/catalogue.html"><span class="stat__value" data-stat="total">—</span><span class="stat__label" data-i18n="stats.products">produits référencés</span></a>
-      <a class="stat stat--halal" href="/catalogue.html?statut=halal"><span class="stat__value" data-stat="halal">—</span><span class="stat__label" data-i18n="stats.halal">avec un label halal</span></a>
+      <a class="stat stat--halal" href="/catalogue.html?statut=halal"><span class="stat__value" data-stat="halal">—</span><span class="stat__label" data-i18n="stats.halal">produits halal</span></a>
       <a class="stat stat--haram" href="/excluded.html"><span class="stat__value" data-stat="excluded">—</span><span class="stat__label" data-i18n="stats.excluded">non conformes</span></a>
       <a class="stat" href="/halal-users.html"><span class="stat__value" data-stat="contributors">—</span><span class="stat__label" data-i18n="stats.contributors">contributeurs</span></a>
     </div>
@@ -44,16 +44,16 @@
     <div class="section-head reveal">
       <span class="eyebrow">Lecture honnête des données</span>
       <h2 data-i18n="home.legend">Comment lire un statut</h2>
-      <p>Les statuts reposent sur les labels déclarés par les contributeurs et sur la liste des ingrédients. Ce ne sont pas des certifications : vérifiez toujours le logo de l'organisme sur l'emballage.</p>
+      <p>Les statuts reposent sur les labels et la liste des ingrédients déclarés par les contributeurs. Un produit sans alcool ni porc dans ses ingrédients est halal. Vérifiez toujours l'emballage : la composition peut changer.</p>
     </div>
     <div class="legend">
       <article class="legend__item reveal">
-        <div class="seal seal--halal" role="img" aria-label="Halal déclaré"><div class="seal__inner"><span class="seal__icon"><svg aria-hidden="true"><use href="#i-halal"/></svg></span><span class="seal__label">Halal déclaré</span></div></div>
-        <h3>Halal déclaré</h3><p>Un label halal figure sur la fiche (AVS, HMC, JAKIM…) et aucun label contradictoire.</p>
+        <div class="seal seal--halal" role="img" aria-label="Halal"><div class="seal__inner"><span class="seal__icon"><svg aria-hidden="true"><use href="#i-halal"/></svg></span><span class="seal__label">Halal</span></div></div>
+        <h3>Halal</h3><p>Un label halal figure sur la fiche (AVS, HMC, JAKIM…), ou les ingrédients ne contiennent ni alcool ni porc.</p>
       </article>
       <article class="legend__item reveal">
         <div class="seal seal--haram" role="img" aria-label="Non conforme"><div class="seal__inner"><span class="seal__icon"><svg aria-hidden="true"><use href="#i-haram"/></svg></span><span class="seal__label">Non conforme</span></div></div>
-        <h3>Non conforme</h3><p>La fiche signale de l'alcool ou un produit non halal.</p>
+        <h3>Non conforme</h3><p>Les ingrédients contiennent de l'alcool ou du porc, ou la fiche le signale.</p>
       </article>
       <article class="legend__item reveal">
         <div class="seal seal--doubtful" role="img" aria-label="Douteux"><div class="seal__inner"><span class="seal__icon"><svg aria-hidden="true"><use href="#i-doubtful"/></svg></span><span class="seal__label">Douteux</span></div></div>
@@ -61,7 +61,7 @@
       </article>
       <article class="legend__item reveal">
         <div class="seal" role="img" aria-label="Non renseigné"><div class="seal__inner"><span class="seal__icon"><svg aria-hidden="true"><use href="#i-unknown"/></svg></span><span class="seal__label">Non renseigné</span></div></div>
-        <h3>Non renseigné</h3><p>Aucune information halal : le produit n'est ni validé, ni écarté.</p>
+        <h3>Non renseigné</h3><p>La liste des ingrédients n'est pas encore renseignée : impossible de se prononcer.</p>
       </article>
     </div>
   </div>

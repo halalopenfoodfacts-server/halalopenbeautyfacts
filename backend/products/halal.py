@@ -1,19 +1,18 @@
 """
 Statut halal d'un produit — source unique de vérité pour l'API et les frontends.
 
-Principes (repris de l'assistant, voir assistant/halal.py sur la branche wip/assistant) :
-- la base ne contient AUCUNE certification vérifiée, seulement des labels saisis par
-  les contributeurs Open Food Facts / Open Beauty Facts ;
-- l'absence de label ou d'ingrédient suspect ne prouve RIEN : on ne dit jamais
-  « halal » sans label halal ;
-- un ingrédient sensible ne prouve pas la non-conformité (gélatine bovine halal,
-  « jambon de dinde », alcool gras en cosmétique…) : il rend le produit « douteux ».
+Règle de l'association (oct. 2026) : un produit dont la liste d'ingrédients est
+renseignée et ne contient ni alcool ni porc est halal. Les labels déclarés priment.
+La base ne contient aucune certification vérifiée : labels et ingrédients sont
+saisis par les contributeurs Open Food Facts / Open Beauty Facts.
 
-Statuts renvoyés :
-    halal     label halal déclaré, aucun label d'exclusion
-    haram     label d'exclusion (alcool, non halal…) ou produit marqué is_excluded
-    doubtful  labels contradictoires, ou ingrédient sensible sans label halal
-    unknown   aucune information exploitable
+Statuts renvoyés, par ordre de priorité :
+    doubtful  labels contradictoires (halal et alcool / non halal)
+    haram     label d'exclusion, produit marqué is_excluded, ou alcool / porc dans les ingrédients
+    halal     label halal déclaré
+    doubtful  ingrédient d'origine incertaine (gélatine, E120, E471, présure…)
+    halal     ingrédients renseignés, sans alcool ni porc (viandes comprises)
+    unknown   liste d'ingrédients absente
 """
 import re
 import unicodedata
@@ -29,20 +28,22 @@ GENERIC_HALAL_LABELS = {'en:halal', 'fr:halal', 'ar:halal', 'en:halal-certified'
 EXCLUSION_LABELS = {'en:haram', 'en:non-halal', 'en:contains-alcohol', 'en:alcohol', 'en:alcoholic'}
 
 STATUS_LABEL = {
-    HALAL: 'Halal déclaré',
+    HALAL: 'Halal',
     HARAM: 'Non conforme',
     DOUBTFUL: 'Douteux',
     UNKNOWN: 'Non renseigné',
 }
 
 STATUS_SUMMARY = {
-    HALAL: "Un label halal a été déclaré par des contributeurs. Ce n'est pas une certification "
-           "vérifiée par Halal Open Facts : contrôlez le logo et l'organisme sur l'emballage.",
+    HALAL: "Un label halal a été déclaré par des contributeurs. Contrôlez le logo et l'organisme "
+           "sur l'emballage.",
     HARAM: "Un label signalant de l'alcool ou un produit non halal a été déclaré pour ce produit.",
     DOUBTFUL: "Des informations demandent une vérification avant consommation.",
-    UNKNOWN: "Aucune information halal n'est renseignée. Cela ne permet de conclure ni à la "
-             "conformité, ni à la non-conformité.",
+    UNKNOWN: "La liste des ingrédients n'est pas renseignée : impossible de se prononcer.",
 }
+SUMMARY_HALAL_INGREDIENTS = ("La liste des ingrédients ne contient ni alcool ni porc. Vérifiez "
+                             "toujours l'emballage : la composition peut changer.")
+SUMMARY_HARAM_INGREDIENTS = "La liste des ingrédients contient de l'alcool ou du porc."
 
 # ── Ingrédients sensibles ──────────────────────────────────────────────────
 # Recherche par mots entiers sur un texte sans accents, en minuscules.
@@ -78,6 +79,11 @@ _FATTY_ALCOHOL = re.compile(
 )
 # Le vinaigre de vin n'est plus du vin (avis majoritaire) : ne pas le signaler.
 _WINE_VINEGAR = re.compile(r'\b(vinaigre\s+de\s+vins?|wine\s+vinegar|vinagre\s+de\s+vino)\b')
+# « jambon de dinde », « bacon de volaille », « turkey ham » : pas de porc.
+_POULTRY_HAM = re.compile(
+    r'\b(jambons?|bacon|lardons?)\s+(de\s+)?(dinde|poulet|volaille|boeuf|veau)\b'
+    r'|\b(turkey|chicken|beef)\s+(ham|bacon)\b'
+)
 # « sans porc », « sans alcool », « alcohol free »…
 _NEGATION = re.compile(r'\b(sans|without|no|free from|sin|ohne)\s+(\w+\s+)?$')
 _FREE_AFTER = re.compile(r'\s*(free|frei)\b')
@@ -86,6 +92,10 @@ _FREE_AFTER = re.compile(r'\s*(free|frei)\b')
 def _compile(signals):
     return [(label, re.compile(r'\b(' + pattern + r')\b')) for label, pattern in signals]
 
+
+# Ingrédients interdits : leur présence rend le produit non conforme.
+# Les autres signaux (gélatine, E120, E471, présure…) le rendent seulement douteux.
+HARAM_SIGNALS = {'porc', 'saindoux / lard', 'alcool', 'vin / spiritueux'}
 
 _SIGNALS = {
     'food': _compile(_COMMON_SIGNALS + _FOOD_SIGNALS),
@@ -120,6 +130,7 @@ def ingredient_signals(text, portal='food') -> list:
     if not blob.strip():
         return []
     blob = _WINE_VINEGAR.sub(' ', blob)
+    blob = _POULTRY_HAM.sub(' ', blob)
     if portal == 'beauty':
         blob = _FATTY_ALCOHOL.sub(' ', blob)
     found = []
@@ -142,8 +153,11 @@ def classify(labels_tags=None, is_halal=None, is_excluded=None, ingredients_text
     has_halal = bool(halal_labels) or is_halal is True
     has_exclusion = bool(exclusion_labels) or is_excluded is True
     signals = ingredient_signals(ingredients_text, portal)
+    forbidden = [s for s in signals if s in HARAM_SIGNALS]
+    has_ingredients = bool((ingredients_text or '').strip())
 
     reasons = []
+    summary = None
     if has_halal and has_exclusion:
         status = DOUBTFUL
         reasons.append({'type': 'conflict', 'text': 'Labels contradictoires : halal et alcool / non halal déclarés.'})
@@ -151,8 +165,13 @@ def classify(labels_tags=None, is_halal=None, is_excluded=None, ingredients_text
         status = HARAM
     elif has_halal:
         status = HALAL
+    elif forbidden:
+        status, summary = HARAM, SUMMARY_HARAM_INGREDIENTS
     elif signals:
         status = DOUBTFUL
+    elif has_ingredients:
+        status, summary = HALAL, SUMMARY_HALAL_INGREDIENTS
+        reasons.append({'type': 'ingredients-ok', 'text': 'Ni alcool ni porc dans les ingrédients.'})
     else:
         status = UNKNOWN
 
@@ -163,14 +182,15 @@ def classify(labels_tags=None, is_halal=None, is_excluded=None, ingredients_text
     if is_excluded is True and not exclusion_labels:
         reasons.append({'type': 'exclusion-label', 'text': 'Produit signalé comme non conforme.'})
     for label in signals:
-        reasons.append({'type': 'ingredient', 'text': f'Ingrédient sensible : {label}'})
-    if not (ingredients_text or '').strip():
+        kind = 'Ingrédient interdit' if label in HARAM_SIGNALS else 'Ingrédient sensible'
+        reasons.append({'type': 'ingredient', 'text': f'{kind} : {label}'})
+    if not has_ingredients:
         reasons.append({'type': 'missing', 'text': 'Liste des ingrédients non renseignée.'})
 
     return {
         'status': status,
         'label': STATUS_LABEL[status],
-        'summary': STATUS_SUMMARY[status],
+        'summary': summary or STATUS_SUMMARY[status],
         'reasons': reasons,
         'halal_labels': halal_labels,
         'exclusion_labels': exclusion_labels,
@@ -183,3 +203,10 @@ def classify_product(product) -> dict:
     data = product.data or {}
     ingredients = product.ingredients_text or data.get('ingredients_text_fr') or data.get('ingredients_text') or ''
     return classify(product.labels_tags, product.is_halal, product.is_excluded, ingredients, product.portal)
+
+
+def stamp_statuses(products):
+    """Calcule et enregistre halal_status sur des Product avant un bulk_create / bulk_update."""
+    for product in products:
+        product.halal_status = classify_product(product)['status']
+    return products

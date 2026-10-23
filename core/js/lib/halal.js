@@ -6,17 +6,17 @@ export const STATUSES = ['halal', 'haram', 'doubtful', 'unknown'];
 export const STATUS_META = {
     halal: {
         icon: 'i-halal',
-        label: 'Halal déclaré',
+        label: 'Halal',
         short: 'Halal',
-        seal: 'Label déclaré',
-        description: 'Un label halal a été déclaré par des contributeurs. Vérifiez le logo et l\'organisme certificateur sur l\'emballage.',
+        seal: 'Halal',
+        description: 'Un label halal est déclaré, ou la liste des ingrédients ne contient ni alcool ni porc.',
     },
     haram: {
         icon: 'i-haram',
         label: 'Non conforme',
         short: 'Haram',
         seal: 'Alcool / non halal',
-        description: 'Un label signale de l\'alcool ou un produit non halal.',
+        description: 'Les ingrédients contiennent de l\'alcool ou du porc, ou un label le signale.',
     },
     doubtful: {
         icon: 'i-doubtful',
@@ -30,7 +30,7 @@ export const STATUS_META = {
         label: 'Non renseigné',
         short: 'Inconnu',
         seal: 'Aucune info',
-        description: 'Aucune information halal n\'est renseignée. Cela ne permet de conclure ni à la conformité, ni à la non-conformité.',
+        description: 'La liste des ingrédients n\'est pas renseignée : impossible de se prononcer.',
     },
 };
 

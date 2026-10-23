@@ -26,6 +26,7 @@ from django.db.models import Max
 from django.utils import timezone as tz
 
 from products.images import front_image_urls
+from products.halal import stamp_statuses
 from products.models import Product, SyncLog
 from products.management.commands.import_food import (
     row_to_product, detect_halal_excluded, BATCH_SIZE, Command as ImportFoodCommand
@@ -275,7 +276,7 @@ class Command(BaseCommand):
         update_fields = [
             'product_name', 'brands', 'categories_tags', 'labels_tags', 'countries_tags',
             'ingredients_text', 'image_front_small_url', 'image_front_url',
-            'unique_scans_n', 'last_modified_t', 'is_halal', 'is_excluded', 'data',
+            'unique_scans_n', 'last_modified_t', 'is_halal', 'is_excluded', 'halal_status', 'data',
             'search_vector',
         ]
 
@@ -289,6 +290,8 @@ class Command(BaseCommand):
                 setattr(db_obj, f, getattr(new, f, None))
             db_obj.search_vector = None
             to_update.append(db_obj)
+        # Le statut dépend des ingrédients : calculé sur l'objet final (photo conservée, etc.)
+        stamp_statuses(to_create + to_update)
 
         if to_create:
             Product.objects.bulk_create(to_create, ignore_conflicts=True)

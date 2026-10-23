@@ -34,6 +34,9 @@ class Product(models.Model):
     # --- Halal spécifique ---
     is_halal = models.BooleanField(null=True, db_index=True)     # True si label halal détecté
     is_excluded = models.BooleanField(null=True, db_index=True)  # True si label haram/alcool
+    # Statut calculé par products/halal.py (labels + ingrédients), stocké pour filtrer et compter.
+    # Index (portal, halal_status, popularité) créé à la fin de `manage.py refresh_halal_status`.
+    halal_status = models.CharField(max_length=10, default='unknown')
 
     # --- Champs dynamiques (JSONB) ---
     # Nutriments, additifs, stores, packaging, etc.
@@ -54,6 +57,14 @@ class Product(models.Model):
 
     def __str__(self):
         return f'[{self.portal}] {self.code} — {self.product_name}'
+
+    def save(self, *args, **kwargs):
+        from .halal import classify_product
+        self.halal_status = classify_product(self)['status']
+        update_fields = kwargs.get('update_fields')
+        if update_fields is not None and 'halal_status' not in update_fields:
+            kwargs['update_fields'] = [*update_fields, 'halal_status']
+        super().save(*args, **kwargs)
 
     def has_label(self, label: str) -> bool:
         return label in self.labels_tags.split(',')

@@ -11,7 +11,7 @@
     <thead><tr><th scope="col">Point d'accès</th><th scope="col">Description</th></tr></thead>
     <tbody>
       <tr><td><code>GET /proxy/v2/search?q=…</code></td><td>Recherche plein texte. Paramètres : <code>q</code>, <code>prefix=1</code> (saisie partielle), <code>page</code> (≤ 200), <code>page_size</code> (≤ 100), <code>sort_by</code> (<code>unique_scans_n</code>, <code>last_modified_t</code>, <code>product_name</code>), <code>fields</code>. Un code-barres dans <code>q</code> renvoie directement le produit (<code>barcode_match</code>).</td></tr>
-      <tr><td><code>… &amp;is_halal=1</code> / <code>&amp;is_excluded=1</code></td><td>Produits avec un label halal / signalés non conformes.</td></tr>
+      <tr><td><code>… &amp;is_halal=1</code> / <code>&amp;is_excluded=1</code></td><td>Produits au statut <code>halal</code> / <code>haram</code> (aussi : <code>&amp;halal_status=doubtful</code>).</td></tr>
       <tr><td><code>… &amp;labels_tags=en:organic</code></td><td>Filtres par tag exact : <code>labels_tags</code>, <code>categories_tags</code>, <code>countries_tags</code> (répétables){{#if site.features.nutrition}}, <code>nutriscore=a</code>, <code>nova=1</code>, <code>palm_oil_free=1</code>{{/if}}.</td></tr>
       <tr><td><code>GET /proxy/v2/product/{code}.json</code></td><td>Fiche complète, dont <code>halal_status</code> et <code>halal</code> (raisons détaillées).</td></tr>
       <tr><td><code>GET /proxy/stats</code></td><td>Chiffres clés. Répond <code>503</code> + <code>Retry-After</code> pendant le calcul.</td></tr>
@@ -22,10 +22,10 @@
   <section class="panel">
     <h2>Statut halal (<code>halal_status</code>)</h2>
     <dl class="kv">
-      <dt><code>halal</code></dt><dd>Label halal déclaré par un contributeur, sans label contradictoire.</dd>
-      <dt><code>haram</code></dt><dd>Label d'alcool ou non halal déclaré.</dd>
-      <dt><code>doubtful</code></dt><dd>Labels contradictoires, ou ingrédient sensible sans label halal.</dd>
-      <dt><code>unknown</code></dt><dd>Aucune information exploitable.</dd>
+      <dt><code>halal</code></dt><dd>Label halal déclaré, ou ingrédients renseignés sans alcool ni porc.</dd>
+      <dt><code>haram</code></dt><dd>Alcool ou porc dans les ingrédients, ou label d'alcool / non halal déclaré.</dd>
+      <dt><code>doubtful</code></dt><dd>Labels contradictoires, ou ingrédient d'origine incertaine (gélatine, E120, E471, présure…) sans label halal.</dd>
+      <dt><code>unknown</code></dt><dd>Liste des ingrédients absente.</dd>
     </dl>
     <p class="muted" style="margin-top:1rem">Ces statuts ne sont pas des certifications. Données sous licence <a href="https://opendatacommons.org/licenses/odbl/" target="_blank" rel="noopener">ODbL</a> : citez {{site.name}} et {{site.upstream.name}}.</p>
   </section>

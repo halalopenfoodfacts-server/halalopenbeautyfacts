@@ -3,8 +3,8 @@
   "name": "Halal Open Beauty Facts",
   "short": "Halal OBF",
   "domain": "https://halalopenbeautyfacts.org",
-  "description": "Recherchez un cosmétique, scannez son code-barres et vérifiez les informations halal et les ingrédients sensibles (alcool, carmin, collagène, suif…). Base de données ouverte et communautaire.",
-  "tagline": "La base de données ouverte des cosmétiques halal",
+  "description": "La première base de données mondiale des cosmétiques halal : recherchez un cosmétique, scannez son code-barres et vérifiez le statut halal et les ingrédients sensibles (alcool, carmin, collagène, suif…). Ouverte et communautaire.",
+  "tagline": "La première base de données mondiale des cosmétiques halal",
   "noun": {
     "one": "cosmétique",
     "many": "cosmétiques",

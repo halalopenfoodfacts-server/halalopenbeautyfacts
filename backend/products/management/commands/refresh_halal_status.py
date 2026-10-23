@@ -44,6 +44,10 @@ class Command(BaseCommand):
         fields = ('id', 'portal', 'labels_tags', 'is_halal', 'is_excluded', 'ingredients_text',
                   'ing_fr', 'ing_any', 'halal_status')
 
+        if not connection.in_atomic_block:
+            # Le statement_timeout du site (20 s) ferait échouer VACUUM et la création d'index
+            with connection.cursor() as cursor:
+                cursor.execute('SET statement_timeout = 0')
         seen = changed = since_vacuum = 0
         started = time.monotonic()
         self.stdout.write(f'Reprise après id {last_id}' if last_id else 'Début du recalcul')

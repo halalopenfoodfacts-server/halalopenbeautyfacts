@@ -1,7 +1,7 @@
 // État du catalogue ⇄ URL de la page (partageable) ⇄ paramètres de l'API.
 
 export const SORTS = { popularity: 'unique_scans_n', recent: 'last_modified_t', name: 'product_name' };
-export const STATUS_FILTERS = ['', 'halal', 'haram'];
+export const STATUS_FILTERS = ['', 'halal', 'haram', 'doubtful', 'unknown'];
 export const PAGE_SIZE = 24;
 export const MAX_PAGE = 200;
 
@@ -49,6 +49,7 @@ export function toApiParams(state, pageSize = PAGE_SIZE) {
         q: state.q || undefined,
         is_halal: state.status === 'halal' ? '1' : undefined,
         is_excluded: state.status === 'haram' ? '1' : undefined,
+        halal_status: ['doubtful', 'unknown'].includes(state.status) ? state.status : undefined,
         labels_tags: state.labels,
         categories_tags: state.category || undefined,
         countries_tags: state.country || undefined,

@@ -100,7 +100,7 @@
 @keyframes float { 50% { translate: 0 -6px; } }
 @media (prefers-reduced-motion: reduce) { .support-card { animation: none; } }
 
-.stats-band { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-3); margin-top: clamp(2rem, 1rem + 3vw, 3.5rem); }
+.stats-band { display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--space-3); margin-top: clamp(2rem, 1rem + 3vw, 3.5rem); }
 .stats-band .stat { background: color-mix(in srgb, var(--bg-elev) 80%, transparent); backdrop-filter: blur(6px); }
 
 .legend { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-4); }
@@ -165,6 +165,7 @@
     .support-card { margin: -2.5rem 0.5rem 0; }
     .hero__scan-cta { display: inline-flex; }
     .stats-band, .legend { grid-template-columns: repeat(2, 1fr); }
+    .stats-band .stat:first-child { grid-column: 1 / -1; }
     .voyage__panel { position: static; }
 }
 

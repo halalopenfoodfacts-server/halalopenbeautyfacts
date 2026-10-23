@@ -99,11 +99,13 @@ def compute_facet(portal, facet_type):
 
 
 def compute_stats(portal, contributors_count=None, countries_count=None):
-    (total, halal, excluded), = _fetchall(
+    (total, halal, excluded, doubtful, unknown), = _fetchall(
         """
         SELECT COUNT(*),
                COUNT(*) FILTER (WHERE halal_status = 'halal'),
-               COUNT(*) FILTER (WHERE halal_status = 'haram')
+               COUNT(*) FILTER (WHERE halal_status = 'haram'),
+               COUNT(*) FILTER (WHERE halal_status = 'doubtful'),
+               COUNT(*) FILTER (WHERE halal_status = 'unknown')
         FROM products_product
         WHERE portal = %s
         """,
@@ -118,6 +120,8 @@ def compute_stats(portal, contributors_count=None, countries_count=None):
         'total': total,
         'halal': halal,
         'excluded': excluded,
+        'doubtful': doubtful,   # halal + excluded + doubtful + unknown = total
+        'unknown': unknown,
         'countries': countries_count,
         'contributors': contributors_count,
         'computed_at': timezone.now().isoformat(),

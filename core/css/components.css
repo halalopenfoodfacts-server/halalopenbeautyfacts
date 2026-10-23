@@ -537,6 +537,8 @@ a.stat:hover { color: var(--ink); transform: translateY(-2px); box-shadow: var(-
 .stat__label { color: var(--ink-2); font-size: var(--text-sm); }
 .stat--halal .stat__value { color: var(--halal); }
 .stat--haram .stat__value { color: var(--haram); }
+.stat--doubtful .stat__value { color: var(--doubtful); }
+.stat--unknown .stat__value { color: var(--unknown); }
 
 /* ── Cartes de contenu ────────────────────────────────────── */
 .card {

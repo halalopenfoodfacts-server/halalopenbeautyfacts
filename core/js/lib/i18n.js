@@ -135,6 +135,8 @@ const DICT = {
     'stats.products': { fr: 'produits référencés', en: 'products listed', ar: 'منتج مسجل', es: 'productos registrados' },
     'stats.halal': { fr: 'produits halal', en: 'halal products', ar: 'منتجات حلال', es: 'productos halal' },
     'stats.excluded': { fr: 'non conformes', en: 'non-compliant', ar: 'غير مطابقة', es: 'no conformes' },
+    'stats.doubtful': { fr: 'douteux', en: 'doubtful', ar: 'مشكوك فيها', es: 'dudosos' },
+    'stats.unknown': { fr: 'non renseignés', en: 'no information', ar: 'غير محددة', es: 'sin información' },
     'stats.contributors': { fr: 'contributeurs', en: 'contributors', ar: 'مساهم', es: 'colaboradores' },
     'stats.countries': { fr: 'pays', en: 'countries', ar: 'بلد', es: 'países' },
 };

@@ -51,3 +51,29 @@ def refresh_stats(portal=None):
         finally:
             cache.delete(lock_key)
     return ', '.join(done)
+
+
+IMAGE_RETRY_TTL = 7 * 24 * 3600   # un produit sans photo chez OFF n'est redemandé qu'une fois par semaine
+IMAGE_REQUEST_DELAY = 0.7         # ~85 requêtes/min : sous la limite de 100/min de l'API produit OFF
+
+
+@shared_task(name='fill_missing_images')
+def fill_missing_images(portal, codes):
+    """Récupère auprès d'OFF la photo des produits affichés sans image et l'enregistre."""
+    import time
+
+    from .images import fetch_front_images
+    from .models import Product
+
+    filled = 0
+    for code in codes[:50]:
+        try:
+            small, full = fetch_front_images(code, portal)
+        except Exception:
+            continue   # OFF indisponible : le verrou expirera, le produit sera redemandé
+        finally:
+            time.sleep(IMAGE_REQUEST_DELAY)
+        if small or full:
+            filled += Product.objects.filter(portal=portal, code=code).update(
+                image_front_small_url=small or full, image_front_url=full or small)
+    return f'{portal}: {filled}/{len(codes[:50])} images'

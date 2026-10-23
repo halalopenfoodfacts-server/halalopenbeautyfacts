@@ -1,6 +1,7 @@
 from django.contrib.postgres.search import SearchVector
 from django.core.cache import cache
 from django.test import TestCase
+from unittest import mock
 
 from products import views
 from products.models import Product
@@ -35,6 +36,9 @@ class ApiTestCase(TestCase):
 
     def setUp(self):
         cache.clear()
+        patcher = mock.patch('products.views.fill_missing_images.delay')
+        self.queue_images = patcher.start()
+        self.addCleanup(patcher.stop)
 
     def get(self, url, portal='food'):
         return self.client.get(url, HTTP_X_PORTAL=portal)
@@ -169,3 +173,27 @@ class StatsAndFacetsTests(ApiTestCase):
     def test_top_and_recent(self):
         self.assertEqual(self.get('/api/top?page_size=2').json()['products'][0]['code'], '3017620422003')
         self.assertEqual(len(self.get('/api/recent?page_size=3').json()['products']), 3)
+
+
+class MissingImageTests(ApiTestCase):
+    def test_products_shown_without_image_are_queued_once(self):
+        self.get('/api/top?page_size=2')
+        self.queue_images.assert_called_once_with('food', ['3017620422003', '5053990179039'])
+        self.queue_images.reset_mock()
+        cache.delete('top_food_2')
+        self.get('/api/top?page_size=2')
+        self.queue_images.assert_not_called()
+
+    def test_product_with_image_is_not_queued(self):
+        self.get('/api/v2/product/8712000018825.json')
+        self.queue_images.assert_not_called()
+
+    def test_task_stores_images_from_off(self):
+        from products.tasks import fill_missing_images
+        urls = ('https://images.openfoodfacts.org/a.200.jpg', 'https://images.openfoodfacts.org/a.400.jpg')
+        with mock.patch('products.images.fetch_front_images', side_effect=[urls, OSError('503')]), \
+                mock.patch('time.sleep'):
+            fill_missing_images('food', ['3017620422003', '4009308066394'])
+        nutella = Product.objects.get(code='3017620422003')
+        self.assertEqual((nutella.image_front_small_url, nutella.image_front_url), urls)
+        self.assertEqual(Product.objects.get(code='4009308066394').image_front_url, '')

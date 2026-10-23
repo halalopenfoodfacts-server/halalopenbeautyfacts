@@ -88,6 +88,15 @@
 .header-search { flex: 1; max-width: 17rem; }
 @media (max-width: 1320px) { .header-search { display: none; } }
 .header-actions .menu-button { display: none; }
+/* Entre 961 et 1180 px la navigation complète manque de place : le scanner passe en icône */
+@media (min-width: 961px) and (max-width: 1180px) {
+    .header-scan span { display: none; }
+    .header-scan { width: 2.75rem; padding: 0; }
+}
+@media (max-width: 420px) {
+    .header-donate { min-height: 2.5rem; padding-inline: 0.85rem; }
+}
+.mobile-menu__support { display: grid; gap: 0.6rem; width: 100%; }
 
 .mobile-menu {
     position: fixed;

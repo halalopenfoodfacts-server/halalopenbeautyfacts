@@ -25,6 +25,7 @@ from django.core.management.base import BaseCommand
 from django.db.models import Max
 from django.utils import timezone as tz
 
+from products.images import front_image_urls
 from products.models import Product, SyncLog
 from products.management.commands.import_food import (
     row_to_product, detect_halal_excluded, BATCH_SIZE, Command as ImportFoodCommand
@@ -35,6 +36,7 @@ DELTA_URLS = {
     'beauty': 'https://static.openbeautyfacts.org/data/delta/',
 }
 USER_AGENT = 'HalalOpenFoodFacts/1.0'
+IMAGE_FIELDS = ('image_front_small_url', 'image_front_url')
 
 
 DELTA_NAME_RE = re.compile(r'^[a-z]+_products_(\d+)_(\d+)\.json\.gz$')
@@ -122,6 +124,9 @@ def process_jsonl_line(line: bytes, portal: str) -> Product | None:
             return ','.join(str(v) for v in val)
         return str(val or '')
 
+    # Les deltas n'ont pas les URL d'images calculées par l'API : on les reconstruit.
+    small, full = front_image_urls(code, data.get('images'), portal, str(data.get('lang') or ''))
+
     return Product(
         portal=portal,
         code=code,
@@ -132,8 +137,8 @@ def process_jsonl_line(line: bytes, portal: str) -> Product | None:
         labels_tags=labels_tags[:500],
         countries_tags=_join(data.get('countries_tags', []))[:500],
         ingredients_text=str(data.get('ingredients_text') or '')[:5000],
-        image_front_small_url=str(data.get('image_front_small_url') or '')[:500],
-        image_front_url=str(data.get('image_front_url') or '')[:500],
+        image_front_small_url=str(data.get('image_front_small_url') or small)[:500],
+        image_front_url=str(data.get('image_front_url') or full)[:500],
         image_ingredients_url=str(data.get('image_ingredients_url') or '')[:500],
         image_nutrition_url=str(data.get('image_nutrition_url') or '')[:500],
         unique_scans_n=scans,
@@ -278,6 +283,9 @@ class Command(BaseCommand):
         for db_obj in existing_qs:
             new = batch_by_code[db_obj.code]
             for f in update_fields:
+                # Une photo connue n'est jamais remplacée par une valeur vide
+                if f in IMAGE_FIELDS and not getattr(new, f, ''):
+                    continue
                 setattr(db_obj, f, getattr(new, f, None))
             db_obj.search_vector = None
             to_update.append(db_obj)

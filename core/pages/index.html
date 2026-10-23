@@ -14,11 +14,19 @@
         {{#each site.searchExamples}}<a class="chip" href="/catalogue.html?q={{this}}">{{this}}</a>{{/each}}
       </div>
     </div>
-    <div class="scan-stack" aria-hidden="true">
-      <div class="scan-stack__card"><span class="scan-stack__thumb"><svg><use href="#{{site.placeholderIcon}}"/></svg></span><span><strong>{{site.stackExamples.0}}</strong><small>{{site.stackMeta}}</small><span class="status status--halal"><svg><use href="#i-halal"/></svg><span>Halal déclaré</span></span></span></div>
-      <div class="scan-stack__card"><span class="scan-stack__thumb"><svg><use href="#{{site.placeholderIcon}}"/></svg></span><span><strong>{{site.stackExamples.1}}</strong><small>{{site.stackMeta}}</small><span class="status status--haram"><svg><use href="#i-haram"/></svg><span>Non conforme</span></span></span></div>
-      <div class="scan-stack__card"><span class="scan-stack__thumb"><svg><use href="#{{site.placeholderIcon}}"/></svg></span><span><strong>{{site.stackExamples.2}}</strong><small>{{site.stackMeta}}</small><span class="status status--doubtful"><svg><use href="#i-doubtful"/></svg><span>Douteux</span></span></span></div>
-      <div class="scan-stack__beam"></div>
+    <div class="hero-visual">
+      <div class="hero-visual__frame">
+        <img class="hero-visual__photo" src="/assets/images/hero-908.webp" srcset="/assets/images/hero-480.webp 480w, /assets/images/hero-908.webp 908w" sizes="(max-width: 960px) calc(100vw - 2rem), 34rem" width="908" height="563" alt="Une famille réunie et souriante dans un parc" decoding="async">
+      </div>
+      <aside class="support-card" aria-labelledby="support-title">
+        <span class="support-card__badge"><svg aria-hidden="true"><use href="#i-heart"/></svg><span data-i18n="support.badge">Association indépendante</span></span>
+        <h2 class="support-card__title" id="support-title" data-i18n="support.title">Ce site existe grâce à vous</h2>
+        <p data-i18n="support.text">Hébergement, vérification des données, outils libres : tout est financé par vos dons et vos adhésions.</p>
+        <div class="support-card__actions">
+          <a class="btn btn--donate btn--lg" href="/donate.html"><svg aria-hidden="true"><use href="#i-heart"/></svg><span data-i18n="nav.donate">Faire un don</span></a>
+          <a class="btn btn--join btn--lg" href="{{site.membershipUrl}}" target="_blank" rel="noopener"><span data-i18n="support.join">Devenir adhérent</span><svg aria-hidden="true"><use href="#i-external"/></svg></a>
+        </div>
+      </aside>
     </div>
   </div>
   <div class="container">

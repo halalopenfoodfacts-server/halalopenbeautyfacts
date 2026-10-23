@@ -36,6 +36,18 @@
 .btn--ghost { --btn-bg: transparent; --btn-line: transparent; }
 .btn--ghost:hover { background: var(--bg-sunken); border-color: transparent; }
 .btn--danger { --btn-ink: var(--haram); }
+.btn--donate {
+    --btn-bg: linear-gradient(135deg, var(--donate-a), var(--donate-b));
+    --btn-ink: var(--on-donate);
+    --btn-line: transparent;
+    box-shadow: 0 10px 22px -12px var(--donate-b);
+}
+.btn--donate:hover { border-color: transparent; filter: brightness(1.07) saturate(1.1); box-shadow: 0 14px 28px -12px var(--donate-b); transform: translateY(-1px); }
+.btn--donate svg { animation: heartbeat 2.6s ease-in-out infinite; }
+.btn--join { --btn-bg: var(--ink); --btn-ink: var(--bg); --btn-line: var(--ink); }
+.btn--join:hover { --btn-bg: color-mix(in srgb, var(--ink) 85%, var(--accent)); color: var(--bg); transform: translateY(-1px); }
+@keyframes heartbeat { 0%, 30%, 60%, 100% { scale: 1; } 15%, 45% { scale: 1.18; } }
+@media (prefers-reduced-motion: reduce) { .btn--donate svg { animation: none; } }
 .btn--lg { min-height: 3.25rem; padding-inline: 1.5rem; font-size: var(--text-md); }
 .btn--sm { min-height: 2.25rem; padding: 0.35rem 0.8rem; font-size: var(--text-xs); }
 .btn--icon { width: 2.75rem; padding: 0; }

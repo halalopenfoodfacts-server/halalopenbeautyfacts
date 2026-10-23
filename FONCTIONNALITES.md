@@ -17,6 +17,7 @@ Les numéros (B1, H2…) renvoient à `AUDIT.md`.
 | Recherche instantanée (suggestions au fil de la frappe, clavier, Échap) | ✔ | ✔ | Nouvelle | E, P (0,03 à 0,4 s) |
 | Recherche par code-barres → fiche directe (F11) | ✔ | ✔ | Corrigée | B, E |
 | Filtres conservés avec un texte (F10) | ✔ | ✔ | Corrigée | B |
+| Accueil : photo de famille + carte « Soutenir » (Faire un don / Devenir adhérent) dès l'arrivée ; bouton « Faire un don » dans l'en-tête de chaque page | ✔ | ✔ | Nouvelle | V |
 | **Catalogue** | | | | |
 | Filtre statut halal / non conforme | ✔ | ✔ | Corrigée | B, E |
 | Filtres labels, catégorie, pays (tags exacts, indexés : 19 s → 0,1 s) | ✔ | ✔ | Corrigée | B, P |
@@ -76,7 +77,7 @@ Les numéros (B1, H2…) renvoient à `AUDIT.md`.
 | statement_timeout 20 s côté web | ✔ | ✔ | Nouvelle | P |
 | Secrets hors du dépôt (.env) (S1) | ✔ | ✔ | Corrigée | revue |
 | **Données** | | | | |
-| Images manquantes pour une partie des produits (dont Nutella) | ✔ | ✔ | **À revoir** : visuel de remplacement en place ; relancer `update_images` (P1) | V |
+| Images manquantes : la synchro delta effaçait la photo à chaque mise à jour (les deltas OFF n'ont pas `image_front_url`). URL reconstruite depuis `images.selected.front`, photo connue jamais écrasée, produits affichés sans image complétés en arrière-plan via l'API OFF (`fill_missing_images`) | ✔ | ✔ | Corrigée | B, P |
 | Performances Lighthouse > 90 (mobile) | ✔ | ✔ | Nouvelle | Lighthouse en production, voir ci-dessous |
 
 ## Résultats (23/10/2026, après mise en ligne)

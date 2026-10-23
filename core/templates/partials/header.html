@@ -23,7 +23,10 @@
       <a class="btn btn--ghost btn--icon hide-mobile" href="/my-lists.html" aria-label="Mes listes" data-i18n-aria="nav.lists" {{#if nav.lists}}aria-current="page"{{/if}}>
         <svg aria-hidden="true"><use href="#i-bookmark"/></svg>
       </a>
-      <button class="btn btn--primary hide-mobile" type="button" data-scan>
+      <a class="btn btn--donate header-donate" href="/donate.html" {{#if nav.donate}}aria-current="page"{{/if}}>
+        <svg aria-hidden="true"><use href="#i-heart"/></svg><span data-i18n="nav.donate">Faire un don</span>
+      </a>
+      <button class="btn btn--primary hide-mobile header-scan" type="button" data-scan>
         <svg aria-hidden="true"><use href="#i-scan"/></svg><span data-i18n="scan.cta">Scanner</span>
       </button>
       <button class="btn btn--ghost btn--icon menu-button" type="button" data-menu-open aria-controls="mobile-menu" aria-expanded="false" aria-label="Ouvrir le menu" data-i18n-aria="menu.open">
@@ -54,6 +57,9 @@
     <select class="select select--auto" id="lang-select-mobile" data-lang-select>
       <option value="fr">Français</option><option value="en">English</option><option value="ar">العربية</option><option value="es">Español</option>
     </select>
-    <a class="btn" href="{{site.membershipUrl}}" target="_blank" rel="noopener"><span data-i18n="nav.membership">Adhérer</span><svg aria-hidden="true"><use href="#i-external"/></svg></a>
+    <div class="mobile-menu__support">
+      <a class="btn btn--donate btn--lg" href="/donate.html"><svg aria-hidden="true"><use href="#i-heart"/></svg><span data-i18n="nav.donate">Faire un don</span></a>
+      <a class="btn btn--join btn--lg" href="{{site.membershipUrl}}" target="_blank" rel="noopener"><span data-i18n="support.join">Devenir adhérent</span><svg aria-hidden="true"><use href="#i-external"/></svg></a>
+    </div>
   </div>
 </div>

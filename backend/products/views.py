@@ -14,6 +14,7 @@ from rest_framework.response import Response
 from .models import Product
 from .serializers import ProductDetailSerializer, ProductListSerializer
 from .stats import FACET_TYPES, facet_key, stats_key
+from .tasks import IMAGE_RETRY_TTL, fill_missing_images
 
 SEARCH_RESPONSE_TTL = 300   # 5 min : réponse complète d'une page de recherche
 SEARCH_COUNT_TTL = 1800     # 30 min : le COUNT(*) est la partie la plus coûteuse
@@ -137,6 +138,20 @@ def _filter_fields(data_list, fields_param):
     return [{k: v for k, v in item.items() if k in allowed} for item in data_list]
 
 
+def _queue_missing_images(portal, products):
+    """Demande en arrière-plan la photo des produits affichés sans image (une fois par semaine au plus)."""
+    codes = [p.code for p in products
+             if not (p.image_front_small_url or p.image_front_url)
+             and cache.add(f'img:queued:{portal}:{p.code}', '1', IMAGE_RETRY_TTL)]
+    if not codes:
+        return
+    try:
+        fill_missing_images.delay(portal, codes)
+    except Exception:
+        # Broker indisponible : la page s'affiche quand même, on réessaiera plus tard
+        cache.delete_many([f'img:queued:{portal}:{c}' for c in codes])
+
+
 def _search_query(q, prefix):
     if prefix:
         words = re.findall(r'\w+', q, flags=re.UNICODE)[:6]
@@ -218,6 +233,7 @@ def _search_payload(request, view_name, default_sort):
         ranked = bool(q) and request.GET.get('prefix') != '1'
         products = _fetch_page(qs, start, page_size, ranked) if start < total else []
 
+    _queue_missing_images(_portal(request), products)
     data = _filter_fields(ProductListSerializer(products, many=True).data, request.GET.get('fields', ''))
     payload = {
         'count': total,
@@ -274,6 +290,7 @@ def product_detail(request, code):
         return Response({'status': 0, 'status_verbose': 'product not found', 'code': code},
                         status=http_status.HTTP_404_NOT_FOUND)
 
+    _queue_missing_images(portal, [product])
     serializer = ProductDetailSerializer(product)
     return Response({'status': 1, 'status_verbose': 'product found', 'product': serializer.data})
 
@@ -321,10 +338,11 @@ def top_products(request):
     if cached:
         return Response(cached)
 
-    products = (
+    products = list(
         Product.objects.filter(portal=portal, unique_scans_n__gt=0)
         .order_by('-unique_scans_n')[:page_size]
     )
+    _queue_missing_images(portal, products)
     data = {'products': ProductListSerializer(products, many=True).data}
     cache.set(cache_key, data, timeout=300)
     return Response(data)
@@ -338,11 +356,12 @@ def top_products(request):
 def recent_products(request):
     portal = _portal(request)
     page_size = _int_param(request, 'page_size', 12, 1, 50)
-    products = (
+    products = list(
         Product.objects.filter(portal=portal)
         .exclude(product_name='')
         .order_by('-last_modified_t')[:page_size]
     )
+    _queue_missing_images(portal, products)
     return Response({'products': ProductListSerializer(products, many=True).data})
 
 

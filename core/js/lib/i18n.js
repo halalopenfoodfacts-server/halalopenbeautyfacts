@@ -129,6 +129,7 @@ const DICT = {
     'home.eyebrow': { fr: 'Base de données ouverte et communautaire', en: 'Open, community database', ar: 'قاعدة بيانات مفتوحة ومجتمعية', es: 'Base de datos abierta y comunitaria' },
     'home.popular': { fr: 'Les plus consultés', en: 'Most viewed', ar: 'الأكثر مشاهدة', es: 'Los más consultados' },
     'home.recent': { fr: 'Dernières contributions', en: 'Latest contributions', ar: 'أحدث المساهمات', es: 'Últimas contribuciones' },
+    'home.partners': { fr: 'Ils nous soutiennent', en: 'They support us', ar: 'يدعموننا', es: 'Nos apoyan' },
     'home.legend': { fr: 'Comment lire un statut', en: 'How to read a status', ar: 'كيف تقرأ الحالة', es: 'Cómo leer un estado' },
     'stats.products': { fr: 'produits référencés', en: 'products listed', ar: 'منتج مسجل', es: 'productos registrados' },
     'stats.halal': { fr: 'avec un label halal', en: 'with a halal label', ar: 'بملصق حلال', es: 'con etiqueta halal' },

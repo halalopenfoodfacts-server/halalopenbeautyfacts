@@ -110,9 +110,26 @@
 .voyage__flag { font-size: 3rem; line-height: 1; }
 .voyage__panel h3 { margin-block: var(--space-3) var(--space-2); }
 
-.partners { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: clamp(1rem, 0.5rem + 2vw, 2.5rem); }
-.partners img { height: 2.6rem; width: auto; filter: grayscale(1); opacity: 0.75; transition: filter var(--dur-2), opacity var(--dur-2); border-radius: 4px; }
-.partners img:hover { filter: none; opacity: 1; }
+/* Logos partenaires en couleur, sur fond blanc (y compris en thème sombre) */
+.partners { display: flex; flex-wrap: wrap; justify-content: center; gap: clamp(0.75rem, 0.5rem + 1vw, 1.25rem); margin-top: var(--space-3); padding: 0; list-style: none; }
+.partner {
+    display: grid;
+    place-items: center;
+    height: 6rem;
+    padding: 0.85rem 1.25rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: #ffffff;
+    box-shadow: var(--shadow-2);
+    transition: transform var(--dur-2) var(--ease-out), box-shadow var(--dur-2);
+}
+.partner:hover { transform: translateY(-3px); box-shadow: var(--shadow-3); }
+.partner img { height: 3.5rem; width: auto; max-width: 13rem; object-fit: contain; border-radius: 6px; }
+@media (max-width: 560px) {
+    .partners { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; }
+    .partner { height: 5rem; padding: 0.6rem; }
+    .partner img { height: auto; max-height: 3rem; max-width: 100%; }
+}
 
 .cta-band {
     display: grid;

@@ -131,9 +131,10 @@
 
 <section class="section section--tight">
   <div class="container stack" style="justify-items:center;text-align:center">
-    <span class="eyebrow">Ils nous soutiennent</span>
-    <div class="partners">
-      {{#each site.partners}}<img src="/assets/images/partners/{{this.file}}" alt="{{this.name}}" width="{{this.width}}" height="{{this.height}}" loading="lazy" decoding="async">{{/each}}
-    </div>
+    <span class="eyebrow">Partenaires</span>
+    <h2 data-i18n="home.partners">Ils nous soutiennent</h2>
+    <ul class="partners" role="list">
+      {{#each site.partners}}<li class="partner"><img src="/assets/images/partners/{{this.file}}" alt="{{this.name}}" width="{{this.width}}" height="{{this.height}}" loading="lazy" decoding="async"></li>{{/each}}
+    </ul>
   </div>
 </section>

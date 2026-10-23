@@ -24,6 +24,8 @@ schedule_6h, _ = IntervalSchedule.objects.get_or_create(
 tasks = [
     ('sync-food-delta',   'sync_food_delta',   schedule_hourly, 'Sync delta Food OFF toutes les heures'),
     ('sync-beauty-delta', 'sync_beauty_delta', schedule_6h,     'Sync delta Beauty OFF toutes les 6h'),
+    # Stats + facets pré-calculées (aussi relancées après chaque sync réussie)
+    ('refresh-stats',     'refresh_stats',     schedule_6h,     'Recalcul stats/facets toutes les 6h'),
 ]
 
 for name, task, schedule, desc in tasks:

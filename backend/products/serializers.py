@@ -1,18 +1,20 @@
 from rest_framework import serializers
+from .halal import classify_product
 from .models import Product
 
 
-def build_image_url(code: str, portal: str = 'food') -> str:
-    """Construit l'URL d'image à partir du code-barres selon le portal"""
-    code = str(code).strip()
-    if len(code) >= 9:
-        path = f"{code[0:3]}/{code[3:6]}/{code[6:9]}/{code[9:]}"
-    elif len(code) >= 6:
-        path = f"{code[0:3]}/{code[3:6]}/{code[6:]}"
-    else:
-        path = code
-    domain = 'images.openbeautyfacts.org' if portal == 'beauty' else 'images.openfoodfacts.org'
-    return f"https://{domain}/images/products/{path}/front_en.full.jpg"
+def image_url(obj, *fields):
+    """Première URL d'image renseignée, sinon chaîne vide.
+
+    Avant : une URL « …/front_en.full.jpg » était fabriquée à partir du code-barres ;
+    elle n'existe pas sur Open Food Facts (404) → centaines d'images cassées par page.
+    Le frontend affiche désormais son propre visuel de remplacement.
+    """
+    for name in fields:
+        value = getattr(obj, name, '') or ''
+        if value.startswith('https://'):
+            return value
+    return ''
 
 
 def parse_tags(val):
@@ -26,12 +28,28 @@ def parse_tags(val):
     return []
 
 
+def nutriscore_grade(obj):
+    grade = str((obj.data or {}).get('nutriscore_grade', '') or '').lower()
+    return grade if grade in ('a', 'b', 'c', 'd', 'e') else ''
+
+
+def nova_group(obj):
+    try:
+        value = int(float((obj.data or {}).get('nova_group', '') or 0))
+    except (TypeError, ValueError):
+        return None
+    return value if 1 <= value <= 4 else None
+
+
 class ProductListSerializer(serializers.ModelSerializer):
     """Serializer léger pour les listes (search, top scans)"""
     image_front_small_url = serializers.SerializerMethodField()
     image_front_url = serializers.SerializerMethodField()
     labels_tags = serializers.SerializerMethodField()
     categories_tags = serializers.SerializerMethodField()
+    halal_status = serializers.SerializerMethodField()
+    nutriscore_grade = serializers.SerializerMethodField()
+    nova_group = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
@@ -39,14 +57,24 @@ class ProductListSerializer(serializers.ModelSerializer):
             'code', 'product_name', 'brands',
             'image_front_small_url', 'image_front_url',
             'labels_tags', 'categories_tags',
-            'unique_scans_n', 'is_halal', 'is_excluded',
+            'unique_scans_n', 'last_modified_t', 'is_halal', 'is_excluded',
+            'halal_status', 'nutriscore_grade', 'nova_group',
         ]
 
     def get_image_front_small_url(self, obj):
-        return obj.image_front_small_url or obj.image_front_url or build_image_url(obj.code, obj.portal)
+        return image_url(obj, 'image_front_small_url', 'image_front_url')
 
     def get_image_front_url(self, obj):
-        return obj.image_front_url or obj.image_front_small_url or build_image_url(obj.code, obj.portal)
+        return image_url(obj, 'image_front_url', 'image_front_small_url')
+
+    def get_halal_status(self, obj):
+        return classify_product(obj)['status']
+
+    def get_nutriscore_grade(self, obj):
+        return nutriscore_grade(obj)
+
+    def get_nova_group(self, obj):
+        return nova_group(obj)
 
     def get_labels_tags(self, obj):
         return parse_tags(obj.labels_tags)
@@ -93,10 +121,10 @@ class ProductDetailSerializer(serializers.ModelSerializer):
         return obj.data or {}
 
     def get_image_front_small_url(self, obj):
-        return obj.image_front_small_url or obj.image_front_url or build_image_url(obj.code, obj.portal)
+        return image_url(obj, 'image_front_small_url', 'image_front_url')
 
     def get_image_front_url(self, obj):
-        return obj.image_front_url or obj.image_front_small_url or build_image_url(obj.code, obj.portal)
+        return image_url(obj, 'image_front_url', 'image_front_small_url')
 
     def get_nutriments(self, obj):
         d = self._get_jsonb(obj)
@@ -112,14 +140,10 @@ class ProductDetailSerializer(serializers.ModelSerializer):
         return result
 
     def get_nutriscore_grade(self, obj):
-        return self._get_jsonb(obj).get('nutriscore_grade', '')
+        return nutriscore_grade(obj)
 
     def get_nova_group(self, obj):
-        val = self._get_jsonb(obj).get('nova_group', '')
-        try:
-            return int(val) if val else None
-        except (ValueError, TypeError):
-            return None
+        return nova_group(obj)
 
     def get_ecoscore_grade(self, obj):
         return self._get_jsonb(obj).get('ecoscore_grade', '')
@@ -146,6 +170,9 @@ class ProductDetailSerializer(serializers.ModelSerializer):
         ret['states_tags'] = self._parse_tags(d.get('states_tags', ''))
         ret['editors_tags'] = self._parse_tags(d.get('editors_tags', ''))
         ret['ingredients_text_fr'] = d.get('ingredients_text_fr', '') or d.get('ingredients_text', '') or ''
+        halal = classify_product(instance)
+        ret['halal_status'] = halal['status']
+        ret['halal'] = halal
         return ret
 
     def _parse_tags(self, val):

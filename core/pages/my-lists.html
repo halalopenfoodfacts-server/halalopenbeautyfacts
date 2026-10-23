@@ -1,0 +1,21 @@
+---
+{"title": "Mes listes — {{site.name}}", "description": "Vos favoris, votre liste de courses et les produits à éviter, enregistrés sur cet appareil.", "script": "lists", "nav": "lists", "noindex": true}
+---
+<header class="container page-head">
+  <span class="eyebrow">Sur cet appareil</span>
+  <h1>Mes listes</h1>
+  <p>Vos listes sont enregistrées uniquement dans ce navigateur : aucun compte, aucune donnée envoyée. Exportez-les pour les sauvegarder.</p>
+</header>
+<div class="container stack" style="gap:var(--space-5)">
+  <div class="tabs" role="tablist" aria-label="Listes" data-tabs>
+    <button role="tab" id="tab-fav" aria-controls="panel-list" aria-selected="true" data-tab="fav">Favoris<span class="count" data-count="fav"></span></button>
+    <button role="tab" id="tab-cart" aria-controls="panel-list" aria-selected="false" tabindex="-1" data-tab="cart">Courses<span class="count" data-count="cart"></span></button>
+    <button role="tab" id="tab-black" aria-controls="panel-list" aria-selected="false" tabindex="-1" data-tab="black">À éviter<span class="count" data-count="black"></span></button>
+    <button role="tab" id="tab-history" aria-controls="panel-list" aria-selected="false" tabindex="-1" data-tab="history">Historique<span class="count" data-count="history"></span></button>
+  </div>
+  <div id="panel-list" role="tabpanel" aria-labelledby="tab-fav" data-panel></div>
+  <div class="cluster">
+    <button class="btn btn--sm" type="button" data-export><svg aria-hidden="true"><use href="#i-download"/></svg><span>Exporter (JSON)</span></button>
+    <button class="btn btn--sm btn--danger" type="button" data-clear><svg aria-hidden="true"><use href="#i-trash"/></svg><span>Vider cette liste</span></button>
+  </div>
+</div>

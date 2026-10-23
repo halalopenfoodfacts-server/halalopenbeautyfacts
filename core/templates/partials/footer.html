@@ -1,0 +1,47 @@
+<footer class="site-footer">
+  <div class="container">
+    <div class="site-footer__grid">
+      <div class="site-footer__brand">
+        <img src="/assets/images/logo.webp" alt="{{site.name}}" width="{{site.logo.small.0}}" height="{{site.logo.small.1}}" loading="lazy">
+        <p>{{site.tagline}}. Données ouvertes issues de {{site.upstream.name}}, enrichies par la communauté.</p>
+        <a class="sibling-link" href="{{site.sibling.url}}"><span>{{site.sibling.name}}</span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
+      </div>
+      <div>
+        <h2 data-i18n="footer.discover">Découvrir</h2>
+        <ul>
+          <li><a href="/catalogue.html" data-i18n="nav.catalogue">Catalogue</a></li>
+          <li><a href="/excluded.html" data-i18n="nav.excluded">Non conformes</a></li>
+          <li><a href="/compare.html" data-i18n="nav.compare">Comparer</a></li>
+          <li><a href="/learn.html" data-i18n="nav.learn">Apprendre</a></li>
+          <li><a href="/blog.html" data-i18n="nav.blog">Blog</a></li>
+          <li><a href="/dashboard.html" data-i18n="nav.dashboard">Statistiques</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2 data-i18n="footer.contribute">Contribuer</h2>
+        <ul>
+          <li><a href="/add.html" data-i18n="footer.addProduct">Ajouter un produit</a></li>
+          <li><a href="/halal-users.html" data-i18n="nav.community">Communauté</a></li>
+          <li><a href="/donate.html" data-i18n="nav.donate">Faire un don</a></li>
+          <li><a href="{{site.membershipUrl}}" target="_blank" rel="noopener" data-i18n="nav.membership">Adhérer</a></li>
+          <li><a href="/api.html">API</a></li>
+          <li><a href="{{site.github}}" target="_blank" rel="noopener" data-i18n="footer.source">Code source</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2 data-i18n="footer.about">À propos</h2>
+        <ul>
+          <li><a href="/legal.html" data-i18n="footer.legal">Mentions légales</a></li>
+          <li><a href="/terms.html" data-i18n="footer.terms">Conditions d'utilisation</a></li>
+          <li><a href="/signin.html" data-i18n="footer.account">Compte contributeur</a></li>
+          <li><a href="mailto:{{site.contact}}">{{site.contact}}</a></li>
+          <li><a href="{{site.facebook}}" target="_blank" rel="noopener">Facebook</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="site-footer__bottom">
+      <span>© {{build.year}} {{site.name}} · <span data-i18n="footer.license">Données sous licence ODbL</span></span>
+      <span data-i18n="footer.disclaimer">Les statuts halal sont des déclarations de contributeurs, pas des certifications.</span>
+    </div>
+  </div>
+</footer>

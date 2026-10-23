@@ -1,0 +1,167 @@
+{
+ "checker": [
+  {
+   "term": "alcohol denat",
+   "status": "haram",
+   "text": "Alcool dénaturé, interdit en cosmétique halal."
+  },
+  {
+   "term": "ethanol",
+   "status": "haram",
+   "text": "Alcool éthylique."
+  },
+  {
+   "term": "alcohol",
+   "status": "haram",
+   "text": "Vérifiez s'il s'agit d'alcohol denat (haram) ou d'un alcool gras (halal)."
+  },
+  {
+   "term": "carmine",
+   "status": "haram",
+   "text": "Carmin (CI 75470) : colorant d'insecte, non halal."
+  },
+  {
+   "term": "ci 75470",
+   "status": "haram",
+   "text": "Carmine, colorant d'insecte."
+  },
+  {
+   "term": "lard",
+   "status": "haram",
+   "text": "Graisse de porc."
+  },
+  {
+   "term": "pepsin",
+   "status": "haram",
+   "text": "Enzyme d'origine porcine."
+  },
+  {
+   "term": "gelatin",
+   "status": "doubtful",
+   "text": "Gélatine, souvent porcine. Cherchez la certification halal."
+  },
+  {
+   "term": "glycerin",
+   "status": "doubtful",
+   "text": "Peut être d'origine végétale (halal) ou animale."
+  },
+  {
+   "term": "collagen",
+   "status": "doubtful",
+   "text": "Collagène, origine animale à préciser."
+  },
+  {
+   "term": "keratin",
+   "status": "doubtful",
+   "text": "Kératine, origine animale à préciser."
+  },
+  {
+   "term": "stearic acid",
+   "status": "doubtful",
+   "text": "Peut être végétale ou animale."
+  },
+  {
+   "term": "parfum",
+   "status": "doubtful",
+   "text": "Peut contenir de l'alcool éthylique."
+  },
+  {
+   "term": "fragrance",
+   "status": "doubtful",
+   "text": "Peut contenir de l'alcool."
+  },
+  {
+   "term": "aqua",
+   "status": "halal",
+   "text": "Eau, toujours halal."
+  },
+  {
+   "term": "cetyl alcohol",
+   "status": "halal",
+   "text": "Alcool gras végétal, halal."
+  },
+  {
+   "term": "cetearyl alcohol",
+   "status": "halal",
+   "text": "Alcool gras végétal, halal."
+  },
+  {
+   "term": "niacinamide",
+   "status": "halal",
+   "text": "Vitamine B3, synthétique."
+  },
+  {
+   "term": "hyaluronic acid",
+   "status": "halal",
+   "text": "Fermentation microbienne, halal."
+  },
+  {
+   "term": "tocopherol",
+   "status": "halal",
+   "text": "Vitamine E, végétale."
+  },
+  {
+   "term": "shea butter",
+   "status": "halal",
+   "text": "Beurre de karité, végétal."
+  },
+  {
+   "term": "argan oil",
+   "status": "halal",
+   "text": "Huile d'argan, végétale."
+  }
+ ],
+ "quiz": [
+  {
+   "q": "Le Cetyl Alcohol est-il haram ?",
+   "choices": [
+    "Oui",
+    "Non",
+    "Ça dépend"
+   ],
+   "correct": 1,
+   "explain": "Non. Le Cetyl Alcohol est un alcool gras d'origine végétale, tout à fait halal. Seuls les alcools éthyliques sont haram."
+  },
+  {
+   "q": "La Carmine (CI 75470) est-elle halal ?",
+   "choices": [
+    "Oui",
+    "Non",
+    "Peut-être"
+   ],
+   "correct": 1,
+   "explain": "Non. La carmine est un colorant extrait de cochenilles (insectes), considéré haram."
+  },
+  {
+   "q": "Un parfum sans mention d'alcool sur l'étiquette est-il forcément halal ?",
+   "choices": [
+    "Oui",
+    "Non",
+    "Probablement"
+   ],
+   "correct": 1,
+   "explain": "Non. Les \"parfums\" et \"fragrances\" peuvent contenir de l'alcool sans le mentionner explicitement."
+  },
+  {
+   "q": "La Glycerin végétale certifiée est-elle halal ?",
+   "choices": [
+    "Oui",
+    "Non",
+    "Ça dépend"
+   ],
+   "correct": 0,
+   "explain": "Oui. La glycérine végétale certifiée est halal. C'est l'origine animale non certifiée qui pose problème."
+  },
+  {
+   "q": "Le \"Alcohol Denat.\" dans un sérum est-il acceptable ?",
+   "choices": [
+    "Oui",
+    "Non",
+    "En usage externe seulement"
+   ],
+   "correct": 1,
+   "explain": "Non selon la majorité des savants. L'Alcohol Denat. est de l'alcool éthylique dénaturé, considéré haram même en usage externe."
+  }
+ ],
+ "intro": "<h2>Le halal en cosmétique</h2>\n<p>Un cosmétique halal ne contient aucun ingrédient interdit (porc et dérivés, alcool de fermentation en quantité, ingrédients d'animaux non abattus rituellement) et n'a pas été contaminé lors de sa fabrication. L'usage externe est jugé moins restrictif que l'ingestion par une partie des savants, mais les avis divergent : un label certifié reste le repère le plus sûr.</p>\n<h2>Tous les « alcohols » ne sont pas de l'alcool</h2>\n<ul>\n<li><strong>Alcohol denat. / Ethanol</strong> : alcool de fermentation, à éviter selon la majorité des avis.</li>\n<li><strong>Cetyl, Cetearyl, Stearyl alcohol</strong> : alcools gras, souvent d'origine végétale, généralement admis.</li>\n<li><strong>Benzyl alcohol</strong> : conservateur, admis en usage externe selon certains savants.</li>\n</ul>\n<h2>Ingrédients d'origine animale à surveiller</h2>\n<ul>\n<li><strong>Carmine / CI 75470 (E120)</strong> : colorant issu d'insectes (rouges à lèvres, fards).</li>\n<li><strong>Collagène, élastine, kératine, placenta</strong> : origine animale à vérifier.</li>\n<li><strong>Sodium tallowate, suif</strong> : graisse animale (savons).</li>\n<li><strong>Gélatine</strong> : vernis, gélules, masques.</li>\n<li><strong>Glycerin</strong> : végétale ou animale ; cherchez la mention vegan.</li>\n</ul>\n<h2>Repères rassurants</h2>\n<ul><li>Label halal d'un organisme reconnu (JAKIM, MUI, HMC…)</li><li>Mention vegan certifiée (aucun ingrédient animal, mais l'alcool reste possible)</li><li>Liste INCI courte et lisible</li></ul>"
+}

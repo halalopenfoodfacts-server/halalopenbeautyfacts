@@ -1,0 +1,50 @@
+---
+{"title": "Ajouter ou corriger un produit — {{site.name}}", "description": "Un produit manque ou une fiche est fausse ? Ajoutez-la ou corrigez-la en quelques minutes sur {{site.upstream.name}}.", "script": "add", "nav": "add", "priority": 0.6}
+---
+<header class="container page-head">
+  <span class="eyebrow">Contribuer</span>
+  <h1>Ajouter ou corriger un produit</h1>
+  <p>Nos fiches proviennent de {{site.upstream.name}}, la base collaborative libre. Toute contribution faite là-bas apparaît ici lors de la synchronisation suivante (quotidienne).</p>
+</header>
+<div class="container grid grid--2" style="align-items:start">
+  <section class="panel">
+    <h2><svg aria-hidden="true"><use href="#i-scan"/></svg>Le produit est-il déjà référencé ?</h2>
+    <form class="stack" data-add-form novalidate>
+      <div class="field">
+        <label for="add-code">Code-barres (8 à 14 chiffres)</label>
+        <input class="input mono" id="add-code" name="code" inputmode="numeric" autocomplete="off" maxlength="14" placeholder="3017620422003" required aria-describedby="add-code-hint add-code-error">
+        <span class="hint" id="add-code-hint">Les chiffres sous les barres, sans espace.</span>
+        <span class="error" id="add-code-error" role="alert" hidden></span>
+      </div>
+      <div class="cluster">
+        <button class="btn btn--primary" type="submit">Vérifier</button>
+        <button class="btn" type="button" data-scan><svg aria-hidden="true"><use href="#i-scan"/></svg><span>Scanner</span></button>
+      </div>
+      <div data-add-result aria-live="polite"></div>
+    </form>
+  </section>
+  <div class="stack">
+    <section class="card">
+      <h3>1. Avec l'application (recommandé)</h3>
+      <p>L'application {{site.upstream.name}} guide la prise de photos (face avant, ingrédients{{#if site.features.nutrition}}, tableau nutritionnel{{/if}}, labels). C'est le moyen le plus rapide.</p>
+      <div class="app-badges" style="margin-top:1rem">
+        <a class="btn btn--sm" href="{{site.upstream.apps.ios}}" target="_blank" rel="noopener">App Store</a>
+        <a class="btn btn--sm" href="{{site.upstream.apps.android}}" target="_blank" rel="noopener">Google Play</a>
+        <a class="btn btn--sm" href="{{site.upstream.apps.fdroid}}" target="_blank" rel="noopener">F-Droid</a>
+      </div>
+    </section>
+    <section class="card">
+      <h3>2. Depuis un ordinateur</h3>
+      <p>Saisissez le code-barres ci-contre puis complétez la fiche sur le site {{site.upstream.name}}. Un compte gratuit est nécessaire.</p>
+    </section>
+    <section class="card">
+      <h3>Pour un statut halal fiable</h3>
+      <p>Ajoutez le <strong>label halal</strong> exact (avec l'organisme : AVS, HMC, JAKIM…) et une <strong>photo lisible des ingrédients</strong>. Un produit sans label reste « Non renseigné » : nous n'affirmons jamais qu'un produit est halal sans label déclaré.</p>
+    </section>
+    <section class="card">
+      <h3>Vous êtes fabricant ?</h3>
+      <p>La plateforme producteurs permet d'importer toutes vos fiches en une fois.</p>
+      <a class="btn btn--sm" style="margin-top:.75rem" href="{{site.upstream.producersUrl}}" target="_blank" rel="noopener"><span>Plateforme producteurs</span><svg aria-hidden="true"><use href="#i-external"/></svg></a>
+    </section>
+  </div>
+</div>

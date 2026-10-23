@@ -1,0 +1,41 @@
+---
+{"title": "Communauté — {{site.name}}", "description": "Les contributeurs qui enrichissent la base {{site.name}}, et comment rejoindre l'équipe.", "script": "community", "nav": "community", "priority": 0.5}
+---
+<header class="container page-head">
+  <span class="eyebrow">Communauté</span>
+  <h1>Ceux qui font vivre la base</h1>
+  <p>Chaque fiche est créée et corrigée par des bénévoles sur {{site.upstream.name}}. Voici les contributeurs les plus actifs parmi les {{site.noun.many}} de notre base.</p>
+</header>
+<div class="container grid grid--2" style="align-items:start">
+  <section class="panel">
+    <h2>Contributeurs les plus actifs</h2>
+    <p class="muted" style="margin-bottom:1rem" data-contributors-total></p>
+    <ol class="rank-list" data-contributors aria-busy="true"></ol>
+  </section>
+  <div class="stack">
+    <section class="card">
+      <span class="card__icon"><svg aria-hidden="true"><use href="#i-users"/></svg></span>
+      <h3 style="margin-top:.75rem">Rejoindre l'équipe</h3>
+      <p>Créez un compte {{site.upstream.name}}, puis rejoignez l'équipe « Halal Open Facts » depuis votre profil : vos contributions seront comptées ici.</p>
+      <div class="cluster" style="margin-top:1rem">
+        <a class="btn btn--primary" href="{{site.upstream.signupUrl}}" target="_blank" rel="noopener"><span>Créer un compte</span><svg aria-hidden="true"><use href="#i-external"/></svg></a>
+        <a class="btn" href="/add.html">Comment contribuer</a>
+      </div>
+    </section>
+    <section class="card">
+      <span class="card__icon"><svg aria-hidden="true"><use href="#i-heart-hand"/></svg></span>
+      <h3 style="margin-top:.75rem">Soutenir l'association</h3>
+      <p>Halal Open Facts est une association loi 1901 indépendante. L'adhésion et les dons financent l'hébergement et le développement.</p>
+      <div class="cluster" style="margin-top:1rem">
+        <a class="btn btn--primary" href="{{site.membershipUrl}}" target="_blank" rel="noopener"><span>Adhérer</span><svg aria-hidden="true"><use href="#i-external"/></svg></a>
+        <a class="btn" href="/donate.html">Faire un don</a>
+      </div>
+    </section>
+    <section class="card">
+      <span class="card__icon"><svg aria-hidden="true"><use href="#i-globe"/></svg></span>
+      <h3 style="margin-top:.75rem">Suivez-nous</h3>
+      <p>Actualités, alertes produits et appels à contribution.</p>
+      <a class="btn" style="margin-top:1rem" href="{{site.facebook}}" target="_blank" rel="noopener"><span>Facebook</span><svg aria-hidden="true"><use href="#i-external"/></svg></a>
+    </section>
+  </div>
+</div>

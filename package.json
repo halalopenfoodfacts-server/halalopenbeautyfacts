@@ -1,0 +1,21 @@
+{
+  "name": "halal-open-facts-site",
+  "private": true,
+  "description": "Frontend Halal Open Food Facts / Halal Open Beauty Facts — HTML/CSS/JS sans framework, build esbuild",
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "build": "node core/tools/build.mjs",
+    "dev": "node core/tools/build.mjs --watch & node core/tools/serve.mjs",
+    "serve": "node core/tools/serve.mjs",
+    "test": "node --test core/tests/unit/",
+    "test:e2e": "playwright test",
+    "check:shared": "node core/tools/check-shared.mjs",
+    "verify": "npm run test && npm run build && npm run test:e2e"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.48.2",
+    "@zxing/library": "0.21.3",
+    "esbuild": "0.24.0"
+  }
+}

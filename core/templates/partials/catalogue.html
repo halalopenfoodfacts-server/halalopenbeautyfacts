@@ -1,0 +1,94 @@
+<div class="container catalogue" data-catalogue data-preset="{{page.preset}}">
+  <aside class="filters" id="filters" aria-label="Filtres" data-filters>
+    <div class="filters__close">
+      <h2 data-i18n="filters.title">Filtres</h2>
+      <button class="btn btn--ghost btn--icon" type="button" data-filters-close aria-label="Fermer les filtres" data-i18n-aria="common.close"><svg aria-hidden="true"><use href="#i-x"/></svg></button>
+    </div>
+    <form class="stack" style="gap:var(--space-5)" data-filters-form>
+      {{#unless page.hideStatusFilter}}
+      <fieldset class="filters__group">
+        <legend data-i18n="filters.status">Statut halal</legend>
+        <div class="status-filter">
+          <label><input type="radio" name="status" value="" checked><span data-i18n="filters.all">Tous les produits</span></label>
+          <label><input type="radio" name="status" value="halal"><span class="status status--halal"><svg aria-hidden="true"><use href="#i-halal"/></svg><span data-i18n="status.halal">Halal déclaré</span></span></label>
+          <label><input type="radio" name="status" value="haram"><span class="status status--haram"><svg aria-hidden="true"><use href="#i-haram"/></svg><span data-i18n="status.haram">Non conforme</span></span></label>
+        </div>
+      </fieldset>
+      {{/unless}}
+      <div class="field filters__group">
+        <label for="f-category" data-i18n="filters.category">Catégorie</label>
+        <select class="select" id="f-category" name="category">
+          <option value="" data-i18n="filters.anyCategory">Toutes les catégories</option>
+          {{#each site.categories}}<option value="{{this.id}}">{{this.label}}</option>{{/each}}
+        </select>
+      </div>
+      <div class="field filters__group">
+        <label for="f-country" data-i18n="filters.country">Pays de vente</label>
+        <select class="select" id="f-country" name="country" data-countries>
+          <option value="" data-i18n="filters.anyCountry">Tous les pays</option>
+          {{#each content.voyage}}<option value="en:{{this.id}}">{{this.title}}</option>{{/each}}
+        </select>
+      </div>
+      <fieldset class="filters__group">
+        <legend data-i18n="filters.labels">Labels</legend>
+        <div class="chip-row">
+          {{#each site.labels}}<button class="chip" type="button" aria-pressed="false" data-toggle="labels" data-value="{{this.id}}">{{this.label}}</button>{{/each}}
+        </div>
+      </fieldset>
+      {{#if site.features.nutrition}}
+      <fieldset class="filters__group">
+        <legend>Nutri-Score</legend>
+        <div class="chip-row">
+          <button class="chip" type="button" aria-pressed="false" data-toggle="nutriscore" data-value="a">A</button>
+          <button class="chip" type="button" aria-pressed="false" data-toggle="nutriscore" data-value="b">B</button>
+          <button class="chip" type="button" aria-pressed="false" data-toggle="nutriscore" data-value="c">C</button>
+          <button class="chip" type="button" aria-pressed="false" data-toggle="nutriscore" data-value="d">D</button>
+          <button class="chip" type="button" aria-pressed="false" data-toggle="nutriscore" data-value="e">E</button>
+        </div>
+      </fieldset>
+      <fieldset class="filters__group">
+        <legend>NOVA</legend>
+        <div class="chip-row">
+          <button class="chip" type="button" aria-pressed="false" data-toggle="nova" data-value="1" title="Aliments peu ou pas transformés">1</button>
+          <button class="chip" type="button" aria-pressed="false" data-toggle="nova" data-value="2" title="Ingrédients culinaires">2</button>
+          <button class="chip" type="button" aria-pressed="false" data-toggle="nova" data-value="3" title="Aliments transformés">3</button>
+          <button class="chip" type="button" aria-pressed="false" data-toggle="nova" data-value="4" title="Ultra-transformés">4</button>
+        </div>
+      </fieldset>
+      <label class="checkbox"><input type="checkbox" name="palmFree"><span data-i18n="filters.palm">Sans huile de palme</span></label>
+      {{/if}}
+      <div class="cluster">
+        <button class="btn btn--sm" type="button" data-filters-reset><span data-i18n="common.reset">Réinitialiser</span></button>
+        <button class="btn btn--primary btn--sm filters-toggle" type="button" data-filters-close><span data-i18n="common.apply">Afficher les résultats</span></button>
+      </div>
+    </form>
+  </aside>
+  <div>
+    <form class="search-form" role="search" data-catalogue-search style="margin-bottom:var(--space-4)">
+      <div class="search">
+        <label class="sr-only" for="catalogue-q" data-i18n="search.label">Rechercher un produit</label>
+        <div class="search__box">
+          <svg aria-hidden="true"><use href="#i-search"/></svg>
+          <input class="search__input" id="catalogue-q" type="search" name="q" placeholder="{{site.searchPlaceholder}}" enterkeyhint="search" spellcheck="false">
+          <button class="search__clear" type="button" data-search-clear aria-label="Effacer" data-i18n-aria="search.clear" hidden><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg></button>
+          <button class="btn btn--primary" type="submit"><span data-i18n="search.submit">Rechercher</span></button>
+        </div>
+      </div>
+    </form>
+    <div class="results-bar">
+      <p class="results-bar__count" aria-live="polite" data-count>&nbsp;</p>
+      <div class="cluster">
+        <button class="btn btn--sm filters-toggle" type="button" data-filters-open aria-controls="filters"><svg aria-hidden="true"><use href="#i-filter"/></svg><span data-i18n="filters.title">Filtres</span><span data-filter-count></span></button>
+        <label class="sr-only" for="f-sort" data-i18n="filters.sort">Trier par</label>
+        <select class="select select--sm" id="f-sort" name="sort" form="" data-sort>
+          <option value="popularity" data-i18n="sort.popularity">Popularité</option>
+          <option value="recent" data-i18n="sort.recent">Mis à jour récemment</option>
+          <option value="name" data-i18n="sort.name">Nom (A→Z)</option>
+        </select>
+      </div>
+    </div>
+    <div class="active-filters" data-active-filters></div>
+    <div class="product-grid" data-results aria-live="polite" aria-busy="true"></div>
+    <div data-pagination></div>
+  </div>
+</div>

@@ -1,0 +1,25 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, refonte-v2 ]
+  pull_request:
+
+jobs:
+  test-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Tests unitaires
+        run: npm test
+      - name: Build de production
+        run: npm run build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist

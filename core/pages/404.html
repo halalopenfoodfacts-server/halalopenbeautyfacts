@@ -1,0 +1,14 @@
+---
+{"title": "Page introuvable — {{site.name}}", "noindex": true, "nav": "none"}
+---
+<section class="container error-page">
+  <span class="error-page__code" aria-hidden="true">404</span>
+  <h1>Cette page n'existe pas (ou plus)</h1>
+  <p class="lead">Le lien est peut-être ancien. Cherchez directement un produit, ou revenez à l'accueil.</p>
+  {{> search-hero}}
+  <div class="cluster" style="justify-content:center">
+    <a class="btn btn--primary" href="/"><svg aria-hidden="true"><use href="#i-home"/></svg><span>Accueil</span></a>
+    <a class="btn" href="/catalogue.html"><svg aria-hidden="true"><use href="#i-grid"/></svg><span>Catalogue</span></a>
+    <button class="btn" type="button" data-scan><svg aria-hidden="true"><use href="#i-scan"/></svg><span>Scanner</span></button>
+  </div>
+</section>

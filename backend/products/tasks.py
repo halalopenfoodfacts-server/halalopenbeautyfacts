@@ -19,6 +19,8 @@ def _run_locked(portal: str):
         call_command('sync_delta', portal=portal)
     finally:
         cache.delete(lock_key)
+    # Les compteurs (stats/facets) changent après une sync : recalcul en arrière-plan
+    refresh_stats.delay(portal)
     return f'{portal}: ok'
 
 
@@ -30,3 +32,22 @@ def sync_food_delta():
 @shared_task(name='sync_beauty_delta')
 def sync_beauty_delta():
     return _run_locked('beauty')
+
+
+@shared_task(name='refresh_stats')
+def refresh_stats(portal=None):
+    """Pré-calcule stats + facets (lues ensuite par /api/stats et /api/facets/*)."""
+    from .stats import PORTALS, refresh_portal
+
+    done = []
+    for p in ([portal] if portal else PORTALS):
+        lock_key = f'lock:refresh_stats:{p}'
+        if not cache.add(lock_key, '1', 3600):
+            done.append(f'{p}: déjà en cours')
+            continue
+        try:
+            data = refresh_portal(p)
+            done.append(f"{p}: {data['total']} produits")
+        finally:
+            cache.delete(lock_key)
+    return ', '.join(done)

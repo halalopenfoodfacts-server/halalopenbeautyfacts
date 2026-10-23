@@ -1,0 +1,20 @@
+/* Halal Open Beauty Facts — accent prune du logo, champagne en second plan */
+:root {
+    --accent: #7a3590;
+    --accent-strong: #5d2470;
+    --accent-soft: #f1e5f5;
+    --accent-ink: #55206a;
+    --on-accent: #ffffff;
+    --accent-2: #a8742a;
+    --accent-2-soft: #f6ead6;
+}
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) {
+        --accent: #d39be6; --accent-strong: #e6bff2; --accent-soft: #34203c; --accent-ink: #ecc9f6;
+        --on-accent: #1b0d21; --accent-2: #e2b56c; --accent-2-soft: #3a2c14;
+    }
+}
+:root[data-theme='dark'] {
+    --accent: #d39be6; --accent-strong: #e6bff2; --accent-soft: #34203c; --accent-ink: #ecc9f6;
+    --on-accent: #1b0d21; --accent-2: #e2b56c; --accent-2-soft: #3a2c14;
+}

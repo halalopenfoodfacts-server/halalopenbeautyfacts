@@ -1,0 +1,30 @@
+<dialog class="dialog scanner" id="scanner" aria-labelledby="scanner-title">
+  <div class="dialog__head">
+    <h2 id="scanner-title" data-i18n="scan.title">Scanner un code-barres</h2>
+    <button class="btn btn--ghost btn--icon" type="button" data-scanner-close aria-label="Fermer" data-i18n-aria="common.close"><svg aria-hidden="true"><use href="#i-x"/></svg></button>
+  </div>
+  <div class="dialog__body">
+    <div class="scanner__viewport" data-scanner-viewport>
+      <video playsinline muted aria-label="Aperçu de la caméra"></video>
+      <div class="scanner__frame" aria-hidden="true"></div>
+      <div class="scanner__laser" aria-hidden="true"></div>
+      <div class="scanner__placeholder" data-scanner-placeholder hidden>
+        <svg aria-hidden="true"><use href="#i-camera"/></svg>
+        <p data-scanner-message></p>
+      </div>
+      <p class="scanner__status" data-scanner-status data-i18n="scan.aim">Placez le code-barres dans le cadre</p>
+    </div>
+    <div class="cluster" data-scanner-tools hidden>
+      <button class="btn btn--sm" type="button" data-scanner-torch hidden><svg aria-hidden="true"><use href="#i-torch"/></svg><span data-i18n="scan.torch">Lampe</span></button>
+    </div>
+    <div data-scanner-result aria-live="polite"></div>
+    <form class="stack" data-scanner-form novalidate>
+      <label class="label" for="manual-code" data-i18n="scan.manual">Ou saisissez le code-barres</label>
+      <div class="scanner__manual">
+        <input class="input" id="manual-code" name="code" inputmode="numeric" autocomplete="off" pattern="[0-9]{8,14}" maxlength="14" placeholder="3017620422003" aria-describedby="manual-code-error">
+        <button class="btn btn--primary" type="submit" data-i18n="common.open">Ouvrir</button>
+      </div>
+      <p class="error" id="manual-code-error" role="alert" hidden></p>
+    </form>
+  </div>
+</dialog>

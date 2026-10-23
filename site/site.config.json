@@ -1,0 +1,204 @@
+{
+  "portal": "beauty",
+  "name": "Halal Open Beauty Facts",
+  "short": "Halal OBF",
+  "domain": "https://halalopenbeautyfacts.org",
+  "description": "Recherchez un cosmétique, scannez son code-barres et vérifiez les informations halal et les ingrédients sensibles (alcool, carmin, collagène, suif…). Base de données ouverte et communautaire.",
+  "tagline": "La base de données ouverte des cosmétiques halal",
+  "noun": {
+    "one": "cosmétique",
+    "many": "cosmétiques",
+    "short": "cosmétiques"
+  },
+  "heroTitle": "Ce que contient <em>vraiment</em> votre trousse de beauté.",
+  "heroLead": "Scannez ou cherchez un cosmétique : statut halal déclaré, ingrédients sensibles (alcool, carmin, collagène, suif…), en quelques secondes.",
+  "searchPlaceholder": "Shampooing, crème, 6291069651034…",
+  "themeColor": "#7a3590",
+  "themeColorDark": "#0e1512",
+  "backgroundColor": "#f7f3ea",
+  "manifestCategories": [
+    "beauty",
+    "lifestyle",
+    "shopping"
+  ],
+  "contact": "contact@halalopenbeautyfacts.org",
+  "privacy": "privacy@halalopenbeautyfacts.org",
+  "upstream": {
+    "name": "Open Beauty Facts",
+    "url": "https://world.openbeautyfacts.org",
+    "productUrl": "https://world.openbeautyfacts.org/product/",
+    "addUrl": "https://world.openbeautyfacts.org/cgi/product.pl?type=search_or_add&action=process&code=",
+    "loginUrl": "https://world.openbeautyfacts.org/cgi/login.pl",
+    "signupUrl": "https://world.openbeautyfacts.org/cgi/user.pl",
+    "producersUrl": "https://world.openbeautyfacts.org/producers",
+    "teamUrl": "https://world.openbeautyfacts.org/team/halal-open-beauty-facts",
+    "apps": {
+      "ios": "https://apps.apple.com/app/open-food-facts/id588797948",
+      "android": "https://play.google.com/store/apps/details?id=org.openfoodfacts.scanner",
+      "fdroid": "https://f-droid.org/packages/org.openfoodfacts.scanner/"
+    }
+  },
+  "membershipUrl": "https://halal-open-food-facts.s2.yapla.com/fr/espace-membres",
+  "donateUrl": "https://halal-open-food-facts.s2.yapla.com/fr/campaign-16372",
+  "github": "https://github.com/halalopenfoodfacts-server/halalopenbeautyfacts",
+  "facebook": "https://www.facebook.com/profile.php?id=61571584380846",
+  "sibling": {
+    "name": "Halal Open Food Facts",
+    "url": "https://halalopenfoodfacts.org",
+    "noun": "produits alimentaires"
+  },
+  "legal": {
+    "entity": "Association loi 1901 Halal Open Food Facts (portail Halal Open Beauty Facts)",
+    "address": "392 rue des Peupliers, 59800 Lille",
+    "director": "M. Mustapha Zentar",
+    "host": "OVH SAS, 2 rue Kellermann, 59100 Roubaix, France"
+  },
+  "features": {
+    "nutrition": false
+  },
+  "categories": [
+    {
+      "id": "en:shampoos",
+      "label": "Shampooings"
+    },
+    {
+      "id": "en:shower-gels",
+      "label": "Gels douche"
+    },
+    {
+      "id": "en:toothpastes",
+      "label": "Dentifrices"
+    },
+    {
+      "id": "en:deodorants",
+      "label": "Déodorants"
+    },
+    {
+      "id": "en:face-creams",
+      "label": "Crèmes visage"
+    },
+    {
+      "id": "en:body-lotions",
+      "label": "Laits corps"
+    },
+    {
+      "id": "en:soaps",
+      "label": "Savons"
+    },
+    {
+      "id": "en:perfumes",
+      "label": "Parfums"
+    },
+    {
+      "id": "en:make-up",
+      "label": "Maquillage"
+    },
+    {
+      "id": "en:sun-protection",
+      "label": "Protection solaire"
+    }
+  ],
+  "labels": [
+    {
+      "id": "en:organic",
+      "label": "Bio"
+    },
+    {
+      "id": "en:vegan",
+      "label": "Vegan"
+    },
+    {
+      "id": "en:cruelty-free",
+      "label": "Cruelty-free"
+    },
+    {
+      "id": "en:no-alcohol",
+      "label": "Sans alcool"
+    },
+    {
+      "id": "en:no-paraben",
+      "label": "Sans parabène"
+    }
+  ],
+  "searchExamples": [
+    "Shampooing",
+    "Dentifrice",
+    "Déodorant",
+    "Savon"
+  ],
+  "placeholderIcon": "i-sparkle",
+  "stackExamples": [
+    "Crème hydratante",
+    "Parfum à l'alcool",
+    "Rouge à lèvres"
+  ],
+  "stackMeta": "Illustration",
+  "doubtfulExamples": "carmin, collagène, suif, kératine…",
+  "partners": [
+    {
+      "file": "partner-1.webp",
+      "name": "Air Algérie"
+    },
+    {
+      "file": "partner-2.webp",
+      "name": "Algerian Startup Fund"
+    },
+    {
+      "file": "partner-3.webp",
+      "name": "Al Baraka Bank"
+    },
+    {
+      "file": "partner-6.webp",
+      "name": "Qatar Foundation"
+    },
+    {
+      "file": "partner-7.webp",
+      "name": "Qatar Investment Authority"
+    },
+    {
+      "file": "partner-9.webp",
+      "name": "Saudia"
+    }
+  ],
+  "sensitiveIngredients": [
+    "porc",
+    "porcine?",
+    "pork",
+    "saindoux",
+    "lard",
+    "gelatines?",
+    "gelatin",
+    "alcool",
+    "alcohol",
+    "alcohol denat",
+    "ethanol",
+    "e\\s?120",
+    "carmine?",
+    "ci\\s?75470",
+    "cochenilles?",
+    "suif",
+    "tallow",
+    "sodium tallowate",
+    "collagene?",
+    "placenta",
+    "keratine?",
+    "e\\s?441"
+  ],
+  "testFixtures": {
+    "halalProduct": "6291069651034",
+    "haramProduct": "3574661731063",
+    "searchQuery": "shampoo",
+    "missingProduct": "0000000000017",
+    "checkerHaram": "carmine"
+  },
+  "logo": {
+    "header": [
+      250,
+      48
+    ],
+    "small": [
+      208,
+      40
+    ]
+  }
+}

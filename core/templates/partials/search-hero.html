@@ -1,0 +1,11 @@
+<form class="search-form" role="search" action="/catalogue.html" data-search-form>
+  <div class="search search--lg">
+    <label class="sr-only" for="hero-search" data-i18n="search.label">Rechercher un produit</label>
+    <div class="search__box">
+      <svg aria-hidden="true"><use href="#i-search"/></svg>
+      <input class="search__input" id="hero-search" type="search" name="q" placeholder="{{site.searchPlaceholder}}" enterkeyhint="search" spellcheck="false">
+      <button class="search__clear" type="button" data-search-clear aria-label="Effacer" data-i18n-aria="search.clear" hidden><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg></button>
+      <button class="btn btn--primary" type="submit"><span data-i18n="search.submit">Rechercher</span></button>
+    </div>
+  </div>
+</form>

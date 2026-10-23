@@ -61,7 +61,11 @@ DATABASES = {
         'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'halal_secret'),
         'HOST': os.environ.get('POSTGRES_HOST', 'postgres'),
         'PORT': os.environ.get('POSTGRES_PORT', '5432'),
-        'OPTIONS': {'connect_timeout': 10},
+        'OPTIONS': {
+            'connect_timeout': 10,
+            # Garde-fou du service web (0 = illimité, valeur des workers Celery : sync et stats sont longues)
+            'options': f"-c statement_timeout={os.environ.get('DB_STATEMENT_TIMEOUT_MS', '0')}",
+        },
     }
 }
 

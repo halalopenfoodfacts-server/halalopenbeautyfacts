@@ -1,0 +1,50 @@
+[
+ {
+  "id": "liste-inci",
+  "icon": "🔬",
+  "title": "Décrypter la liste INCI d'un cosmétique",
+  "excerpt": "La liste INCI (International Nomenclature of Cosmetic Ingredients) est la liste officielle des ingrédients d'un produit cosmétique. Elle suit un ordre décroissa…",
+  "date": "Avril 2026",
+  "tags": [
+   "INCI",
+   "Ingrédients"
+  ],
+  "content": "<p>La liste INCI (International Nomenclature of Cosmetic Ingredients) est la liste officielle des ingrédients d'un produit cosmétique. Elle suit un ordre décroissant de concentration. Voici les points clés :</p>\n<ul>\n<li>Les ingrédients à plus de 1% sont listés en premier, par ordre décroissant.</li>\n<li>Les ingrédients à moins de 1% peuvent apparaître dans n'importe quel ordre.</li>\n<li>Les colorants sont listés en dernier, avec leur numéro CI.</li>\n<li><strong>Alcool denat.</strong> (alcool dénaturé) est haram selon la majorité des savants.</li>\n<li><strong>Carmine / CI 75470</strong> est issu d'insectes — non halal.</li>\n<li><strong>Glycerin</strong> peut être végétale ou animale — cherchez la mention vegan.</li>\n</ul>"
+ },
+ {
+  "id": "alcool-cosmetiques",
+  "icon": "🍶",
+  "title": "L'alcool dans les cosmétiques : ce qu'il faut savoir",
+  "excerpt": "L'alcool est omniprésent dans les cosmétiques (parfums, gels, déodorants...). Mais tous les alcools ne sont pas haram. Il faut distinguer :",
+  "date": "Mars 2026",
+  "tags": [
+   "Alcool",
+   "Cosmétiques"
+  ],
+  "content": "<p>L'alcool est omniprésent dans les cosmétiques (parfums, gels, déodorants...). Mais tous les alcools ne sont pas haram. Il faut distinguer :</p>\n<ul>\n<li><strong>Ethanol / Alcohol denat.</strong> — Alcool de fermentation, haram selon la majorité.</li>\n<li><strong>Cetyl alcohol, Stearyl alcohol</strong> — Alcools gras d'origine végétale, halal.</li>\n<li><strong>Benzyl alcohol</strong> — Conservateur, généralement admis en usage externe selon certains savants.</li>\n</ul>\n<p>La règle générale : l'usage externe est moins restrictif que l'ingestion, mais les savants diffèrent. Préférez les produits certifiés pour éviter tout doute.</p>"
+ },
+ {
+  "id": "certifications-cosmetiques",
+  "icon": "🏅",
+  "title": "Les certifications halal pour les cosmétiques",
+  "excerpt": "Plusieurs organismes certifient les cosmétiques halal en France et à l'international :",
+  "date": "Février 2026",
+  "tags": [
+   "Certification",
+   "Labels"
+  ],
+  "content": "<p>Plusieurs organismes certifient les cosmétiques halal en France et à l'international :</p>\n<ul>\n<li><strong>HMC (UK)</strong> — Halal Monitoring Committee, très strict.</li>\n<li><strong>JAKIM (Malaisie)</strong> — Référence internationale pour les produits asiatiques.</li>\n<li><strong>IFANCA (USA)</strong> — Islamic Food and Nutrition Council of America.</li>\n<li><strong>AVS (Singapour)</strong> — Autorité islamique de Singapour.</li>\n<li><strong>ARGML (France)</strong> — Association française de certification halal.</li>\n</ul>\n<p>Sur Open Beauty Facts, cherchez le tag <code>en:halal</code> dans les labels d'un produit.</p>"
+ },
+ {
+  "id": "halal-et-vegan",
+  "icon": "🌱",
+  "title": "Halal et vegan : les points communs et différences",
+  "excerpt": "Un produit vegan peut ne pas être halal (il peut contenir de l'alcool) et un produit halal peut ne pas être vegan (il peut contenir des ingrédients animaux issu…",
+  "date": "Janvier 2026",
+  "tags": [
+   "Vegan",
+   "Halal"
+  ],
+  "content": "<p>Un produit vegan peut ne pas être halal (il peut contenir de l'alcool) et un produit halal peut ne pas être vegan (il peut contenir des ingrédients animaux issus d'abattage halal). Cependant, les deux démarches partagent :</p>\n<ul>\n<li>Le refus des ingrédients issus du porc.</li>\n<li>L'attention portée à l'origine des ingrédients.</li>\n<li>La traçabilité des matières premières.</li>\n</ul>\n<p>De nombreux consommateurs musulmans choisissent des produits vegan certifiés comme alternative pratique en l'absence de certification halal.</p>"
+ }
+]

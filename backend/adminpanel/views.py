@@ -8,6 +8,7 @@ import csv
 import datetime
 from urllib.parse import urlencode
 
+from django.conf import settings
 from django.core.paginator import Paginator
 from django.db.models import Count, Sum
 from django.http import StreamingHttpResponse
@@ -51,6 +52,9 @@ def _top(rows, key, label=lambda value: value, limit=10):
 def login(request):
     if request.session.get(auth.SESSION_FLAG):
         return redirect('adminpanel:visits')
+    # IP bloquée (trop de codes faux) : retour direct à l'accueil, formulaire non affiché
+    if request.method == 'GET' and auth.is_blocked(request):
+        return redirect(settings.ADMIN_EXIT_URL)
     error = 'Session expirée après 30 minutes d\'inactivité. Reconnectez-vous.' if request.GET.get('expire') else ''
     status = 200
     if request.method == 'POST':
@@ -58,9 +62,9 @@ def login(request):
         if outcome == 'ok':
             return redirect('adminpanel:visits')
         if outcome == 'blocked':
-            error, status = 'Trop d\'essais. Réessayez dans 15 minutes.', 429
-        else:
-            error, status = 'Code incorrect.', 403
+            return redirect(settings.ADMIN_EXIT_URL)
+        left = auth.remaining_attempts(request)
+        error, status = f'Code incorrect. Il vous reste {left} essai{"s" if left > 1 else ""}, ensuite retour à l\'accueil.', 403
     return render(request, 'adminpanel/login.html', {'error': error}, status=status)
 
 

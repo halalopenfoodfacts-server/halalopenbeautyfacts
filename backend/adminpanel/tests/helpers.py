@@ -8,7 +8,7 @@ CODE_HASH = PasswordHasher(time_cost=1, memory_cost=1024, parallelism=1).hash(CO
 IP = '203.0.113.7'
 
 
-@override_settings(ADMIN_CODE_HASH=CODE_HASH, ADMIN_MAX_ATTEMPTS=5, ADMIN_GLOBAL_MAX_FAILURES=30)
+@override_settings(ADMIN_CODE_HASH=CODE_HASH, ADMIN_MAX_ATTEMPTS=2, ADMIN_GLOBAL_MAX_FAILURES=30)
 class AdminTestCase(TestCase):
     def setUp(self):
         cache.clear()

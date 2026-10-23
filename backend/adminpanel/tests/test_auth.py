@@ -84,43 +84,45 @@ class LoginTests(AdminTestCase):
         self.assertFalse(AuditLog.objects.filter(action='login.success').exists())
 
 
+HOME = 'https://halalopenfoodfacts.org/'
+
+
 class RateLimitTests(AdminTestCase):
-    def test_five_failures_block_the_ip_even_with_the_right_code(self):
-        for _ in range(4):
-            self.assertEqual(self.login('faux').status_code, 403)
-        self.assertEqual(self.login('faux').status_code, 429)
-        response = self.login()
-        self.assertEqual(response.status_code, 429)
-        self.assertContains(response, 'Trop d', status_code=429)
+    def test_two_failures_send_back_home_and_block_even_the_right_code(self):
+        response = self.login('faux')
+        self.assertEqual(response.status_code, 403)
+        self.assertContains(response, 'Il vous reste 1 essai,', status_code=403)
+        self.assertRedirects(self.login('faux'), HOME, fetch_redirect_response=False)
+        # Bloqué : le formulaire n'est plus affiché, même le bon code renvoie à l'accueil
+        self.assertRedirects(self.client.get('/gestion/connexion', HTTP_X_REAL_IP=IP), HOME, fetch_redirect_response=False)
+        self.assertRedirects(self.login(), HOME, fetch_redirect_response=False)
         self.assertEqual(self.client.get('/gestion/visites').status_code, 302)
-        self.assertEqual(AuditLog.objects.filter(action='login.failure').count(), 5)
+        self.assertEqual(AuditLog.objects.filter(action='login.failure').count(), 2)
         self.assertEqual(AuditLog.objects.filter(action='login.blocked', result='blocked').count(), 1)
 
     def test_block_is_per_ip(self):
-        for _ in range(5):
+        for _ in range(2):
             self.login('faux')
-        self.assertEqual(self.login(ip='198.51.100.9').status_code, 302)
+        self.assertEqual(self.login(ip='198.51.100.9')['Location'], '/gestion/visites')
 
     def test_success_resets_the_counter(self):
-        for _ in range(4):
-            self.login('faux')
+        self.login('faux')
         self.login()
         self.client.post('/gestion/deconnexion')
-        for _ in range(4):
-            self.assertEqual(self.login('faux').status_code, 403)
+        self.assertContains(self.login('faux'), 'Il vous reste 1 essai,', status_code=403)
 
     @override_settings(ADMIN_GLOBAL_MAX_FAILURES=3)
     def test_distributed_attack_triggers_global_block(self):
         for i in range(3):
             self.login('faux', ip=f'198.51.100.{i}')
-        self.assertEqual(self.login(ip='192.0.2.50').status_code, 429)
+        self.assertRedirects(self.login(ip='192.0.2.50'), HOME, fetch_redirect_response=False)
 
     def test_unlock_all_lifts_the_global_block(self):
         from django.core.cache import cache
         cache.set(auth.GLOBAL_BLOCK_KEY, 1, 900)
-        self.assertEqual(self.login().status_code, 429)
+        self.assertEqual(self.login()['Location'], HOME)
         auth.unlock_all()
-        self.assertEqual(self.login().status_code, 302)
+        self.assertEqual(self.login()['Location'], '/gestion/visites')
 
 
 class SessionTests(AdminTestCase):

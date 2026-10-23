@@ -110,9 +110,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Hash argon2 du code d'accès : python manage.py admin_code_hash. Vide = espace désactivé (404).
 ADMIN_CODE_HASH = os.environ.get('ADMIN_CODE_HASH', '')
 ADMIN_IDLE_SECONDS = 30 * 60          # session fermée après 30 min sans activité
-ADMIN_MAX_ATTEMPTS = 5                # échecs par IP avant blocage…
+ADMIN_MAX_ATTEMPTS = 2                # codes faux par IP avant retour à l'accueil et blocage…
 ADMIN_LOCKOUT_SECONDS = 15 * 60       # … de 15 min
 ADMIN_GLOBAL_MAX_FAILURES = 30        # échecs par heure toutes IP confondues → blocage global
+ADMIN_EXIT_URL = 'https://halalopenfoodfacts.org/'   # où renvoyer une IP bloquée
 
 ANALYTICS_RETENTION_DAYS = 90         # pages vues et termes recherchés
 METRICS_RETENTION_DAYS = 30           # relevés système

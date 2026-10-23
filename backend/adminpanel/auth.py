@@ -4,7 +4,8 @@ Accès à l'espace de gestion : un code secret unique, vérifié contre un hash 
     ADMIN_CODE_HASH (variable d'environnement) : hash produit par `manage.py admin_code_hash`.
     Sans hash, l'espace de gestion n'existe pas (404 partout).
 
-Limitation des essais (Redis) : ADMIN_MAX_ATTEMPTS échecs par IP → IP bloquée ADMIN_LOCKOUT_SECONDS ;
+Limitation des essais (Redis) : ADMIN_MAX_ATTEMPTS échecs par IP → retour à l'accueil (ADMIN_EXIT_URL)
+et IP bloquée ADMIN_LOCKOUT_SECONDS ;
 au-delà de ADMIN_GLOBAL_MAX_FAILURES échecs par heure, toutes IP confondues, plus aucune
 tentative n'est examinée pendant ADMIN_LOCKOUT_SECONDS (attaque répartie).
 Débloquer : `manage.py admin_unlock`.
@@ -57,6 +58,10 @@ def _incr(key, ttl):
 
 def is_blocked(request):
     return bool(cache.get(GLOBAL_BLOCK_KEY) or cache.get(_keys(request)[1]))
+
+
+def remaining_attempts(request):
+    return max(settings.ADMIN_MAX_ATTEMPTS - (cache.get(_keys(request)[0]) or 0), 0)
 
 
 def attempt_login(request, code):

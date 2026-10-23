@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="referrer" content="no-referrer">
+<title>{% block title %}Gestion{% endblock %} · Halal Open Facts</title>
+<style>
+:root {
+  --bg: #f7f3ea; --surface: #fffdf8; --ink: #1c2420; --muted: #5b655f; --line: #e3ddcf;
+  --accent: #1f7a47; --accent-soft: #d8eadf; --accent-ink: #fff;
+  --ok: #156b3b; --ok-soft: #e1f1e7; --warn: #995400; --warn-soft: #fbecd6; --crit: #b42318; --crit-soft: #fbe2df;
+  --grid: #ece6d8; --radius: 12px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0e1512; --surface: #16201b; --ink: #e8efe9; --muted: #9fb0a5; --line: #26332c;
+    --accent: #4cb87a; --accent-soft: #1c3a2a; --accent-ink: #0e1512;
+    --ok: #5cc98a; --ok-soft: #173525; --warn: #f0a640; --warn-soft: #3a2a12; --crit: #f07a6c; --crit-soft: #3d1a17;
+    --grid: #223029;
+    color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+a { color: var(--accent); }
+.wrap { max-width: 1100px; margin: 0 auto; padding: 16px; }
+header.top { background: var(--surface); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 2; }
+header.top .wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding-block: 10px; }
+.brand { font-weight: 700; margin-right: auto; }
+nav.tabs { display: flex; gap: 4px; overflow-x: auto; }
+nav.tabs a { padding: 8px 12px; border-radius: 999px; text-decoration: none; color: var(--ink); white-space: nowrap; }
+nav.tabs a[aria-current="page"] { background: var(--accent); color: var(--accent-ink); }
+h1 { font-size: 1.5rem; margin: 8px 0 4px; }
+h2 { font-size: 1.1rem; margin: 0 0 12px; }
+.lead { color: var(--muted); margin: 0 0 16px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; margin-bottom: 16px; min-width: 0; }
+.grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+.tiles { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); margin-bottom: 16px; }
+.tile { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 14px; border-left-width: 5px; }
+.tile .label { color: var(--muted); font-size: .85rem; }
+.tile .value { font-size: 1.6rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.tile .sub { color: var(--muted); font-size: .8rem; }
+.state { display: inline-flex; align-items: center; gap: 4px; font-size: .78rem; font-weight: 600; padding: 1px 8px; border-radius: 999px; }
+.lvl-ok { border-left-color: var(--ok); } .lvl-ok .state { color: var(--ok); background: var(--ok-soft); }
+.lvl-warn { border-left-color: var(--warn); } .lvl-warn .state { color: var(--warn); background: var(--warn-soft); }
+.lvl-crit { border-left-color: var(--crit); } .lvl-crit .state { color: var(--crit); background: var(--crit-soft); }
+.lvl-none { border-left-color: var(--line); }
+.filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: end; margin-bottom: 16px; }
+.filters label { display: flex; flex-direction: column; font-size: .85rem; color: var(--muted); gap: 2px; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; background: var(--surface); }
+.seg a { padding: 6px 14px; text-decoration: none; color: var(--ink); }
+.seg a[aria-current="true"] { background: var(--accent); color: var(--accent-ink); }
+input, select, button { font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; min-height: 40px; }
+button, .btn { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; padding: 8px 14px; border-radius: 8px; }
+.btn-ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { color: var(--muted); font-weight: 600; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+.scroll { overflow-x: auto; }
+details summary { cursor: pointer; color: var(--muted); font-size: .85rem; margin-top: 8px; }
+.muted { color: var(--muted); }
+.empty { color: var(--muted); padding: 16px 0; }
+/* Colonnes par jour */
+.cols { display: flex; align-items: flex-end; gap: 2px; height: 160px; border-bottom: 1px solid var(--line);
+  background: linear-gradient(var(--grid) 1px, transparent 1px) 0 0 / 100% 50%; }
+.cols .col { flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; min-width: 0; }
+.cols .bar { background: var(--accent); border-radius: 4px 4px 0 0; min-height: 2px; }
+.cols .col:hover .bar { opacity: .8; }
+.cols-x { display: flex; gap: 2px; font-size: .72rem; color: var(--muted); }
+.cols-x span { flex: 1; text-align: center; white-space: nowrap; min-width: 0; overflow: visible; }
+.chart-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.chart-head .big { font-size: 1.3rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+/* Barres horizontales */
+.barlist { list-style: none; margin: 0; padding: 0; }
+.barlist li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 8px; padding: 6px 0; }
+.barlist .name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.barlist .val { font-variant-numeric: tabular-nums; color: var(--muted); }
+.barlist .track { grid-column: 1 / -1; height: 6px; background: var(--grid); border-radius: 4px; }
+.barlist .fill { height: 100%; background: var(--accent); border-radius: 4px; }
+/* Courbes */
+.line svg { width: 100%; height: 170px; display: block; overflow: visible; }
+.line .gridline { stroke: var(--grid); stroke-width: 1; }
+.line .curve { fill: none; stroke: var(--accent); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.line .band-warn { fill: var(--warn-soft); } .line .band-crit { fill: var(--crit-soft); }
+.line .th-warn { stroke: var(--warn); stroke-dasharray: 4 4; } .line .th-crit { stroke: var(--crit); stroke-dasharray: 4 4; }
+.line .hit { fill: transparent; } .line .hit:hover { fill: var(--accent); fill-opacity: .15; }
+.line .axis { display: flex; justify-content: space-between; font-size: .72rem; color: var(--muted); }
+.line .yl { position: relative; height: 0; font-size: .72rem; color: var(--muted); }
+.legend { display: flex; flex-wrap: wrap; gap: 12px; font-size: .75rem; color: var(--muted); margin-top: 4px; }
+.legend i { display: inline-block; width: 14px; height: 0; border-top: 2px dashed; vertical-align: middle; margin-right: 4px; }
+.legend .w { color: var(--warn); } .legend .c { color: var(--crit); }
+.pager { display: flex; gap: 8px; align-items: center; justify-content: space-between; margin-top: 12px; flex-wrap: wrap; }
+.badge { font-size: .75rem; padding: 1px 8px; border-radius: 999px; font-weight: 600; white-space: nowrap; }
+.r-success { color: var(--ok); background: var(--ok-soft); } .r-failure { color: var(--crit); background: var(--crit-soft); } .r-blocked { color: var(--warn); background: var(--warn-soft); }
+code { font-size: .8rem; }
+@media (max-width: 600px) {
+  .wrap { padding: 12px; }
+  .hide-sm { display: none; }
+  .tile .value { font-size: 1.3rem; }
+}
+</style>
+</head>
+<body>
+{% block body %}
+<header class="top">
+  <div class="wrap">
+    <span class="brand">Gestion · Halal Open Facts</span>
+    <nav class="tabs" aria-label="Sections">
+      <a href="{% url 'adminpanel:visits' %}" {% if section == 'visits' %}aria-current="page"{% endif %}>Visites</a>
+      <a href="{% url 'adminpanel:system' %}" {% if section == 'system' %}aria-current="page"{% endif %}>Système</a>
+      <a href="{% url 'adminpanel:audit' %}" {% if section == 'audit' %}aria-current="page"{% endif %}>Journal</a>
+    </nav>
+    <form method="post" action="{% url 'adminpanel:logout' %}">{% csrf_token %}<button type="submit" class="btn-ghost">Se déconnecter</button></form>
+  </div>
+</header>
+<main class="wrap">
+{% block content %}{% endblock %}
+</main>
+{% endblock %}
+</body>
+</html>

@@ -1,5 +1,6 @@
 // Comportements communs à toutes les pages.
 import { store } from '../lib/storage.js';
+import { sendPageView } from './audience.js';
 import { $, $$, trapFocus } from './dom.js';
 import { currentLang, setLang, switchLang, t } from './i18n-dom.js';
 import { translatePage } from './translate-page.js';
@@ -137,4 +138,5 @@ export function initShell() {
     initNetwork();
     initServiceWorker();
     initReveal();
+    sendPageView();
 }

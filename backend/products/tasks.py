@@ -16,7 +16,7 @@ def _run_locked(portal: str):
     if not cache.add(lock_key, '1', LOCK_TTL):
         return f'{portal}: sync déjà en cours, ignorée'
     try:
-        call_command('sync_delta', portal=portal)
+        call_command('sync_delta', portal=portal, scheduled=True)
     finally:
         cache.delete(lock_key)
     # Les compteurs (stats/facets) changent après une sync : recalcul en arrière-plan

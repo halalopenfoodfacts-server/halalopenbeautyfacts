@@ -1,0 +1,48 @@
+{% extends "adminpanel/base.html" %}
+{% block title %}Journal d'audit{% endblock %}
+{% block content %}
+<h1>Journal d'audit</h1>
+<p class="lead">Ajout seul : aucune ligne ne peut être modifiée ni supprimée. Les adresses IP sont hachées.</p>
+
+<form class="filters card" method="get">
+  <label>Du <input type="date" name="debut" value="{{ filters.debut }}"></label>
+  <label>Au <input type="date" name="fin" value="{{ filters.fin }}"></label>
+  <label>Action
+    <select name="action"><option value="">Toutes</option>
+      {% for key, label in actions.items %}<option value="{{ key }}" {% if filters.action == key %}selected{% endif %}>{{ label }}</option>{% endfor %}
+    </select></label>
+  <label>Résultat
+    <select name="resultat"><option value="">Tous</option>
+      {% for key, label in results %}<option value="{{ key }}" {% if filters.resultat == key %}selected{% endif %}>{{ label }}</option>{% endfor %}
+    </select></label>
+  <button type="submit">Filtrer</button>
+  <a class="btn btn-ghost" href="{% url 'adminpanel:audit' %}">Effacer</a>
+  <a class="btn btn-ghost" href="{% url 'adminpanel:audit-csv' %}{% if query %}?{{ query }}{% endif %}">Exporter en CSV</a>
+</form>
+
+<section class="card">
+  <p class="muted" style="margin-top:0">{{ page.paginator.count }} entrée{{ page.paginator.count|pluralize }}</p>
+  {% if page.object_list %}
+  <div class="scroll"><table>
+    <thead><tr><th>Date</th><th>Action</th><th class="hide-sm">Acteur</th><th>Cible</th><th>Résultat</th><th class="hide-sm">IP hachée</th></tr></thead>
+    <tbody>
+    {% for e in page.object_list %}
+      <tr>
+        <td style="white-space:nowrap">{{ e.created_at|date:"d/m/Y H:i:s" }}</td>
+        <td>{% for key, label in actions.items %}{% if key == e.action %}{{ label }}{% endif %}{% endfor %}<br><code class="muted">{{ e.action }}</code>{% if e.detail %}<br><span class="muted" style="font-size:.8rem">{{ e.detail|truncatechars:160 }}</span>{% endif %}</td>
+        <td class="hide-sm">{{ e.actor }}</td>
+        <td>{{ e.target|default:"—" }}</td>
+        <td><span class="badge r-{{ e.result }}">{{ e.get_result_display }}</span></td>
+        <td class="hide-sm"><code>{{ e.ip_hash|default:"—" }}</code></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
+  <div class="pager">
+    {% if page.has_previous %}<a class="btn btn-ghost" href="?page={{ page.previous_page_number }}{% if query %}&{{ query }}{% endif %}">← Plus récent</a>{% else %}<span></span>{% endif %}
+    <span class="muted">Page {{ page.number }} / {{ page.paginator.num_pages }}</span>
+    {% if page.has_next %}<a class="btn btn-ghost" href="?page={{ page.next_page_number }}{% if query %}&{{ query }}{% endif %}">Plus ancien →</a>{% else %}<span></span>{% endif %}
+  </div>
+  {% else %}<p class="empty">Aucune entrée pour ces filtres.</p>{% endif %}
+</section>
+{% endblock %}

@@ -21,7 +21,8 @@ import time
 import urllib.request
 from datetime import datetime, timezone, timedelta
 
-from django.core.management.base import BaseCommand
+
+from adminpanel.commands import AuditedCommand
 from django.db.models import Max
 from django.utils import timezone as tz
 
@@ -153,7 +154,9 @@ def process_jsonl_line(line: bytes, portal: str) -> Product | None:
     )
 
 
-class Command(BaseCommand):
+class Command(AuditedCommand):
+    audit_action = 'sync.run'
+
     help = 'Sync delta OFF (JSONL) — à lancer toutes les heures via Celery Beat'
 
     def add_arguments(self, parser):

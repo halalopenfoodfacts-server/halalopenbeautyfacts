@@ -1,0 +1,51 @@
+{% extends "adminpanel/base.html" %}
+{% block title %}Visites{% endblock %}
+{% block content %}
+<h1>Visites</h1>
+<p class="lead">Mesure sans cookie : un visiteur = une empreinte anonyme valable une journée. Données gardées 90 jours.</p>
+
+<div class="filters">
+  <div class="seg" role="group" aria-label="Période">
+    <a href="?jours=7&portail={{ portal }}" {% if days == 7 %}aria-current="true"{% endif %}>7 jours</a>
+    <a href="?jours=30&portail={{ portal }}" {% if days == 30 %}aria-current="true"{% endif %}>30 jours</a>
+  </div>
+  <div class="seg" role="group" aria-label="Portail">
+    {% for key, label in portal_labels.items %}<a href="?jours={{ days }}&portail={{ key }}" {% if portal == key %}aria-current="true"{% endif %}>{{ label }}</a>{% endfor %}
+  </div>
+</div>
+
+<div class="tiles">
+  <div class="tile lvl-none"><div class="label">Visiteurs aujourd'hui</div><div class="value">{{ today.visitors }}</div><div class="sub">{{ today.views }} pages vues</div></div>
+  <div class="tile lvl-none"><div class="label">Visiteurs / jour (moyenne)</div><div class="value">{{ avg_visitors }}</div><div class="sub">sur {{ days }} jours</div></div>
+  <div class="tile lvl-none"><div class="label">Pages vues</div><div class="value">{{ total_views }}</div><div class="sub">sur {{ days }} jours</div></div>
+</div>
+
+<div class="grid">
+  <section class="card">
+    <div class="chart-head"><h2>Visiteurs uniques par jour</h2></div>
+    {% include "adminpanel/_columns.html" with chart=visitors_chart %}
+  </section>
+  <section class="card">
+    <div class="chart-head"><h2>Pages vues par jour</h2></div>
+    {% include "adminpanel/_columns.html" with chart=views_chart %}
+  </section>
+</div>
+<section class="card">
+  <details>
+    <summary>Tableau jour par jour</summary>
+    <div class="scroll"><table>
+      <thead><tr><th>Jour</th><th class="num">Visiteurs</th><th class="num">Pages vues</th></tr></thead>
+      <tbody>{% for d in daily %}<tr><td>{{ d.day|date:"D j M" }}</td><td class="num">{{ d.visitors }}</td><td class="num">{{ d.views }}</td></tr>{% endfor %}</tbody>
+    </table></div>
+  </details>
+</section>
+
+<div class="grid">
+  <section class="card"><h2>Pages les plus consultées</h2>{% include "adminpanel/_barlist.html" with items=top_pages unit="pages vues" %}</section>
+  <section class="card"><h2>Produits les plus consultés</h2>{% include "adminpanel/_barlist.html" with items=top_products unit="vues" %}</section>
+  <section class="card"><h2>Recherches les plus fréquentes</h2>{% include "adminpanel/_barlist.html" with items=top_searches unit="recherches" %}</section>
+  <section class="card"><h2>Appareils</h2>{% include "adminpanel/_barlist.html" with items=devices unit="visiteurs" %}</section>
+  <section class="card"><h2>Pays (approximatif)</h2>{% include "adminpanel/_barlist.html" with items=countries unit="visiteurs" %}
+    <p class="muted" style="font-size:.8rem">Déduit du fuseau horaire du navigateur, sans géolocalisation par IP.</p></section>
+</div>
+{% endblock %}

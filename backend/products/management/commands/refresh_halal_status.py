@@ -12,7 +12,8 @@ Conçu pour la production (4,5 M de lignes sur un VPS à la mémoire comptée) :
 import time
 
 from django.core.cache import cache
-from django.core.management.base import BaseCommand
+
+from adminpanel.commands import AuditedCommand
 from django.db import connection, transaction
 from django.db.models.fields.json import KeyTextTransform
 
@@ -25,7 +26,9 @@ INDEX_SQL = ('CREATE INDEX CONCURRENTLY IF NOT EXISTS product_portal_status_scan
              'ON products_product (portal, halal_status, unique_scans_n DESC)')
 
 
-class Command(BaseCommand):
+class Command(AuditedCommand):
+    audit_action = 'halal_status.refresh'
+
     help = 'Recalcule le statut halal stocké (par lots, reprise automatique)'
 
     def add_arguments(self, parser):

@@ -2,7 +2,8 @@
 Import OpenBeautyFacts CSV en streaming.
 Usage: python manage.py import_beauty [--limit N]
 """
-from django.core.management.base import BaseCommand
+
+from adminpanel.commands import AuditedCommand
 from django.core.management import call_command
 
 
@@ -12,7 +13,9 @@ HALAL_LABELS  = {'en:halal', 'fr:halal'}
 EXCL_LABELS   = {'en:alcohol', 'en:contains-alcohol', 'en:non-halal', 'en:haram'}
 
 
-class Command(BaseCommand):
+class Command(AuditedCommand):
+    audit_action = 'import.run'
+
     help = 'Importe OpenBeautyFacts CSV en streaming'
 
     def add_arguments(self, parser):

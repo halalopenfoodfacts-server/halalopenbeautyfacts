@@ -14,7 +14,8 @@ import urllib.request
 
 csv.field_size_limit(10 * 1024 * 1024)
 
-from django.core.management.base import BaseCommand
+
+from adminpanel.commands import AuditedCommand
 from django.db import connection
 
 FOOD_CSV_URL   = 'https://static.openfoodfacts.org/data/en.openfoodfacts.org.products.csv.gz'
@@ -23,7 +24,9 @@ BEAUTY_CSV_URL = 'https://static.openbeautyfacts.org/data/en.openbeautyfacts.org
 BATCH_SIZE = 2000
 
 
-class Command(BaseCommand):
+class Command(AuditedCommand):
+    audit_action = 'images.update'
+
     help = 'Met à jour uniquement les images depuis le CSV OFF/OBF (streaming)'
 
     def add_arguments(self, parser):

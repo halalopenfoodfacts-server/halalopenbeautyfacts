@@ -15,7 +15,8 @@ import urllib.request
 
 csv.field_size_limit(10 * 1024 * 1024)
 
-from django.core.management.base import BaseCommand
+
+from adminpanel.commands import AuditedCommand
 from django.contrib.postgres.search import SearchVector
 from django.db import transaction
 from django.utils import timezone as tz
@@ -129,7 +130,9 @@ def row_to_product(row: dict, portal: str) -> Product | None:
     )
 
 
-class Command(BaseCommand):
+class Command(AuditedCommand):
+    audit_action = 'import.run'
+
     help = 'Import complet OFF/OBF — stocke toutes les colonnes CSV en JSONB'
 
     def add_arguments(self, parser):

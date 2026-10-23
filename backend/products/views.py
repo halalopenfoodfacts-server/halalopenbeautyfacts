@@ -11,6 +11,8 @@ from rest_framework import status as http_status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
+from adminpanel.tracking import record_search
+
 from .halal import HALAL, HARAM, STATUSES
 from .models import Product
 from .serializers import ProductDetailSerializer, ProductListSerializer
@@ -222,6 +224,11 @@ def _barcode_match(request, q):
 
 
 def _search_payload(request, view_name, default_sort):
+    # Termes les plus recherchés (espace de gestion) : recherche validée, pas la saisie instantanée
+    q = request.GET.get('q', '').strip()[:200]
+    if q and request.GET.get('prefix') != '1' and request.GET.get('page', '1') in ('', '1'):
+        record_search(request, _portal(request), q)
+
     resp_key = _response_key(request, view_name)
     cached = cache.get(resp_key)
     if cached is not None:

@@ -14,7 +14,8 @@ import urllib.request
 csv.field_size_limit(10 * 1024 * 1024)  # 10 MB — certains champs OFF sont très longs
 from datetime import datetime, timezone
 
-from django.core.management.base import BaseCommand
+
+from adminpanel.commands import AuditedCommand
 from django.contrib.postgres.search import SearchVector
 from django.db import transaction
 from django.utils import timezone as tz
@@ -92,7 +93,9 @@ def row_to_product(row: dict, portal: str) -> Product | None:
     )
 
 
-class Command(BaseCommand):
+class Command(AuditedCommand):
+    audit_action = 'import.run'
+
     help = 'Importe OpenFoodFacts CSV en streaming (sans stocker le fichier sur disque)'
 
     def add_arguments(self, parser):

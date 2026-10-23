@@ -1,0 +1,25 @@
+<section class="card line">
+  <div class="chart-head">
+    <h2>{{ chart.title }}</h2>
+    {% if not chart.empty %}<span class="state-wrap lvl-{{ chart.level }}"><span class="big">{{ chart.last }}</span>{% if chart.level == 'warn' %} <span class="state">⚠ Attention</span>{% elif chart.level == 'crit' %} <span class="state">✖ Critique</span>{% endif %}</span>{% endif %}
+  </div>
+  {% if chart.empty %}<p class="empty">Pas encore de relevé.</p>{% else %}
+  <svg viewBox="0 0 {{ chart.width }} {{ chart.height }}" preserveAspectRatio="none" role="img" aria-label="{{ chart.title }} : dernière valeur {{ chart.last }}, maximum {{ chart.peak }}">
+    {% for band in chart.bands %}<rect class="band-{{ band.level }}" x="0" y="{{ band.y|stringformat:'s' }}" width="{{ chart.width }}" height="{{ band.h|stringformat:'s' }}"/>
+    <line class="th-{{ band.level }}" x1="0" x2="{{ chart.width }}" y1="{{ band.line_y|stringformat:'s' }}" y2="{{ band.line_y|stringformat:'s' }}" vector-effect="non-scaling-stroke"/>{% endfor %}
+    {% for tick in chart.ticks %}<line class="gridline" x1="0" x2="{{ chart.width }}" y1="{{ tick.y|stringformat:'s' }}" y2="{{ tick.y|stringformat:'s' }}" vector-effect="non-scaling-stroke"/>{% endfor %}
+    <line class="gridline" x1="0" x2="{{ chart.width }}" y1="{{ chart.height }}" y2="{{ chart.height }}" vector-effect="non-scaling-stroke"/>
+    {% for points in chart.segments %}<polyline class="curve" points="{{ points }}" vector-effect="non-scaling-stroke"/>{% endfor %}
+    {% for hit in chart.hits %}<rect class="hit" x="{{ hit.x|stringformat:'s' }}" y="0" width="{{ hit.w|stringformat:'s' }}" height="{{ chart.height }}"><title>{{ hit.title }}</title></rect>{% endfor %}
+  </svg>
+  <div class="axis"><span>{{ chart.x_labels.0 }}</span><span>échelle : 0 – {{ chart.ticks.0.label }} {{ chart.unit }}</span><span>{{ chart.x_labels.1 }}</span></div>
+  {% if chart.bands %}<div class="legend">{% for band in chart.bands %}<span class="{% if band.level == 'warn' %}w{% else %}c{% endif %}"><i></i>{{ band.label }}</span>{% endfor %}</div>{% endif %}
+  <details>
+    <summary>Valeurs heure par heure</summary>
+    <div class="scroll" style="max-height: 260px; overflow-y: auto;"><table>
+      <thead><tr><th>Heure</th><th class="num">{{ chart.unit }}</th></tr></thead>
+      <tbody>{% for row in chart.table %}<tr><td>{{ row.hour }}</td><td class="num">{{ row.value }}</td></tr>{% endfor %}</tbody>
+    </table></div>
+  </details>
+  {% endif %}
+</section>

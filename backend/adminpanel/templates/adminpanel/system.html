@@ -1,0 +1,34 @@
+{% extends "adminpanel/base.html" %}
+{% block title %}Système{% endblock %}
+{% block content %}
+<h1>Ressources du serveur</h1>
+<p class="lead">Relevé toutes les 5 minutes (VPS entier). {% if last %}Dernier relevé : {{ last.created_at|date:"j M H:i" }}.{% endif %}</p>
+
+<div class="filters">
+  <div class="seg" role="group" aria-label="Période">
+    <a href="?jours=1" {% if days == 1 %}aria-current="true"{% endif %}>24 h</a>
+    <a href="?jours=3" {% if days == 3 %}aria-current="true"{% endif %}>3 jours</a>
+    <a href="?jours=7" {% if days == 7 %}aria-current="true"{% endif %}>7 jours</a>
+  </div>
+</div>
+
+{% if tiles %}
+<div class="tiles">
+  {% for tile in tiles %}
+  <div class="tile lvl-{{ tile.level }}">
+    <div class="label">{{ tile.label }}</div>
+    <div class="value">{{ tile.display }}</div>
+    <div class="sub">{{ tile.sub }}</div>
+    {% if tile.level == 'ok' %}<span class="state">✓ Normal</span>{% elif tile.level == 'warn' %}<span class="state">⚠ Attention</span>{% elif tile.level == 'crit' %}<span class="state">✖ Critique</span>{% endif %}
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="card"><p class="empty">Aucun relevé pour l'instant : le premier arrive dans les 5 minutes qui suivent le déploiement.</p></div>
+{% endif %}
+{% if tiles and not has_logs %}<div class="card"><p class="muted">Temps de réponse et erreurs : en attente des journaux nginx (format avec durée de requête).</p></div>{% endif %}
+
+<div class="grid">
+  {% for chart in charts %}{% include "adminpanel/_line.html" %}{% endfor %}
+</div>
+{% endblock %}

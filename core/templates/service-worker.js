@@ -61,6 +61,8 @@ self.addEventListener('fetch', (event) => {
     const { request } = event;
     if (request.method !== 'GET') return;
     const url = new URL(request.url);
+    // Espace de gestion : jamais de copie hors ligne (données privées)
+    if (url.pathname.startsWith('/gestion')) return;
 
     if (url.origin === self.location.origin) {
         if (request.mode === 'navigate') {

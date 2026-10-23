@@ -20,6 +20,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'django_celery_beat',
     'products.apps.ProductsConfig',
+    'adminpanel.apps.AdminPanelConfig',
 ]
 
 MIDDLEWARE = [
@@ -31,6 +32,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'adminpanel.audit.AuditContextMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -90,6 +92,7 @@ REST_FRAMEWORK = {
 }
 
 CORS_ALLOW_ALL_ORIGINS = True
+CORS_URLS_REGEX = r'^/(api|search)/'   # jamais sur l'espace de gestion
 CORS_ALLOW_METHODS = ['GET', 'OPTIONS']
 
 LANGUAGE_CODE = 'fr-fr'
@@ -100,3 +103,30 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# ─────────────────────────────────────────
+# Espace de gestion privé (/gestion/, app adminpanel)
+# ─────────────────────────────────────────
+# Hash argon2 du code d'accès : python manage.py admin_code_hash. Vide = espace désactivé (404).
+ADMIN_CODE_HASH = os.environ.get('ADMIN_CODE_HASH', '')
+ADMIN_IDLE_SECONDS = 30 * 60          # session fermée après 30 min sans activité
+ADMIN_MAX_ATTEMPTS = 5                # échecs par IP avant blocage…
+ADMIN_LOCKOUT_SECONDS = 15 * 60       # … de 15 min
+ADMIN_GLOBAL_MAX_FAILURES = 30        # échecs par heure toutes IP confondues → blocage global
+
+ANALYTICS_RETENTION_DAYS = 90         # pages vues et termes recherchés
+METRICS_RETENTION_DAYS = 30           # relevés système
+METRICS_DISK_PATH = os.environ.get('METRICS_DISK_PATH', '/')
+NGINX_ACCESS_LOGS = [p for p in os.environ.get('NGINX_ACCESS_LOGS', '').split(',') if p]
+
+# Derrière le nginx de l'hôte (HTTPS) ; Django n'écoute que sur 127.0.0.1
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+CSRF_TRUSTED_ORIGINS = ['https://halalopenfoodfacts.org', 'https://www.halalopenfoodfacts.org']
+SESSION_COOKIE_NAME = 'hof_sid'
+SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = 'Strict'
+SESSION_COOKIE_AGE = ADMIN_IDLE_SECONDS   # renouvelé à chaque page (session modifiée)
+CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_HTTPONLY = True
+CSRF_COOKIE_SAMESITE = 'Strict'

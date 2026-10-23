@@ -1,0 +1,17 @@
+{% extends "adminpanel/base.html" %}
+{% block title %}Connexion{% endblock %}
+{% block body %}
+<main class="wrap" style="max-width: 420px; padding-top: 12vh;">
+  <div class="card">
+    <h1>Espace de gestion</h1>
+    <p class="lead">Accès réservé. Session fermée après 30 minutes d'inactivité.</p>
+    {% if error %}<p role="alert" class="badge r-failure" style="display:block; padding: 8px 12px; border-radius: 8px;">{{ error }}</p>{% endif %}
+    <form method="post" action="{% url 'adminpanel:login' %}">
+      {% csrf_token %}
+      <label for="code" style="display:block; margin-bottom: 6px;">Code d'accès</label>
+      <input id="code" name="code" type="password" autocomplete="current-password" required autofocus style="width:100%; margin-bottom: 12px;">
+      <button type="submit" style="width:100%; justify-content:center;">Entrer</button>
+    </form>
+  </div>
+</main>
+{% endblock %}

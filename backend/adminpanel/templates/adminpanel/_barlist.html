@@ -1,0 +1,11 @@
+{% if items %}
+<ul class="barlist">
+  {% for item in items %}
+  <li title="{{ item.label }} : {{ item.value }} {{ unit }}">
+    <span class="name">{% if item.href %}<a href="{{ item.href }}" target="_blank" rel="noopener noreferrer">{{ item.label }}</a>{% else %}{{ item.label }}{% endif %}</span>
+    <span class="val">{{ item.value }}</span>
+    <span class="track" aria-hidden="true"><span class="fill" style="width: {{ item.pct|stringformat:'.1f' }}%; display:block;"></span></span>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}<p class="empty">Aucune donnée sur la période.</p>{% endif %}

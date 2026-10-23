@@ -1,0 +1,4 @@
+<div class="cols" role="img" aria-label="{{ chart.unit }} par jour, maximum {{ chart.max }}">
+  {% for bar in chart.bars %}<div class="col" title="{{ bar.title }}"><div class="bar" style="height: {{ bar.h|stringformat:'.1f' }}%"></div></div>{% endfor %}
+</div>
+<div class="cols-x" aria-hidden="true">{% for bar in chart.bars %}<span>{{ bar.label }}</span>{% endfor %}</div>

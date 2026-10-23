@@ -10,7 +10,10 @@ from urllib.parse import urlencode
 
 from django.conf import settings
 from django.core.paginator import Paginator
-from django.db.models import Count, Sum
+from collections import Counter
+
+from django.conf import settings as django_settings
+from django.db.models import Avg, Count, Q, Sum
 from django.http import StreamingHttpResponse
 from django.shortcuts import redirect, render
 from django.utils import timezone
@@ -262,3 +265,77 @@ def audit_csv(request):
     response = StreamingHttpResponse(rows(), content_type='text/csv; charset=utf-8')
     response['Content-Disposition'] = f'attachment; filename="journal-audit-{timezone.localdate()}.csv"'
     return response
+
+
+# ─────────────────────────────────────────────
+# Halal Assistant
+# ─────────────────────────────────────────────
+
+UNANSWERED_REASONS = {
+    'ingredients_missing': 'Ingrédients non renseignés', 'product_not_found': 'Produit introuvable',
+    'no_alternatives': 'Aucune alternative', 'ingredient_unknown': 'Ingrédient absent de la table',
+    'search_timeout': 'Recherche trop longue', 'too_many_steps': 'Recherche inachevée',
+    'tool_error': 'Erreur d\'outil', 'interrupted': 'Interrompu (visiteur parti)', '': '—',
+}
+
+@auth.admin_required
+def assistant(request):
+    from assistant.models import Exchange
+
+    days = int(_choice(request, 'jours', ('7', '30'), '7'))
+    today = timezone.localdate()
+    start = today - datetime.timedelta(days=days - 1)
+    qs = Exchange.objects.filter(day__gte=start)
+    by_day = {row['day']: row for row in qs.values('day').annotate(
+        n=Count('id'), cost=Sum('cost_usd'), unanswered=Count('id', filter=~Q(outcome='answered')))}
+    daily = [{'day': d, 'n': by_day.get(d, {}).get('n', 0), 'cost': round(by_day.get(d, {}).get('cost') or 0, 4),
+              'unanswered': by_day.get(d, {}).get('unanswered', 0)}
+             for d in (start + datetime.timedelta(days=i) for i in range(days))]
+    total = sum(d['n'] for d in daily)
+    unanswered_total = sum(d['unanswered'] for d in daily)
+    budget = django_settings.ASSISTANT_DAILY_BUDGET_USD
+    spent = daily[-1]['cost']
+    share = spent / budget * 100 if budget else 0
+
+    counter, tools = Counter(), Counter()
+    for portal, codes, used in qs.values_list('portal', 'product_codes', 'tools').iterator():
+        counter.update((portal, code) for code in (codes or [])[:5])
+        tools.update(t.get('name', '?') for t in (used or []) if isinstance(t, dict))
+    top = counter.most_common(10)
+    names = {}
+    for p in {portal for (portal, _), _ in top}:
+        codes = [code for (portal, code), _ in top if portal == p]
+        names.update({(p, code): name for code, name in
+                      Product.objects.filter(portal=p, code__in=codes).values_list('code', 'product_name')})
+    most = top[0][1] if top else 0
+    top_products = [{'label': names.get(key) or key[1], 'value': n, 'pct': charts.pct(n, most),
+                     'href': f"{SITES[key[0]]}/product.html?code={key[1]}"} for key, n in top]
+    tool_labels = {'search_products': 'Recherche de produit', 'get_product': 'Lecture de fiche',
+                   'find_alternatives': 'Alternatives', 'explain_ingredient': 'Explication d\'ingrédient'}
+    most_tool = max(tools.values(), default=0)
+
+    context = {
+        'section': 'assistant', 'days': days, 'enabled': django_settings.ASSISTANT_ENABLED,
+        'has_key': bool(django_settings.ANTHROPIC_API_KEY), 'model': django_settings.ASSISTANT_MODEL,
+        'tiles': [
+            {'label': "Questions aujourd'hui", 'display': daily[-1]['n'], 'sub': f"{days} j : {total}", 'level': 'none'},
+            {'label': "Dépense aujourd'hui", 'display': f'{spent:.3f} $', 'sub': f'plafond {budget:g} $ ({share:.0f} %)',
+             'level': 'crit' if share >= 100 else 'warn' if share >= 80 else 'ok'},
+            {'label': f'Coût sur {days} jours', 'display': f"{sum(d['cost'] for d in daily):.3f} $",
+             'sub': f"≈ {(sum(d['cost'] for d in daily) / total * 100 if total else 0):.2f} centime / question", 'level': 'none'},
+            {'label': 'Sans réponse satisfaisante', 'display': f'{(unanswered_total / total * 100 if total else 0):.0f} %',
+             'sub': f'{unanswered_total} question{"s" if unanswered_total > 1 else ""}', 'level': 'none'},
+            {'label': 'Durée moyenne', 'display': f"{(qs.aggregate(a=Avg('duration_ms'))['a'] or 0) / 1000:.1f} s",
+             'sub': 'par réponse', 'level': 'none'},
+        ],
+        'questions_chart': charts.columns(daily, 'n', 'questions'),
+        'cost_chart': charts.columns(daily, 'cost', '$', decimals=3),
+        'daily': reversed(daily),
+        'unanswered': [{'e': e, 'reason': UNANSWERED_REASONS.get(e.unanswered_reason, e.unanswered_reason),
+                        'outcome': e.get_outcome_display()}
+                       for e in qs.exclude(outcome='answered').order_by('-created_at')[:30]],
+        'top_products': top_products,
+        'tools': [{'label': tool_labels.get(name, name), 'value': n, 'pct': charts.pct(n, most_tool)}
+                  for name, n in tools.most_common()],
+    }
+    return render(request, 'adminpanel/assistant.html', context)

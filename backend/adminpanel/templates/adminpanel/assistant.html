@@ -1,0 +1,65 @@
+{% extends "adminpanel/base.html" %}
+{% block title %}Assistant{% endblock %}
+{% block content %}
+<h1>Halal Assistant</h1>
+<p class="lead">
+  {% if enabled and has_key %}Activé{% elif not has_key %}Désactivé : clé API absente (ANTHROPIC_API_KEY){% else %}Désactivé (ASSISTANT_ENABLED){% endif %}
+  · modèle <code>{{ model }}</code> · échanges gardés 90 jours, sans donnée personnelle.
+</p>
+
+<div class="filters">
+  <div class="seg" role="group" aria-label="Période">
+    <a href="?jours=7" {% if days == 7 %}aria-current="true"{% endif %}>7 jours</a>
+    <a href="?jours=30" {% if days == 30 %}aria-current="true"{% endif %}>30 jours</a>
+  </div>
+</div>
+
+<div class="tiles">
+  {% for tile in tiles %}
+  <div class="tile lvl-{{ tile.level }}">
+    <div class="label">{{ tile.label }}</div>
+    <div class="value">{{ tile.display }}</div>
+    <div class="sub">{{ tile.sub }}</div>
+    {% if tile.level == 'warn' %}<span class="state">⚠ Attention</span>{% elif tile.level == 'crit' %}<span class="state">✖ Plafond atteint</span>{% elif tile.level == 'ok' %}<span class="state">✓ Normal</span>{% endif %}
+  </div>
+  {% endfor %}
+</div>
+
+<div class="grid">
+  <section class="card"><h2>Questions par jour</h2>{% include "adminpanel/_columns.html" with chart=questions_chart %}</section>
+  <section class="card"><h2>Coût estimé par jour</h2>{% include "adminpanel/_columns.html" with chart=cost_chart %}</section>
+</div>
+<section class="card">
+  <details>
+    <summary>Tableau jour par jour</summary>
+    <div class="scroll"><table>
+      <thead><tr><th>Jour</th><th class="num">Questions</th><th class="num">Sans réponse</th><th class="num">Coût ($)</th></tr></thead>
+      <tbody>{% for d in daily %}<tr><td>{{ d.day|date:"D j M" }}</td><td class="num">{{ d.n }}</td><td class="num">{{ d.unanswered }}</td><td class="num">{{ d.cost|stringformat:".4f" }}</td></tr>{% endfor %}</tbody>
+    </table></div>
+  </details>
+</section>
+
+<section class="card">
+  <h2>Questions sans réponse satisfaisante</h2>
+  {% if unanswered %}
+  <div class="scroll"><table>
+    <thead><tr><th>Date</th><th>Question</th><th>Motif</th><th class="hide-sm">Produit</th></tr></thead>
+    <tbody>
+    {% for row in unanswered %}
+      <tr>
+        <td style="white-space:nowrap">{{ row.e.created_at|date:"d/m H:i" }}</td>
+        <td>{{ row.e.question|truncatechars:140 }}</td>
+        <td><span class="badge r-blocked">{{ row.reason }}</span>{% if row.e.outcome != 'unanswered' %}<br><span class="muted" style="font-size:.8rem">{{ row.outcome }}</span>{% endif %}</td>
+        <td class="hide-sm">{% if row.e.context_code %}<code>{{ row.e.context_code }}</code>{% elif row.e.product_codes %}<code>{{ row.e.product_codes.0 }}</code>{% else %}—{% endif %}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
+  {% else %}<p class="empty">Aucune sur la période.</p>{% endif %}
+</section>
+
+<div class="grid">
+  <section class="card"><h2>Produits les plus demandés</h2>{% include "adminpanel/_barlist.html" with items=top_products unit="demandes" %}</section>
+  <section class="card"><h2>Outils utilisés</h2>{% include "adminpanel/_barlist.html" with items=tools unit="appels" %}</section>
+</div>
+{% endblock %}

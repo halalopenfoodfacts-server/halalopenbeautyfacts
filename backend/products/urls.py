@@ -1,5 +1,6 @@
 from django.urls import path
 from adminpanel import tracking
+from assistant import views as assistant
 
 from . import community, views
 
@@ -25,6 +26,8 @@ urlpatterns = [
     path('v2/alternatives/<str:code>',      community.alternatives,  name='alternatives'),
     path('v2/report',                       community.report,        name='report'),
     path('v2/challenge',                    community.challenge,     name='challenge'),
+    path('v2/assistant',                    assistant.ask,           name='assistant'),
+    path('v2/assistant/status',             assistant.status,        name='assistant-status'),
     path('v2/hit',                          tracking.hit,            name='hit'),
     path('v2/share/<str:code>',             community.share_page,    name='share'),
     path('v2/og/<str:code>',                community.og_image,      name='og-image'),

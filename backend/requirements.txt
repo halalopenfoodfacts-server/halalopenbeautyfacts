@@ -10,3 +10,4 @@ gunicorn==21.2.0
 requests==2.31.0
 Pillow==10.4.0
 argon2-cffi==23.1.0
+anthropic==1.17.0

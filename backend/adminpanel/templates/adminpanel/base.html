@@ -114,6 +114,7 @@ code { font-size: .8rem; }
     <nav class="tabs" aria-label="Sections">
       <a href="{% url 'adminpanel:visits' %}" {% if section == 'visits' %}aria-current="page"{% endif %}>Visites</a>
       <a href="{% url 'adminpanel:system' %}" {% if section == 'system' %}aria-current="page"{% endif %}>Système</a>
+      <a href="{% url 'adminpanel:assistant' %}" {% if section == 'assistant' %}aria-current="page"{% endif %}>Assistant</a>
       <a href="{% url 'adminpanel:audit' %}" {% if section == 'audit' %}aria-current="page"{% endif %}>Journal</a>
     </nav>
     <form method="post" action="{% url 'adminpanel:logout' %}">{% csrf_token %}<button type="submit" class="btn-ghost">Se déconnecter</button></form>

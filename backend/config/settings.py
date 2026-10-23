@@ -21,6 +21,7 @@ INSTALLED_APPS = [
     'django_celery_beat',
     'products.apps.ProductsConfig',
     'adminpanel.apps.AdminPanelConfig',
+    'assistant.apps.AssistantConfig',
 ]
 
 MIDDLEWARE = [
@@ -131,3 +132,17 @@ SESSION_COOKIE_AGE = ADMIN_IDLE_SECONDS   # renouvelé à chaque page (session m
 CSRF_COOKIE_SECURE = True
 CSRF_COOKIE_HTTPONLY = True
 CSRF_COOKIE_SAMESITE = 'Strict'
+
+# ─────────────────────────────────────────
+# Halal Assistant (app assistant) — API Claude via le SDK officiel anthropic
+# ─────────────────────────────────────────
+ASSISTANT_ENABLED = os.environ.get('ASSISTANT_ENABLED', 'False') == 'True'
+ANTHROPIC_API_KEY = os.environ.get('ANTHROPIC_API_KEY', '')       # jamais dans le dépôt
+ASSISTANT_MODEL = os.environ.get('ASSISTANT_MODEL', 'claude-haiku-5-5')
+# Tarifs du modèle ci-dessus, en dollars par million de tokens (à changer avec le modèle)
+ASSISTANT_PRICE_INPUT_PER_MTOK = float(os.environ.get('ASSISTANT_PRICE_INPUT_PER_MTOK', '0.10'))
+ASSISTANT_PRICE_OUTPUT_PER_MTOK = float(os.environ.get('ASSISTANT_PRICE_OUTPUT_PER_MTOK', '0.50'))
+ASSISTANT_DAILY_BUDGET_USD = float(os.environ.get('ASSISTANT_DAILY_BUDGET_USD', '2'))
+ASSISTANT_MAX_PER_MINUTE = 5      # questions par visiteur
+ASSISTANT_MAX_PER_DAY = 20
+ASSISTANT_RETENTION_DAYS = 90     # journal des échanges

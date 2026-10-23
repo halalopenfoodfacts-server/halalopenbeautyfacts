@@ -18,7 +18,7 @@ def collect_system_sample():
 def purge_admin_data():
     """Durées de conservation : audience ANALYTICS_RETENTION_DAYS, relevés METRICS_RETENTION_DAYS.
 
-    Le journal d'audit n'est jamais purgé (ajout seul).
+    Échanges de l'assistant : ASSISTANT_RETENTION_DAYS. Le journal d'audit n'est jamais purgé (ajout seul).
     """
     from .models import SystemSample
     from .tracking import purge_before
@@ -29,4 +29,8 @@ def purge_admin_data():
     samples, _ = SystemSample.objects.filter(
         created_at__lt=timezone.now() - datetime.timedelta(days=settings.METRICS_RETENTION_DAYS)).delete()
     sessions, _ = Session.objects.filter(expire_date__lt=timezone.now()).delete()
-    return f'{hits} pages vues, {terms} termes, {samples} relevés, {sessions} sessions supprimés'
+    from assistant.models import Exchange
+    exchanges, _ = Exchange.objects.filter(
+        day__lt=today - datetime.timedelta(days=settings.ASSISTANT_RETENTION_DAYS - 1)).delete()
+    return (f'{hits} pages vues, {terms} termes, {samples} relevés, {sessions} sessions, '
+            f'{exchanges} échanges assistant supprimés')

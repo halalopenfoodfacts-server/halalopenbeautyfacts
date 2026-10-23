@@ -24,7 +24,7 @@ def day_label(day):
     return f'{WEEKDAYS[day.weekday()]} {day.day} {MONTHS[day.month - 1]}'
 
 
-def columns(daily, key, unit):
+def columns(daily, key, unit, decimals=0):
     """Histogramme par jour : hauteur relative au maximum, étiquette de jour espacée selon la période."""
     top = max((d[key] for d in daily), default=0)
     step = 1 if len(daily) <= 7 else 5
@@ -33,7 +33,7 @@ def columns(daily, key, unit):
         'max': top, 'unit': unit,
         'bars': [{
             'h': pct(d[key], top), 'value': d[key],
-            'title': f'{day_label(d["day"])} : {fmt(d[key])} {unit}',
+            'title': f'{day_label(d["day"])} : {fmt(d[key], decimals)} {unit}',
             'label': (WEEKDAYS[d['day'].weekday()] + ' ' if step == 1 else '') + str(d['day'].day)
                      if (last - i) % step == 0 else '',
         } for i, d in enumerate(daily)],

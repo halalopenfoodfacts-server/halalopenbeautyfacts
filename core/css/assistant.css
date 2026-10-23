@@ -1,0 +1,73 @@
+/* Halal Assistant : bouton flottant et fenêtre de chat (core/js/ui/assistant.js) */
+.assistant-fab {
+    position: fixed; right: var(--space-4); bottom: var(--space-4); z-index: 70;
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    padding: 0.7rem 1.1rem; border: 0; border-radius: var(--radius-pill);
+    background: var(--accent); color: var(--on-accent); font: 600 var(--text-sm) / 1 var(--font-body);
+    box-shadow: var(--shadow-3); cursor: pointer;
+}
+.assistant-fab:hover { background: var(--accent-strong); }
+.assistant-fab:focus-visible { outline: 3px solid var(--ring); outline-offset: 2px; }
+.assistant-fab__icon { font-size: 1.15rem; }
+
+.assistant-panel {
+    position: fixed; right: var(--space-4); bottom: var(--space-4); z-index: 75;
+    width: min(400px, calc(100vw - 2 * var(--space-4))); height: min(600px, calc(100dvh - 6rem));
+    display: flex; flex-direction: column;
+    background: var(--bg-elev); color: var(--ink); border: 1px solid var(--line);
+    border-radius: var(--radius-lg); box-shadow: var(--shadow-3); overflow: hidden;
+}
+.assistant-panel[hidden] { display: none; }
+.assistant-head { display: flex; align-items: center; justify-content: space-between; padding: var(--space-3) var(--space-4);
+    background: var(--accent); color: var(--on-accent); }
+.assistant-head h2 { margin: 0; font-size: var(--text-md); color: inherit; }
+.assistant-close { border: 0; background: transparent; color: inherit; font-size: 1.6rem; line-height: 1; cursor: pointer;
+    width: 2.5rem; height: 2.5rem; border-radius: var(--radius-pill); }
+.assistant-close:focus-visible { outline: 2px solid var(--on-accent); }
+.assistant-disclaimer { margin: 0; padding: var(--space-2) var(--space-4); font-size: var(--text-xs);
+    background: var(--doubtful-soft); color: var(--ink); border-bottom: 1px solid var(--line); }
+.assistant-disclaimer::before { content: '⚠ '; }
+
+.assistant-log { flex: 1; overflow-y: auto; padding: var(--space-3) var(--space-4); display: flex; flex-direction: column; gap: var(--space-3); }
+.assistant-msg { max-width: 88%; }
+.assistant-msg--user { align-self: flex-end; }
+.assistant-msg__body { padding: var(--space-2) var(--space-3); border-radius: var(--radius); font-size: var(--text-sm); line-height: 1.5;
+    overflow-wrap: anywhere; }
+.assistant-msg--bot .assistant-msg__body { background: var(--bg-sunken); border-top-left-radius: var(--radius-sm); }
+.assistant-msg--user .assistant-msg__body { background: var(--accent-soft); border-top-right-radius: var(--radius-sm); white-space: pre-wrap; }
+.assistant-msg--error .assistant-msg__body { background: var(--haram-soft); }
+.assistant-msg__body p { margin: 0; }
+.assistant-msg__body p + p { margin-top: var(--space-2); }
+.assistant-msg__body a { color: var(--accent-strong); font-weight: 600; }
+.assistant-msg.is-pending .assistant-msg__body::after { content: '…'; animation: assistant-blink 1s steps(2) infinite; }
+@keyframes assistant-blink { 50% { opacity: 0; } }
+.assistant-sources { margin-top: var(--space-2) !important; font-size: var(--text-xs); color: var(--ink-2); }
+
+.assistant-suggestions { display: flex; flex-wrap: wrap; gap: var(--space-2); padding: 0 var(--space-4) var(--space-2); }
+.assistant-suggestions[hidden] { display: none; }
+.assistant-chip { border: 1px solid var(--accent); background: transparent; color: var(--accent-strong); border-radius: var(--radius-pill);
+    padding: 0.4rem 0.8rem; font: 500 var(--text-xs) / 1.2 var(--font-body); cursor: pointer; text-align: start; }
+.assistant-chip:hover { background: var(--accent-soft); }
+.assistant-status { margin: 0; padding: 0 var(--space-4); min-height: 1.2em; font-size: var(--text-xs); color: var(--ink-3); }
+
+.assistant-form { display: flex; gap: var(--space-2); padding: var(--space-3) var(--space-4); border-top: 1px solid var(--line); }
+.assistant-form textarea { flex: 1; resize: none; min-height: 2.75rem; max-height: 7rem; padding: 0.6rem 0.75rem;
+    border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--bg); color: var(--ink);
+    font: var(--text-sm) / 1.4 var(--font-body); field-sizing: content; }
+.assistant-send { width: 2.75rem; height: 2.75rem; flex: none; border: 0; border-radius: var(--radius-pill);
+    background: var(--accent); color: var(--on-accent); font-size: 1.1rem; cursor: pointer; }
+.assistant-panel.is-busy .assistant-send { opacity: .5; cursor: wait; }
+[dir='rtl'] .assistant-send { transform: scaleX(-1); }
+
+/* Barre d'onglets visible (≤ 960 px) : le bouton et la fenêtre restent au-dessus */
+@media (max-width: 960px) {
+    .assistant-fab { bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom) + var(--space-3)); right: var(--space-3); }
+    .assistant-panel { bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom) + var(--space-3)); }
+}
+/* Téléphone : fenêtre en pleine largeur, posée en bas de l'écran */
+@media (max-width: 760px) {
+    .assistant-fab__label { font-size: var(--text-xs); }
+    .assistant-panel { right: 0; left: 0; bottom: 0; width: 100%; height: min(85dvh, 640px);
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0; padding-bottom: env(safe-area-inset-bottom); }
+}
+@media (prefers-reduced-motion: reduce) { .assistant-msg.is-pending .assistant-msg__body::after { animation: none; } }

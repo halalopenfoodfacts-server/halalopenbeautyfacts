@@ -128,6 +128,15 @@ function initIngredientScan() {
     });
 }
 
+/** Halal Assistant : le widget n'est chargé que si l'API le déclare activé (réponse mise en cache 5 min). */
+function initAssistant() {
+    if (['localhost', '127.0.0.1'].includes(window.location.hostname)) return;
+    fetch('/proxy/v2/assistant/status')
+        .then((response) => (response.ok ? response.json() : null))
+        .then((data) => { if (data?.enabled) import('./assistant.js').then(({ mountAssistant }) => mountAssistant()); })
+        .catch(() => { /* assistant facultatif */ });
+}
+
 export function initShell() {
     initHeader();
     initIngredientScan();
@@ -139,4 +148,5 @@ export function initShell() {
     initServiceWorker();
     initReveal();
     sendPageView();
+    initAssistant();
 }

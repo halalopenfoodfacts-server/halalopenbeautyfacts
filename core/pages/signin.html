@@ -1,0 +1,34 @@
+---
+{"title": "Compte contributeur — {{site.name}}", "description": "Les contributions passent par votre compte {{site.upstream.name}} : connexion, création de compte et mot de passe oublié.", "nav": "signin", "priority": 0.3}
+---
+<header class="container page-head">
+  <span class="eyebrow">Compte contributeur</span>
+  <h1>Votre compte, c'est votre compte {{site.upstream.name}}</h1>
+  <p>Pour protéger vos identifiants, {{site.name}} ne vous demande jamais votre mot de passe : la connexion se fait directement sur {{site.upstream.name}}, où les fiches sont modifiées. Consulter le site ne nécessite aucun compte.</p>
+</header>
+<div class="container grid grid--3">
+  <a class="card card--link" href="{{site.upstream.loginUrl}}" target="_blank" rel="noopener">
+    <span class="card__icon"><svg aria-hidden="true"><use href="#i-users"/></svg></span>
+    <h2 style="font-size:var(--text-xl)">Se connecter</h2>
+    <p>Accéder à votre compte {{site.upstream.name}} pour ajouter et corriger des fiches.</p>
+    <span class="btn btn--primary" style="justify-self:start">Connexion<svg aria-hidden="true"><use href="#i-external"/></svg></span>
+  </a>
+  <a class="card card--link" href="/signup.html">
+    <span class="card__icon"><svg aria-hidden="true"><use href="#i-plus"/></svg></span>
+    <h2 style="font-size:var(--text-xl)">Créer un compte</h2>
+    <p>Gratuit, en une minute. Rejoignez ensuite l'équipe Halal Open Facts.</p>
+    <span class="btn" style="justify-self:start">En savoir plus<svg aria-hidden="true"><use href="#i-arrow-right"/></svg></span>
+  </a>
+  <a class="card card--link" href="{{site.upstream.url}}/cgi/reset_password.pl" target="_blank" rel="noopener">
+    <span class="card__icon"><svg aria-hidden="true"><use href="#i-refresh"/></svg></span>
+    <h2 style="font-size:var(--text-xl)">Mot de passe oublié</h2>
+    <p>Réinitialiser votre mot de passe sur {{site.upstream.name}}.</p>
+    <span class="btn" style="justify-self:start">Réinitialiser<svg aria-hidden="true"><use href="#i-external"/></svg></span>
+  </a>
+</div>
+<div class="container" style="margin-top:var(--space-6)">
+  <div class="callout">
+    <svg aria-hidden="true"><use href="#i-info"/></svg>
+    <span>Vos listes (favoris, courses, à éviter) n'ont pas besoin de compte : elles sont enregistrées sur votre appareil. <a href="/my-lists.html">Voir mes listes</a>.</span>
+  </div>
+</div>

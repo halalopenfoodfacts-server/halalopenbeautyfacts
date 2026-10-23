@@ -34,3 +34,8 @@ Thumbs.db
 .vscode/
 .idea/
 *.swp
+
+# Frontend (build et outillage)
+node_modules/
+test-results/
+playwright-report/

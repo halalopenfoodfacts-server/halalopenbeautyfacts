@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="fr" dir="ltr" data-portal="{{site.portal}}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{{page.title}}</title>
+<meta name="description" content="{{page.description}}">
+{{#if page.noindex}}<meta name="robots" content="noindex">{{else}}<link rel="canonical" href="{{page.url}}">{{/if}}
+<meta name="theme-color" content="{{site.themeColor}}" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="{{site.themeColorDark}}" media="(prefers-color-scheme: dark)">
+<meta name="color-scheme" content="light dark">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="{{site.name}}">
+<meta property="og:title" content="{{page.title}}">
+<meta property="og:description" content="{{page.description}}">
+<meta property="og:url" content="{{page.url}}">
+<meta property="og:image" content="{{site.domain}}/assets/images/og-image.png">
+<meta property="og:locale" content="fr_FR">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.png" type="image/png">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+{{#each assets.preloadFonts}}<link rel="preload" href="{{this}}" as="font" type="font/woff2" crossorigin>{{/each}}
+<link rel="stylesheet" href="{{assets.css}}">
+<script>(function(){try{var t=localStorage.getItem('hof-theme');if(t==='dark'||t==='light')document.documentElement.dataset.theme=t;var l=localStorage.getItem('hof-lang');if(l&&l!=='fr'){document.documentElement.lang=l;if(l==='ar')document.documentElement.dir='rtl';}}catch(e){}document.documentElement.classList.add('js');})();</script>
+{{#if page.script}}<script type="module" src="{{page.script}}"></script>{{/if}}
+{{#if page.jsonld}}<script type="application/ld+json">{{{page.jsonld}}}</script>{{/if}}
+</head>
+<body class="page-{{page.name}}">
+{{> icons}}
+<a class="skip-link" href="#contenu" data-i18n="skip">Aller au contenu</a>
+{{> header}}
+<main id="contenu" tabindex="-1">
+{{{body}}}
+</main>
+{{> footer}}
+{{> tabbar}}
+{{> scanner}}
+<div class="toast-region" id="toasts" role="status" aria-live="polite"></div>
+<noscript><p class="noscript">Ce site fonctionne mieux avec JavaScript activé : la recherche, le scanner et les fiches produits en ont besoin.</p></noscript>
+</body>
+</html>

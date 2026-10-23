@@ -1,0 +1,28 @@
+---
+{"title": "Blog — guides et actualités halal — {{site.name}}", "description": "Guides pratiques et actualités : additifs à surveiller, lecture d'étiquette, organismes de certification halal.", "nav": "blog", "priority": 0.6}
+---
+<header class="container page-head">
+  <span class="eyebrow">Blog</span>
+  <h1>Guides et actualités</h1>
+  <p>Conseils pratiques et explications, rédigés par l'équipe.</p>
+</header>
+<div class="container stack" style="gap:var(--space-6)">
+  <div class="grid grid--2">
+    {{#each content.blog}}
+    <a class="card card--link article-card" href="#{{this.id}}">
+      <span class="chip-row">{{#each this.tags}}<span class="tag">{{this}}</span>{{/each}}</span>
+      <h2 style="font-size:var(--text-xl)">{{this.icon}} {{this.title}}</h2>
+      <p>{{this.excerpt}}</p>
+      <time>{{this.date}}</time>
+    </a>
+    {{/each}}
+  </div>
+  {{#each content.blog}}
+  <article class="article prose" id="{{this.id}}">
+    <time class="mono muted">{{this.date}}</time>
+    <h2 style="font-size:var(--text-2xl)">{{this.title}}</h2>
+    {{{this.content}}}
+    <p><a href="#contenu">↑ Retour aux articles</a></p>
+  </article>
+  {{/each}}
+</div>

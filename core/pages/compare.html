@@ -1,0 +1,23 @@
+---
+{"title": "Comparer des produits — {{site.name}}", "description": "Comparez jusqu'à trois {{site.noun.many}} côte à côte : statut halal, ingrédients sensibles, additifs{{#if site.features.nutrition}}, Nutri-Score et valeurs nutritionnelles{{/if}}.", "script": "compare", "nav": "compare", "priority": 0.6}
+---
+<header class="container page-head">
+  <span class="eyebrow">Comparateur</span>
+  <h1>Comparer jusqu'à trois produits</h1>
+  <p>Ajoutez des produits depuis la recherche ci-dessous ou depuis une fiche (bouton « Comparer »). La sélection est gardée sur cet appareil.</p>
+</header>
+<div class="container stack" style="gap:var(--space-6)">
+  <form class="search-form" role="search" data-compare-search>
+    <div class="search">
+      <label class="sr-only" for="compare-q">Ajouter un produit à comparer</label>
+      <div class="search__box">
+        <svg aria-hidden="true"><use href="#i-search"/></svg>
+        <input class="search__input" id="compare-q" type="search" name="q" placeholder="Ajouter un produit : nom, marque ou code-barres" enterkeyhint="search" autocomplete="off">
+        <button class="btn btn--primary" type="submit">Rechercher</button>
+      </div>
+    </div>
+  </form>
+  <div data-compare-results aria-live="polite"></div>
+  <div class="compare-slots" data-compare-slots></div>
+  <div data-compare-table></div>
+</div>

@@ -1,0 +1,7 @@
+<nav class="tabbar" aria-label="Navigation rapide">
+  <a href="/" {{#if nav.index}}aria-current="page"{{/if}}><svg aria-hidden="true"><use href="#i-home"/></svg><span data-i18n="nav.home">Accueil</span></a>
+  <a href="/catalogue.html" {{#if nav.catalogue}}aria-current="page"{{/if}}><svg aria-hidden="true"><use href="#i-search"/></svg><span data-i18n="nav.search">Recherche</span></a>
+  <button type="button" class="tabbar__scan" data-scan><span class="tabbar__fab"><svg aria-hidden="true"><use href="#i-scan"/></svg></span><span data-i18n="scan.cta">Scanner</span></button>
+  <a href="/my-lists.html" {{#if nav.lists}}aria-current="page"{{/if}}><svg aria-hidden="true"><use href="#i-bookmark"/></svg><span data-i18n="nav.lists">Mes listes</span></a>
+  <button type="button" data-menu-open aria-controls="mobile-menu" aria-expanded="false"><svg aria-hidden="true"><use href="#i-menu"/></svg><span data-i18n="nav.more">Plus</span></button>
+</nav>

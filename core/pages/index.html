@@ -1,0 +1,131 @@
+---
+{"title": "{{site.name}} — {{site.tagline}}", "script": "home", "nav": "index", "priority": 1.0, "hideHeaderSearch": true}
+---
+<section class="hero">
+  <div class="container hero__grid">
+    <div>
+      <span class="eyebrow" data-i18n="home.eyebrow">Base de données ouverte et communautaire</span>
+      <h1>{{{site.heroTitle}}}</h1>
+      <p class="hero__lead">{{site.heroLead}}</p>
+      {{> search-hero}}
+      <div class="hero__hints">
+        <button class="btn btn--ink hero__scan-cta" type="button" data-scan><svg aria-hidden="true"><use href="#i-scan"/></svg><span>Scanner un code-barres</span></button>
+        <span>Essayez :</span>
+        {{#each site.searchExamples}}<a class="chip" href="/catalogue.html?q={{this}}">{{this}}</a>{{/each}}
+      </div>
+    </div>
+    <div class="scan-stack" aria-hidden="true">
+      <div class="scan-stack__card"><span class="scan-stack__thumb"><svg><use href="#{{site.placeholderIcon}}"/></svg></span><span><strong>{{site.stackExamples.0}}</strong><small>{{site.stackMeta}}</small><span class="status status--halal"><svg><use href="#i-halal"/></svg><span>Halal déclaré</span></span></span></div>
+      <div class="scan-stack__card"><span class="scan-stack__thumb"><svg><use href="#{{site.placeholderIcon}}"/></svg></span><span><strong>{{site.stackExamples.1}}</strong><small>{{site.stackMeta}}</small><span class="status status--haram"><svg><use href="#i-haram"/></svg><span>Non conforme</span></span></span></div>
+      <div class="scan-stack__card"><span class="scan-stack__thumb"><svg><use href="#{{site.placeholderIcon}}"/></svg></span><span><strong>{{site.stackExamples.2}}</strong><small>{{site.stackMeta}}</small><span class="status status--doubtful"><svg><use href="#i-doubtful"/></svg><span>Douteux</span></span></span></div>
+      <div class="scan-stack__beam"></div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="stats-band" data-stats>
+      <a class="stat" href="/catalogue.html"><span class="stat__value" data-stat="total">—</span><span class="stat__label" data-i18n="stats.products">produits référencés</span></a>
+      <a class="stat stat--halal" href="/catalogue.html?statut=halal"><span class="stat__value" data-stat="halal">—</span><span class="stat__label" data-i18n="stats.halal">avec un label halal</span></a>
+      <a class="stat stat--haram" href="/excluded.html"><span class="stat__value" data-stat="excluded">—</span><span class="stat__label" data-i18n="stats.excluded">non conformes</span></a>
+      <a class="stat" href="/halal-users.html"><span class="stat__value" data-stat="contributors">—</span><span class="stat__label" data-i18n="stats.contributors">contributeurs</span></a>
+    </div>
+  </div>
+</section>
+
+<section class="section section--tint">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Lecture honnête des données</span>
+      <h2 data-i18n="home.legend">Comment lire un statut</h2>
+      <p>Les statuts reposent sur les labels déclarés par les contributeurs et sur la liste des ingrédients. Ce ne sont pas des certifications : vérifiez toujours le logo de l'organisme sur l'emballage.</p>
+    </div>
+    <div class="legend">
+      <article class="legend__item reveal">
+        <div class="seal seal--halal" role="img" aria-label="Halal déclaré"><div class="seal__inner"><span class="seal__icon"><svg aria-hidden="true"><use href="#i-halal"/></svg></span><span class="seal__label">Halal déclaré</span></div></div>
+        <h3>Halal déclaré</h3><p>Un label halal figure sur la fiche (AVS, HMC, JAKIM…) et aucun label contradictoire.</p>
+      </article>
+      <article class="legend__item reveal">
+        <div class="seal seal--haram" role="img" aria-label="Non conforme"><div class="seal__inner"><span class="seal__icon"><svg aria-hidden="true"><use href="#i-haram"/></svg></span><span class="seal__label">Non conforme</span></div></div>
+        <h3>Non conforme</h3><p>La fiche signale de l'alcool ou un produit non halal.</p>
+      </article>
+      <article class="legend__item reveal">
+        <div class="seal seal--doubtful" role="img" aria-label="Douteux"><div class="seal__inner"><span class="seal__icon"><svg aria-hidden="true"><use href="#i-doubtful"/></svg></span><span class="seal__label">Douteux</span></div></div>
+        <h3>Douteux</h3><p>Un ingrédient sensible est présent ({{site.doubtfulExamples}}), ou les labels se contredisent.</p>
+      </article>
+      <article class="legend__item reveal">
+        <div class="seal" role="img" aria-label="Non renseigné"><div class="seal__inner"><span class="seal__icon"><svg aria-hidden="true"><use href="#i-unknown"/></svg></span><span class="seal__label">Non renseigné</span></div></div>
+        <h3>Non renseigné</h3><p>Aucune information halal : le produit n'est ni validé, ni écarté.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head section-head--row">
+      <div><span class="eyebrow">En direct de la base</span><h2 data-i18n="home.popular">Les plus consultés</h2></div>
+      <a class="btn" href="/catalogue.html"><span data-i18n="common.seeAll">Tout voir</span><svg aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
+    </div>
+    <div class="rail" data-rail="top" aria-busy="true"></div>
+  </div>
+</section>
+
+<section class="section section--tight">
+  <div class="container">
+    <div class="section-head section-head--row">
+      <div><span class="eyebrow">Mises à jour</span><h2 data-i18n="home.recent">Dernières contributions</h2></div>
+      <a class="btn" href="/catalogue.html?tri=recent"><span data-i18n="common.seeAll">Tout voir</span><svg aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
+    </div>
+    <div class="rail" data-rail="recent" aria-busy="true"></div>
+  </div>
+</section>
+
+<section class="section" id="mode-voyage">
+  <div class="container voyage">
+    <div class="reveal">
+      <span class="eyebrow">Mode voyage</span>
+      <h2>En voyage, que chercher en rayon ?</h2>
+      <p class="lead">Choisissez votre destination pour connaître les repères locaux et voir les {{site.noun.many}} vendus dans ce pays.</p>
+      <div class="chip-row" role="group" aria-label="Destinations" style="margin-top:1.25rem" data-voyage>
+        {{#each content.voyage}}<button class="chip" type="button" aria-pressed="{{#if index}}false{{else}}true{{/if}}" data-country="{{this.id}}" data-title="{{this.title}}" data-flag="{{this.flag}}" data-text="{{this.text}}">{{this.flag}} {{this.title}}</button>{{/each}}
+      </div>
+    </div>
+    <div class="voyage__panel reveal" aria-live="polite" data-voyage-panel>
+      <div class="voyage__flag" data-voyage-flag>{{content.voyage.0.flag}}</div>
+      <h3 data-voyage-title>{{content.voyage.0.title}}</h3>
+      <p data-voyage-text>{{content.voyage.0.text}}</p>
+      <a class="btn btn--primary" style="margin-top:1rem" href="/catalogue.html?pays=en:{{content.voyage.0.id}}" data-voyage-link><span>Voir les produits vendus sur place</span><svg aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="cta-band reveal">
+      <div>
+        <span class="eyebrow" style="color:inherit">Communauté</span>
+        <h2>Un produit manque ? Ajoutez-le en deux minutes.</h2>
+        <p>Les fiches viennent de {{site.upstream.name}}. Photographiez l'emballage depuis l'application officielle : la fiche apparaît ici à la synchronisation suivante.</p>
+      </div>
+      <div class="stack">
+        <div class="cluster">
+          <a class="btn btn--primary btn--lg" href="/add.html"><svg aria-hidden="true"><use href="#i-plus"/></svg><span>Contribuer</span></a>
+          <a class="btn btn--ghost btn--lg" href="/donate.html"><svg aria-hidden="true"><use href="#i-heart"/></svg><span>Soutenir le projet</span></a>
+        </div>
+        <div class="app-badges">
+          <a class="btn btn--sm" href="{{site.upstream.apps.ios}}" target="_blank" rel="noopener">App Store</a>
+          <a class="btn btn--sm" href="{{site.upstream.apps.android}}" target="_blank" rel="noopener">Google Play</a>
+          <a class="btn btn--sm" href="{{site.upstream.apps.fdroid}}" target="_blank" rel="noopener">F-Droid</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--tight">
+  <div class="container stack" style="justify-items:center;text-align:center">
+    <span class="eyebrow">Ils nous soutiennent</span>
+    <div class="partners">
+      {{#each site.partners}}<img src="/assets/images/partners/{{this.file}}" alt="{{this.name}}" height="42" loading="lazy" decoding="async">{{/each}}
+    </div>
+  </div>
+</section>

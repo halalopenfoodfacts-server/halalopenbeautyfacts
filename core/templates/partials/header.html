@@ -1,0 +1,59 @@
+<header class="site-header" id="site-header">
+  <div class="container site-header__inner">
+    <a class="brand" href="/" aria-label="{{site.name}} — accueil">
+      <img src="/assets/images/logo.webp" alt="{{site.name}}" width="{{site.logo.header.0}}" height="{{site.logo.header.1}}" fetchpriority="high">
+    </a>
+    <nav class="primary-nav" aria-label="Navigation principale">
+      <a href="/catalogue.html" {{#if nav.catalogue}}aria-current="page"{{/if}} data-i18n="nav.catalogue">Catalogue</a>
+      <a href="/excluded.html" {{#if nav.excluded}}aria-current="page"{{/if}} data-i18n="nav.excluded">Non conformes</a>
+      <a href="/compare.html" {{#if nav.compare}}aria-current="page"{{/if}} data-i18n="nav.compare">Comparer</a>
+      <a href="/learn.html" {{#if nav.learn}}aria-current="page"{{/if}} data-i18n="nav.learn">Apprendre</a>
+      <a href="/halal-users.html" {{#if nav.community}}aria-current="page"{{/if}} data-i18n="nav.community">Communauté</a>
+    </nav>
+    {{#unless page.hideHeaderSearch}}{{> search-compact}}{{/unless}}
+    <div class="header-actions">
+      <label class="sr-only" for="lang-select" data-i18n="lang.label">Langue</label>
+      <select class="select select--sm hide-mobile" id="lang-select" data-lang-select>
+        <option value="fr">FR</option><option value="en">EN</option><option value="ar">ع</option><option value="es">ES</option>
+      </select>
+      <button class="btn btn--ghost btn--icon theme-toggle" type="button" data-theme-toggle aria-label="Changer de thème" data-i18n-aria="theme.toggle">
+        <svg class="icon-moon" aria-hidden="true"><use href="#i-moon"/></svg>
+        <svg class="icon-sun" aria-hidden="true"><use href="#i-sun"/></svg>
+      </button>
+      <a class="btn btn--ghost btn--icon hide-mobile" href="/my-lists.html" aria-label="Mes listes" data-i18n-aria="nav.lists" {{#if nav.lists}}aria-current="page"{{/if}}>
+        <svg aria-hidden="true"><use href="#i-bookmark"/></svg>
+      </a>
+      <button class="btn btn--primary hide-mobile" type="button" data-scan>
+        <svg aria-hidden="true"><use href="#i-scan"/></svg><span data-i18n="scan.cta">Scanner</span>
+      </button>
+      <button class="btn btn--ghost btn--icon menu-button" type="button" data-menu-open aria-controls="mobile-menu" aria-expanded="false" aria-label="Ouvrir le menu" data-i18n-aria="menu.open">
+        <svg aria-hidden="true"><use href="#i-menu"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+<div class="mobile-menu" id="mobile-menu" role="dialog" aria-modal="true" aria-label="Menu" hidden>
+  <div class="mobile-menu__head">
+    <img src="/assets/images/logo.webp" alt="{{site.name}}" width="{{site.logo.small.0}}" height="{{site.logo.small.1}}" class="mobile-menu__logo">
+    <button class="btn btn--ghost btn--icon" type="button" data-menu-close aria-label="Fermer le menu" data-i18n-aria="menu.close"><svg aria-hidden="true"><use href="#i-x"/></svg></button>
+  </div>
+  <nav aria-label="Menu mobile">
+    <a href="/catalogue.html" {{#if nav.catalogue}}aria-current="page"{{/if}}><span data-i18n="nav.catalogue">Catalogue</span><svg class="icon" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
+    <a href="/excluded.html" {{#if nav.excluded}}aria-current="page"{{/if}}><span data-i18n="nav.excluded">Non conformes</span><svg class="icon" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
+    <a href="/compare.html" {{#if nav.compare}}aria-current="page"{{/if}}><span data-i18n="nav.compare">Comparer</span><svg class="icon" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
+    <a href="/my-lists.html" {{#if nav.lists}}aria-current="page"{{/if}}><span data-i18n="nav.lists">Mes listes</span><svg class="icon" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
+    <a href="/learn.html" {{#if nav.learn}}aria-current="page"{{/if}}><span data-i18n="nav.learn">Apprendre</span><svg class="icon" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
+    <a href="/blog.html" {{#if nav.blog}}aria-current="page"{{/if}}><span data-i18n="nav.blog">Blog</span><svg class="icon" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
+    <a href="/halal-users.html" {{#if nav.community}}aria-current="page"{{/if}}><span data-i18n="nav.community">Communauté</span><svg class="icon" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
+    <a href="/dashboard.html" {{#if nav.dashboard}}aria-current="page"{{/if}}><span data-i18n="nav.dashboard">Statistiques</span><svg class="icon" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
+    <a href="/add.html" {{#if nav.add}}aria-current="page"{{/if}}><span data-i18n="nav.add">Contribuer</span><svg class="icon" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
+    <a href="/donate.html" {{#if nav.donate}}aria-current="page"{{/if}}><span data-i18n="nav.donate">Faire un don</span><svg class="icon" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
+  </nav>
+  <div class="mobile-menu__foot">
+    <label class="sr-only" for="lang-select-mobile" data-i18n="lang.label">Langue</label>
+    <select class="select select--auto" id="lang-select-mobile" data-lang-select>
+      <option value="fr">Français</option><option value="en">English</option><option value="ar">العربية</option><option value="es">Español</option>
+    </select>
+    <a class="btn" href="{{site.membershipUrl}}" target="_blank" rel="noopener"><span data-i18n="nav.membership">Adhérer</span><svg aria-hidden="true"><use href="#i-external"/></svg></a>
+  </div>
+</div>

@@ -1,0 +1,31 @@
+---
+{"title": "Comprendre le halal et lire une étiquette — {{site.name}}", "description": "Les bases du halal, les ingrédients sensibles (E120, E441, E471, gélatine…), un vérificateur d'ingrédient et un quiz.", "script": "learn", "nav": "learn", "priority": 0.7}
+---
+<header class="container page-head">
+  <span class="eyebrow">Apprendre</span>
+  <h1>Comprendre le halal, ingrédient par ingrédient</h1>
+  <p>Repères simples pour déchiffrer une étiquette. Les avis des savants peuvent diverger sur certains points : en cas de doute, référez-vous à votre organisme de certification.</p>
+</header>
+<div class="container stack" style="gap:var(--space-7)">
+  <section class="grid grid--2" style="align-items:start">
+    <div class="prose">
+      {{{content.learn.intro}}}
+    </div>
+    <aside class="panel" aria-labelledby="checker-title" style="position:sticky;top:calc(var(--header-h) + 1rem)">
+      <h2 id="checker-title"><svg aria-hidden="true"><use href="#i-search"/></svg>Vérificateur d'ingrédient</h2>
+      <form class="stack" data-checker>
+        <div class="field">
+          <label for="checker-input">Ingrédient ou code E</label>
+          <input class="input" id="checker-input" name="term" placeholder="ex. E471, gélatine, carmin" autocomplete="off" required>
+        </div>
+        <button class="btn btn--primary" type="submit">Vérifier</button>
+        <div data-checker-result aria-live="polite"></div>
+      </form>
+    </aside>
+  </section>
+  <section aria-labelledby="quiz-title">
+    <div class="section-head"><span class="eyebrow">Quiz</span><h2 id="quiz-title">Testez vos connaissances</h2></div>
+    <div class="panel" data-quiz style="max-width:42rem"></div>
+  </section>
+</div>
+<script type="application/json" id="learn-data">{{{json.learn}}}</script>

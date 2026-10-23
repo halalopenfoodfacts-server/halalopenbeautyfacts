@@ -1,0 +1,36 @@
+---
+{"title": "API publique — {{site.name}}", "description": "API JSON en lecture de {{site.name}} : recherche, fiche produit, statut halal, statistiques et facettes.", "nav": "api", "priority": 0.4}
+---
+<header class="container page-head">
+  <span class="eyebrow">Développeurs</span>
+  <h1>API publique</h1>
+  <p>Une API JSON en lecture seule, servie depuis notre propre base. Merci de rester raisonnable : 20 requêtes par seconde au maximum, et mettez les réponses en cache.</p>
+</header>
+<div class="container stack" style="gap:var(--space-5)">
+  <div class="table-wrap"><table class="table">
+    <thead><tr><th scope="col">Point d'accès</th><th scope="col">Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>GET /proxy/v2/search?q=…</code></td><td>Recherche plein texte. Paramètres : <code>q</code>, <code>prefix=1</code> (saisie partielle), <code>page</code> (≤ 200), <code>page_size</code> (≤ 100), <code>sort_by</code> (<code>unique_scans_n</code>, <code>last_modified_t</code>, <code>product_name</code>), <code>fields</code>. Un code-barres dans <code>q</code> renvoie directement le produit (<code>barcode_match</code>).</td></tr>
+      <tr><td><code>… &amp;is_halal=1</code> / <code>&amp;is_excluded=1</code></td><td>Produits avec un label halal / signalés non conformes.</td></tr>
+      <tr><td><code>… &amp;labels_tags=en:organic</code></td><td>Filtres par tag exact : <code>labels_tags</code>, <code>categories_tags</code>, <code>countries_tags</code> (répétables){{#if site.features.nutrition}}, <code>nutriscore=a</code>, <code>nova=1</code>, <code>palm_oil_free=1</code>{{/if}}.</td></tr>
+      <tr><td><code>GET /proxy/v2/product/{code}.json</code></td><td>Fiche complète, dont <code>halal_status</code> et <code>halal</code> (raisons détaillées).</td></tr>
+      <tr><td><code>GET /proxy/stats</code></td><td>Chiffres clés. Répond <code>503</code> + <code>Retry-After</code> pendant le calcul.</td></tr>
+      <tr><td><code>GET /proxy/facets/{type}.json</code></td><td><code>countries</code>, <code>labels</code>, <code>categories</code>, <code>contributors</code>.</td></tr>
+      <tr><td><code>GET /proxy/top</code> · <code>/proxy/recent</code></td><td>Produits les plus consultés / modifiés récemment (<code>page_size</code> ≤ 50).</td></tr>
+    </tbody>
+  </table></div>
+  <section class="panel">
+    <h2>Statut halal (<code>halal_status</code>)</h2>
+    <dl class="kv">
+      <dt><code>halal</code></dt><dd>Label halal déclaré par un contributeur, sans label contradictoire.</dd>
+      <dt><code>haram</code></dt><dd>Label d'alcool ou non halal déclaré.</dd>
+      <dt><code>doubtful</code></dt><dd>Labels contradictoires, ou ingrédient sensible sans label halal.</dd>
+      <dt><code>unknown</code></dt><dd>Aucune information exploitable.</dd>
+    </dl>
+    <p class="muted" style="margin-top:1rem">Ces statuts ne sont pas des certifications. Données sous licence <a href="https://opendatacommons.org/licenses/odbl/" target="_blank" rel="noopener">ODbL</a> : citez {{site.name}} et {{site.upstream.name}}.</p>
+  </section>
+  <section class="panel">
+    <h2>Exemple</h2>
+    <pre style="overflow-x:auto;font-size:var(--text-sm)"><code>curl "{{site.domain}}/proxy/v2/search?q=couscous&amp;is_halal=1&amp;page_size=5&amp;fields=code,product_name,halal_status"</code></pre>
+  </section>
+</div>

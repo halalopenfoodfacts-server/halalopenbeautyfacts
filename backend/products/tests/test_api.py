@@ -197,3 +197,20 @@ class MissingImageTests(ApiTestCase):
         nutella = Product.objects.get(code='3017620422003')
         self.assertEqual((nutella.image_front_small_url, nutella.image_front_url), urls)
         self.assertEqual(Product.objects.get(code='4009308066394').image_front_url, '')
+
+    def test_rate_limit_pauses_and_releases_remaining_products(self):
+        import urllib.error
+        from products.tasks import IMAGE_PAUSE_KEY, fill_missing_images, image_queue_key
+        codes = ['3017620422003', '4009308066394', '5053990179039']
+        for code in codes:
+            cache.set(image_queue_key('food', code), '1')
+        too_many = urllib.error.HTTPError('u', 429, 'Too Many Requests', None, None)
+        with mock.patch('products.images.fetch_front_images', side_effect=[('', ''), too_many]), \
+                mock.patch('time.sleep'):
+            fill_missing_images('food', codes)
+        self.assertTrue(cache.get(IMAGE_PAUSE_KEY))
+        self.assertTrue(cache.get(image_queue_key('food', codes[0])))      # sans photo chez OFF : attendre
+        self.assertIsNone(cache.get(image_queue_key('food', codes[1])))    # 429 : redemandé plus tard
+        self.assertIsNone(cache.get(image_queue_key('food', codes[2])))
+        self.get('/api/recent?page_size=3')
+        self.queue_images.assert_not_called()                              # pause : rien n'est envoyé

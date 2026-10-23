@@ -54,26 +54,58 @@ def refresh_stats(portal=None):
 
 
 IMAGE_RETRY_TTL = 7 * 24 * 3600   # un produit sans photo chez OFF n'est redemandé qu'une fois par semaine
-IMAGE_REQUEST_DELAY = 0.7         # ~85 requêtes/min : sous la limite de 100/min de l'API produit OFF
+IMAGE_REQUEST_DELAY = 1.5         # OFF renvoie des 429 bien avant la limite annoncée de 100 req/min
+IMAGE_PAUSE_KEY = 'img:off-pause'
+IMAGE_PAUSE_TTL = 120             # après un 429, plus aucune requête pendant 2 min
+IMAGE_LOCK_KEY = 'lock:fill_missing_images'
+
+
+def image_queue_key(portal, code):
+    return f'img:queued:v2:{portal}:{code}'
 
 
 @shared_task(name='fill_missing_images')
 def fill_missing_images(portal, codes):
-    """Récupère auprès d'OFF la photo des produits affichés sans image et l'enregistre."""
+    """Récupère auprès d'OFF la photo des produits affichés sans image et l'enregistre.
+
+    Une seule tâche à la fois, pour respecter le débit toléré par OFF. Les produits
+    non traités (OFF saturé, tâche déjà en cours, erreur réseau) sont libérés :
+    ils seront redemandés au prochain affichage.
+    """
     import time
+    import urllib.error
 
     from .images import fetch_front_images
     from .models import Product
 
-    filled = 0
-    for code in codes[:50]:
-        try:
-            small, full = fetch_front_images(code, portal)
-        except Exception:
-            continue   # OFF indisponible : le verrou expirera, le produit sera redemandé
-        finally:
-            time.sleep(IMAGE_REQUEST_DELAY)
-        if small or full:
-            filled += Product.objects.filter(portal=portal, code=code).update(
-                image_front_small_url=small or full, image_front_url=full or small)
-    return f'{portal}: {filled}/{len(codes[:50])} images'
+    codes = list(codes[:50])
+    if cache.get(IMAGE_PAUSE_KEY) or not cache.add(IMAGE_LOCK_KEY, '1', 600):
+        cache.delete_many([image_queue_key(portal, c) for c in codes])
+        return f'{portal}: reporté ({len(codes)} produits)'
+
+    filled, done = 0, 0
+    try:
+        for code in codes:
+            try:
+                small, full = fetch_front_images(code, portal)
+            except urllib.error.HTTPError as error:
+                if error.code == 429:
+                    cache.set(IMAGE_PAUSE_KEY, '1', IMAGE_PAUSE_TTL)
+                    break
+                cache.delete(image_queue_key(portal, code))
+                done += 1
+                continue
+            except Exception:
+                cache.delete(image_queue_key(portal, code))
+                done += 1
+                continue
+            finally:
+                time.sleep(IMAGE_REQUEST_DELAY)
+            done += 1
+            if small or full:
+                filled += Product.objects.filter(portal=portal, code=code).update(
+                    image_front_small_url=small or full, image_front_url=full or small)
+    finally:
+        cache.delete(IMAGE_LOCK_KEY)
+        cache.delete_many([image_queue_key(portal, c) for c in codes[done:]])
+    return f'{portal}: {filled}/{len(codes)} images'

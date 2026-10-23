@@ -14,7 +14,7 @@ from rest_framework.response import Response
 from .models import Product
 from .serializers import ProductDetailSerializer, ProductListSerializer
 from .stats import FACET_TYPES, facet_key, stats_key
-from .tasks import IMAGE_RETRY_TTL, fill_missing_images
+from .tasks import IMAGE_PAUSE_KEY, IMAGE_RETRY_TTL, fill_missing_images, image_queue_key
 
 SEARCH_RESPONSE_TTL = 300   # 5 min : réponse complète d'une page de recherche
 SEARCH_COUNT_TTL = 1800     # 30 min : le COUNT(*) est la partie la plus coûteuse
@@ -140,16 +140,18 @@ def _filter_fields(data_list, fields_param):
 
 def _queue_missing_images(portal, products):
     """Demande en arrière-plan la photo des produits affichés sans image (une fois par semaine au plus)."""
+    if cache.get(IMAGE_PAUSE_KEY):
+        return
     codes = [p.code for p in products
              if not (p.image_front_small_url or p.image_front_url)
-             and cache.add(f'img:queued:{portal}:{p.code}', '1', IMAGE_RETRY_TTL)]
+             and cache.add(image_queue_key(portal, p.code), '1', IMAGE_RETRY_TTL)]
     if not codes:
         return
     try:
         fill_missing_images.delay(portal, codes)
     except Exception:
         # Broker indisponible : la page s'affiche quand même, on réessaiera plus tard
-        cache.delete_many([f'img:queued:{portal}:{c}' for c in codes])
+        cache.delete_many([image_queue_key(portal, c) for c in codes])
 
 
 def _search_query(q, prefix):

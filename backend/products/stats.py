@@ -13,6 +13,8 @@ from django.core.cache import cache
 from django.db import connection
 from django.utils import timezone
 
+from .countries import real_countries
+
 PORTALS = ('food', 'beauty')
 FACET_TYPES = ('countries', 'contributors', 'labels', 'categories')
 
@@ -83,6 +85,14 @@ def compute_facet(portal, facet_type):
         tags = [
             {'id': c, 'name': c, 'products': n, 'count': n}
             for c, n in rows[:FACET_LIMIT]
+        ]
+    elif facet_type == 'countries':
+        # Seuls les États réels comptent (pas « World », les régions, les territoires ni les fautes)
+        countries = real_countries(_tag_counts(portal, _TAG_COLUMNS[facet_type]))
+        total_distinct = len(countries)
+        tags = [
+            {'id': tag, 'iso': iso, 'name': tag_display_name(tag), 'products': n, 'count': n}
+            for iso, tag, n in countries
         ]
     else:
         rows = _tag_counts(portal, _TAG_COLUMNS[facet_type])

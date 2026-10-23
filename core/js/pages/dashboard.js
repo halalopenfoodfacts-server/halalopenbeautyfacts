@@ -10,6 +10,17 @@ import { renderError } from '../ui/state.js';
 
 initShell();
 
+/** Pays : nom dans la langue du visiteur et drapeau, d'après le code ISO renvoyé par l'API. */
+function countryName(tag, lang) {
+    if (!tag.iso) return tag.name;
+    const flag = String.fromCodePoint(...[...tag.iso].map((c) => 0x1f1a5 + c.charCodeAt(0)));
+    try {
+        return `${flag} ${new Intl.DisplayNames([lang], { type: 'region' }).of(tag.iso)}`;
+    } catch {
+        return `${flag} ${tag.name}`;
+    }
+}
+
 async function loadStats() {
     try {
         const stats = await api.stats();
@@ -30,7 +41,7 @@ async function loadFacet(type) {
         const top = tags.slice(0, 10);
         const max = top[0]?.products || 1;
         const lang = currentLang();
-        setHtml(list, html`${top.map((tag) => html`<li><span class="row"><span>${tag.name}</span><span>${formatNumber(tag.products, lang)}</span></span><span class="bar" aria-hidden="true"><span style="width:${((tag.products / max) * 100).toFixed(1)}%"></span></span></li>`)}`);
+        setHtml(list, html`${top.map((tag) => html`<li><span class="row"><span>${countryName(tag, lang)}</span><span>${formatNumber(tag.products, lang)}</span></span><span class="bar" aria-hidden="true"><span style="width:${((tag.products / max) * 100).toFixed(1)}%"></span></span></li>`)}`);
     } catch (error) {
         renderError(list, error, () => loadFacet(type));
     }

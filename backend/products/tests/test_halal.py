@@ -77,3 +77,16 @@ class IngredientSignalTests(SimpleTestCase):
         # La glycérine est quasi universelle en cosmétique : non signalée côté beauty
         self.assertEqual(halal.ingredient_signals('Glycerin', 'beauty'), [])
         self.assertEqual(halal.ingredient_signals('glycérine', 'food'), ['glycérine (E422)'])
+
+
+class CountryTests(SimpleTestCase):
+    def test_only_real_states_are_counted(self):
+        from products.countries import country_iso, real_countries
+        self.assertEqual(country_iso('en:frankreich'), 'FR')
+        self.assertEqual(country_iso('en:turkiye'), 'TR')
+        self.assertEqual(country_iso('fr:allemagne'), 'DE')
+        self.assertEqual(country_iso('en:المغرب'), 'MA')
+        for tag in ('en:world', 'en:europe', 'fr:provence', 'en:reunion', 'en:yugoslavia', 'en:snacks'):
+            self.assertIsNone(country_iso(tag), tag)
+        rows = [('en:france', 10), ('en:frankreich', 2), ('en:world', 50), ('en:morocco', 5)]
+        self.assertEqual(real_countries(rows), [('FR', 'en:france', 12), ('MA', 'en:morocco', 5)])

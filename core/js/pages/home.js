@@ -3,6 +3,7 @@ import { preferredCountry, savePreferredCountry } from '../lib/country.js';
 import { html } from '../lib/html.js';
 import { bindImageFallbacks, productCard, skeletonCards } from '../ui/card.js';
 import { countUp } from '../ui/countup.js';
+import { renderFigures } from '../ui/figures.js';
 import { $, $$, setHtml } from '../ui/dom.js';
 import { t } from '../ui/i18n-dom.js';
 import { initSearchBox } from '../ui/search-box.js';
@@ -19,6 +20,8 @@ async function loadStats(attempt = 0) {
     try {
         const stats = await api.stats();
         values.forEach((element) => countUp(element, Number(stats[element.dataset.stat])));
+        const figures = $('[data-figures]');
+        if (figures) renderFigures(figures, stats);
     } catch (error) {
         // 503 « computing » : le backend calcule les chiffres, on réessaie après le délai annoncé
         if (error.kind === 'computing' && attempt < 3) {

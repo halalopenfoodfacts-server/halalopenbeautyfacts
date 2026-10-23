@@ -41,6 +41,39 @@
   </div>
 </section>
 
+<section class="section section--tight" aria-labelledby="figures-title">
+  <div class="container">
+    <div class="section-head section-head--row">
+      <div><span class="eyebrow">En direct de la base</span><h2 id="figures-title">La base en chiffres</h2></div>
+      <a class="btn" href="/dashboard.html"><span>Toutes les statistiques</span><svg aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
+    </div>
+    <div class="figures" data-figures aria-busy="true">
+      <article class="figure-card">
+        <h3>Statut halal des produits</h3>
+        <p class="figure-card__sub">Sur <span data-fig-total>—</span> produits référencés</p>
+        <ul class="barlist" data-fig-status><li class="skeleton skeleton-line"></li><li class="skeleton skeleton-line"></li><li class="skeleton skeleton-line"></li><li class="skeleton skeleton-line"></li></ul>
+      </article>
+      {{#if site.features.nutrition}}
+      <article class="figure-card">
+        <h3>Nutri-Score</h3>
+        <p class="figure-card__sub"><span data-fig-ns-rated>—</span> produits notés, de A (meilleure qualité nutritionnelle) à E</p>
+        <div class="columns" data-fig-nutri></div>
+        <p class="figure-card__note"><span data-fig-ns-none>—</span> produits sans Nutri-Score</p>
+      </article>
+      {{/if}}
+      <article class="figure-card figure-card--community">
+        <h3>Communauté</h3>
+        <a class="hero-figure" href="/halal-users.html"><strong data-fig-contributors>—</strong><span>contributeurs</span></a>
+        <p class="figure-card__sub">Des bénévoles du monde entier ajoutent et corrigent les fiches, dans <span data-fig-countries>—</span> pays.</p>
+        <div class="cluster">
+          <a class="btn btn--primary" href="/a-completer.html"><span>Contribuer</span></a>
+          <a class="btn" href="/halal-users.html"><span>Voir la communauté</span></a>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
 <section class="section section--tint">
   <div class="container">
     <div class="section-head reveal">

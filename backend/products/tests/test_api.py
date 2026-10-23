@@ -167,6 +167,8 @@ class StatsAndFacetsTests(ApiTestCase):
         self.assertEqual(data['doubtful'], 0)
         self.assertEqual(data['unknown'], 1)
         self.assertEqual(data['halal'] + data['excluded'] + data['doubtful'] + data['unknown'], data['total'])
+        self.assertEqual(data['nutriscore'], {'a': 0, 'b': 0, 'c': 1, 'd': 1, 'e': 1})
+        self.assertEqual(data['nutriscore_none'], 3)
         self.assertEqual(cache.get(stats_key('food'))['total'], 6)
 
     def test_facets(self):

@@ -111,6 +111,17 @@ def compute_stats(portal, contributors_count=None, countries_count=None):
         """,
         [portal],
     )
+    # Nutri-Score : répartition A → E (les autres valeurs, vides ou « not-applicable », sont « sans note »)
+    grades = dict(_fetchall(
+        """
+        SELECT lower(data ->> 'nutriscore_grade'), COUNT(*)
+        FROM products_product
+        WHERE portal = %s AND lower(data ->> 'nutriscore_grade') IN ('a', 'b', 'c', 'd', 'e')
+        GROUP BY 1
+        """,
+        [portal],
+    ))
+    nutriscore = {grade: grades.get(grade, 0) for grade in 'abcde'}
     if countries_count is None:
         countries_count = compute_facet(portal, 'countries')['count']
     if contributors_count is None:
@@ -122,6 +133,8 @@ def compute_stats(portal, contributors_count=None, countries_count=None):
         'excluded': excluded,
         'doubtful': doubtful,   # halal + excluded + doubtful + unknown = total
         'unknown': unknown,
+        'nutriscore': nutriscore,
+        'nutriscore_none': total - sum(nutriscore.values()),
         'countries': countries_count,
         'contributors': contributors_count,
         'computed_at': timezone.now().isoformat(),

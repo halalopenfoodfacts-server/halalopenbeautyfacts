@@ -370,3 +370,79 @@ pre { max-width: 100%; overflow-x: auto; }
 .leaderboard span { font-family: var(--font-mono); color: var(--ink-3); }
 .section-title { font-size: var(--text-xl); margin-bottom: var(--space-3); }
 @media (max-width: 760px) { .challenge__score { justify-items: start; } }
+
+/* La base en chiffres (accueil) */
+.figures { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr)); gap: var(--space-4); }
+.figure-card { display: grid; align-content: start; gap: var(--space-3); padding: var(--space-5); border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--bg-elev); }
+.figure-card h3 { font-size: var(--text-lg); }
+.figure-card__sub { font-size: var(--text-sm); color: var(--ink-2); }
+.figure-card__note { font-size: var(--text-xs); color: var(--ink-3); }
+
+/* Barres horizontales : une par statut (icône + libellé + valeur, jamais la couleur seule) */
+.barlist { display: grid; gap: 0.35rem; padding: 0; list-style: none; }
+.barlist__row {
+    display: grid;
+    grid-template-columns: 9.5rem minmax(0, 1fr) auto;
+    gap: 0.75rem;
+    align-items: center;
+    padding: 0.35rem 0.4rem;
+    border-radius: var(--radius-sm);
+    color: var(--ink);
+    text-decoration: none;
+}
+.barlist__row:hover, .barlist__row:focus-visible { background: var(--bg-sunken); }
+.barlist__label .status { font-size: var(--text-xs); }
+.barlist__track { height: 14px; }
+.barlist__bar {
+    --tone: var(--unknown);
+    display: block;
+    width: max(3px, var(--w));
+    height: 100%;
+    background: var(--tone);
+    border-start-end-radius: 4px;
+    border-end-end-radius: 4px;
+    transform-origin: left;
+    animation: grow-x var(--dur-3) var(--ease-out) both;
+}
+[dir='rtl'] .barlist__bar { transform-origin: right; }
+.barlist__bar--halal { --tone: var(--halal); }
+.barlist__bar--haram { --tone: var(--haram); }
+.barlist__bar--doubtful { --tone: var(--doubtful); }
+.barlist__value { font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; text-align: end; }
+.barlist__value small { margin-inline-start: 0.3rem; font-weight: 400; color: var(--ink-3); }
+
+/* Colonnes Nutri-Score : couleurs officielles, lettre sous chaque colonne */
+.columns { display: grid; grid-template-columns: repeat(5, 1fr); align-items: end; gap: 0.25rem; height: 12.5rem; border-bottom: 1px solid var(--line); }
+.columns__col { display: grid; grid-template-rows: auto 1fr; justify-items: center; height: 100%; color: var(--ink); text-decoration: none; border-radius: var(--radius-sm) var(--radius-sm) 0 0; }
+.columns__col:hover, .columns__col:focus-visible { background: var(--bg-sunken); }
+.columns__value { font-size: var(--text-xs); font-weight: 600; color: var(--ink-2); padding-top: 0.2rem; }
+.columns__plot { display: flex; align-items: flex-end; width: 100%; justify-content: center; }
+.columns__bar { display: block; width: 24px; height: max(3px, var(--h)); border-radius: 4px 4px 0 0; transform-origin: bottom; animation: grow-y var(--dur-3) var(--ease-out) both; }
+.columns__bar--a { background: var(--ns-a); } .columns__bar--b { background: var(--ns-b); } .columns__bar--c { background: var(--ns-c); }
+.columns__bar--d { background: var(--ns-d); } .columns__bar--e { background: var(--ns-e); }
+.columns__grade { display: grid; place-items: center; width: 1.9rem; height: 1.9rem; margin-top: 0.4rem; margin-bottom: -2.4rem; border-radius: 50%; font-weight: 800; }
+.figure-card .columns { margin-bottom: 2.6rem; }
+
+/* Communauté : un seul grand chiffre */
+.hero-figure { display: grid; gap: 0.1rem; color: var(--ink); text-decoration: none; }
+.hero-figure strong { font-family: var(--font-body); font-size: clamp(3rem, 2.4rem + 2.4vw, 4rem); font-weight: 600; line-height: 1; color: var(--accent-ink); }
+.hero-figure span { color: var(--ink-2); }
+
+.chart-tip {
+    position: fixed;
+    inset: 0 auto auto 0;
+    z-index: 200;
+    max-width: 18rem;
+    padding: 0.4rem 0.65rem;
+    border-radius: var(--radius-sm);
+    background: var(--ink);
+    color: var(--bg);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    pointer-events: none;
+    box-shadow: var(--shadow-2);
+}
+@keyframes grow-x { from { transform: scaleX(0); } }
+@keyframes grow-y { from { transform: scaleY(0); } }
+@media (prefers-reduced-motion: reduce) { .barlist__bar, .columns__bar { animation: none; } }
+@media (max-width: 480px) { .barlist__row { grid-template-columns: 7.5rem minmax(0, 1fr) auto; gap: 0.5rem; } }

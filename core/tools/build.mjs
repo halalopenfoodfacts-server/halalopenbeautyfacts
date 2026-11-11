@@ -198,6 +198,7 @@ export async function build({ quiet = false } = {}) {
         short: site.short,
         domain: site.domain,
         upstream: site.upstream,
+        contributorsCount: site.contributorsCount,
         contact: site.contact,
         features: site.features,
         sensitiveIngredients: site.sensitiveIngredients,

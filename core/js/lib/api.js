@@ -3,6 +3,7 @@
 //
 // kinds : network | timeout | not-found | bad-request | rate-limit | server | computing |
 //         invalid-response | aborted
+import { SITE } from './site.js';
 
 export class ApiError extends Error {
     constructor(kind, message, { status = 0, retryAfter = 0, url = '' } = {}) {
@@ -109,7 +110,9 @@ export function createApi({
         post,
         search: (params, options) => get('/proxy/v2/search', params, options),
         product: (code, options) => get(`/proxy/v2/product/${encodeURIComponent(code)}.json`, undefined, options),
-        stats: (options) => get('/proxy/stats', undefined, { retry: 1, ...options }),
+        // Nombre de contributeurs affiché : fixé par site.config « contributorsCount » s'il est renseigné
+        stats: (options) => get('/proxy/stats', undefined, { retry: 1, ...options })
+            .then((stats) => (SITE.contributorsCount ? { ...stats, contributors: SITE.contributorsCount } : stats)),
         facet: (type, options) => get(`/proxy/facets/${encodeURIComponent(type)}.json`, undefined, { retry: 1, ...options }),
         top: (pageSize = 12, options) => get('/proxy/top', { page_size: pageSize }, options),
         recent: (pageSize = 12, options) => get('/proxy/recent', { page_size: pageSize }, options),

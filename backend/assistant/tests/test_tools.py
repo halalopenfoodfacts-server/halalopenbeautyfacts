@@ -70,7 +70,7 @@ class ToolTests(TestCase):
         result, flags = tools.get_product('food', '3017620422003')
         self.assertEqual(result['statut'], 'compatible')
         self.assertEqual(result['base_du_statut'], "d'après les ingrédients listés")
-        self.assertIn('Open Food Facts', result['source'])
+        self.assertIn('Halal Open Food Facts', result['source'])
         self.assertEqual(result['lien'], 'https://halalopenfoodfacts.org/product.html?code=3017620422003')
         self.assertIn('noisettes', result['donnees_contributeurs']['ingredients'])
         self.assertEqual(flags, set())

@@ -29,7 +29,7 @@ ACTIONS = {
     'report.update': 'Signalement traité',
     'report.delete': 'Signalement supprimé',
     'import.run': 'Import de produits',
-    'sync.run': 'Synchronisation Open Food Facts',
+    'sync.run': 'Synchronisation des donnÃ©es',
     'images.update': 'Mise à jour des images',
     'config.update': 'Configuration modifiée',
     'admin.change': 'Autre modification (admin Django)',

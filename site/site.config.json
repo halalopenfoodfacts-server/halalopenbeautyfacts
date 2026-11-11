@@ -23,8 +23,8 @@
   ],
   "contact": "contact@halalopenbeautyfacts.org",
   "privacy": "privacy@halalopenbeautyfacts.org",
+  "contributorsCount": 105200,
   "upstream": {
-    "name": "Open Beauty Facts",
     "url": "https://world.openbeautyfacts.org",
     "productUrl": "https://world.openbeautyfacts.org/product/",
     "addUrl": "https://world.openbeautyfacts.org/cgi/product.pl?type=search_or_add&action=process&code=",

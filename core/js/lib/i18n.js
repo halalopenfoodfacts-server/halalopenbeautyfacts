@@ -153,7 +153,7 @@ const DICT = {
     'home.recent': { fr: 'Dernières contributions', en: 'Latest contributions', ar: 'أحدث المساهمات', es: 'Últimas contribuciones' },
     'home.partners': { fr: 'Ils nous soutiennent', en: 'They support us', ar: 'يدعموننا', es: 'Nos apoyan' },
     'home.legend': { fr: 'Comment lire un statut', en: 'How to read a status', ar: 'كيف تقرأ الحالة', es: 'Cómo leer un estado' },
-    'stats.products': { fr: 'produits référencés', en: 'products listed', ar: 'منتج مسجل', es: 'productos registrados' },
+    'stats.products': { fr: 'produits référencés', en: 'referenced products', ar: 'منتج مسجل', es: 'productos registrados' },
     'stats.halal': { fr: 'produits halal', en: 'halal products', ar: 'منتجات حلال', es: 'productos halal' },
     'stats.excluded': { fr: 'non conformes', en: 'non-compliant', ar: 'غير مطابقة', es: 'no conformes' },
     'ocr.loading': { fr: 'Préparation de la lecture (la première fois seulement)…', en: 'Preparing the reader (first time only)…', ar: 'جارٍ تجهيز القراءة (في المرة الأولى فقط)…', es: 'Preparando la lectura (solo la primera vez)…' },

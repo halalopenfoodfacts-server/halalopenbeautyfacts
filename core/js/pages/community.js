@@ -13,7 +13,8 @@ async function load() {
     const list = $('[data-contributors]');
     list.innerHTML = '<li class="skeleton" style="height:16rem"></li>';
     try {
-        const { tags = [], count } = await api.facet('contributors');
+        const { tags = [], count: facetCount } = await api.facet('contributors');
+        const count = SITE.contributorsCount || facetCount;
         const lang = currentLang();
         const profile = `${SITE.upstream.url}/contributor/`;
         $('[data-contributors-total]').textContent = count ? `${formatNumber(count, lang)} contributeurs au total.` : '';

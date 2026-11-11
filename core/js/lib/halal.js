@@ -29,7 +29,7 @@ export const STATUS_META = {
         icon: 'i-unknown',
         label: 'Non renseigné',
         short: 'Inconnu',
-        seal: 'Aucune info',
+        seal: 'Fiche incomplète',
         description: 'La liste des ingrédients n\'est pas renseignée : impossible de se prononcer.',
     },
 };

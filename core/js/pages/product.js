@@ -90,7 +90,7 @@ function verdictPanel(product) {
             <h2 id="verdict-title">${t(`status.${status}`)}</h2>
             <p class="verdict__summary">${info.summary || STATUS_META[status].description}</p>
             ${reasons.length ? html`<ul class="reasons">${reasons.map((reason) => html`<li class="r-${reason.type}">${raw(icon(REASON_ICON[reason.type] || 'i-info'))}<span>${reason.text}</span></li>`)}</ul>` : ''}
-            <p class="verdict__note">Informations issues des contributeurs ${SITE.upstream.name}, sans vérification par un organisme. En cas de doute, fiez-vous au logo de certification présent sur l'emballage.</p>
+            <p class="verdict__note">Informations issues des contributeurs, sans vérification par un organisme. En cas de doute, fiez-vous au logo de certification présent sur l'emballage.</p>
             <details class="report" data-report>
                 <summary>${raw(icon('i-info'))}<span>Ce statut vous semble faux ?</span></summary>
                 <form class="stack report__form" data-report-form>
@@ -188,7 +188,7 @@ function renderProduct(product) {
                 <h2 id="ingredients-title">${raw(icon('i-flask'))}${t('product.ingredients')}</h2>
                 ${ingredients
                     ? html`<p class="ingredients-text">${highlightIngredients(ingredients, ranges)}</p>${flagLegend(ranges)}`
-                    : html`<div class="callout callout--warn">${raw(icon('i-info'))}<span>La liste des ingrédients n'est pas renseignée. <a href="${editUrl}" target="_blank" rel="noopener">Ajoutez-la sur ${SITE.upstream.name}</a> pour fiabiliser le statut.</span></div>`}
+                    : html`<div class="callout callout--warn">${raw(icon('i-info'))}<span>La liste des ingrédients n'est pas renseignée. <a href="${editUrl}" target="_blank" rel="noopener">Ajoutez-la</a> pour fiabiliser le statut.</span></div>`}
                 <dl class="kv" style="margin-top:var(--space-4)">
                     ${kvRow('Allergènes', tags(product.allergens_tags))}
                     ${kvRow('Traces', tags(product.traces_tags))}
@@ -217,7 +217,7 @@ function renderProduct(product) {
             <section class="span-all contribute-strip">
                 <div>
                     <h2>Une information manque ou semble fausse ?</h2>
-                    <p>Les fiches sont modifiables par tous sur ${SITE.upstream.name}. Vos corrections apparaîtront ici lors de la prochaine synchronisation.</p>
+                    <p>Les fiches sont modifiables par tous. Vos corrections apparaîtront ici lors de la prochaine synchronisation.</p>
                 </div>
                 <a class="btn btn--lg" href="${editUrl}" target="_blank" rel="noopener">${raw(icon('i-edit'))}<span>Compléter la fiche</span>${raw(icon('i-external'))}</a>
             </section>
@@ -295,7 +295,7 @@ function renderNotFound() {
     document.title = `${t('product.notFound')} | ${SITE.name}`;
     renderState(root, {
         title: t('product.notFound'),
-        message: `Le code ${code} n'est pas encore dans notre base. Vous pouvez l'ajouter sur ${SITE.upstream.name} : il apparaîtra ici après la prochaine synchronisation.`,
+        message: `Le code ${code} n'est pas encore dans notre base. Vous pouvez l'ajouter : il apparaîtra ici après la prochaine synchronisation.`,
         icon: 'i-package',
         actions: [
             ...(SITE.upstream.addUrl ? [{ label: t('scan.add'), href: `${SITE.upstream.addUrl}${encodeURIComponent(code)}`, primary: true }] : []),
@@ -334,7 +334,7 @@ async function load() {
         lists.remember(product);
     } catch (error) {
         console.error('[product] rendu impossible', error);
-        renderState(root, { kind: 'error', title: 'Affichage impossible', message: 'Les données ont bien été reçues mais la fiche n\'a pas pu être affichée. Vous pouvez la consulter sur la source.', actions: [{ label: `Voir sur ${SITE.upstream.name}`, href: `${SITE.upstream.productUrl}${encodeURIComponent(code)}` }] });
+        renderState(root, { kind: 'error', title: 'Affichage impossible', message: 'Les données ont bien été reçues mais la fiche n\'a pas pu être affichée. Vous pouvez consulter la fiche d\'origine.', actions: [{ label: 'Voir la fiche d\'origine', href: `${SITE.upstream.productUrl}${encodeURIComponent(code)}` }] });
     } finally {
         root.setAttribute('aria-busy', 'false');
     }

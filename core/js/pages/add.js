@@ -38,13 +38,13 @@ form.addEventListener('submit', async (event) => {
             <span><strong>${product.product_name || code}</strong> est déjà dans la base. ${statusBadge(statusOf(product))}</span>
             ${(product.ingredients_text_fr || product.ingredients_text) ? '' : html`<span><strong>Il manque la liste des ingrédients :</strong> ajoutez-la pour que le statut halal soit calculé.</span>`}
             <span class="cluster"><a class="btn btn--sm btn--primary" href="/product.html?code=${encodeURIComponent(code)}">Voir la fiche</a>
-            <a class="btn btn--sm" href="${editUrl}" target="_blank" rel="noopener">Corriger sur ${SITE.upstream.name}</a></span>
+            <a class="btn btn--sm" href="${editUrl}" target="_blank" rel="noopener">Corriger la fiche</a></span>
         </div></div>`);
     } catch (err) {
         if (err.kind === 'not-found') {
             setHtml(result, html`<div class="callout callout--warn">${raw(icon('i-plus'))}<div class="stack" style="gap:.5rem">
                 <span>Ce produit n'est pas encore référencé : merci de l'ajouter !</span>
-                <span><a class="btn btn--sm btn--primary" href="${SITE.upstream.addUrl}${encodeURIComponent(code)}" target="_blank" rel="noopener">Créer la fiche sur ${SITE.upstream.name}</a></span>
+                <span><a class="btn btn--sm btn--primary" href="${SITE.upstream.addUrl}${encodeURIComponent(code)}" target="_blank" rel="noopener">Créer la fiche</a></span>
             </div></div>`);
         } else {
             renderError(result, err, () => form.requestSubmit());

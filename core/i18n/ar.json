@@ -1004,5 +1004,9 @@
  "Un produit manque ou une fiche est fausse ? Ajoutez-la ou corrigez-la en quelques minutes.": "منتج ناقص أو بطاقة خاطئة؟ أضفها أو صحّحها في دقائق.",
  "Une fiche est fausse ? Corrigez-la directement (bouton « Compléter la fiche » sur chaque produit) ou écrivez-nous en indiquant le code-barres.": "بطاقة خاطئة؟ صحّحها مباشرة (زر «إكمال البطاقة» في كل منتج) أو راسلنا مع ذكر الرمز الشريطي.",
  "Voir la fiche d'origine": "عرض البطاقة الأصلية",
- "Votre compte contributeur": "حساب المساهم الخاص بك"
+ "Votre compte contributeur": "حساب المساهم الخاص بك",
+ "Une partie des données provient de": "جزء من البيانات مصدره",
+ ", sous licence ODbL.": " بموجب ترخيص ODbL.",
+ "Open Beauty Facts": "Open Beauty Facts",
+ "Open Food Facts": "Open Food Facts"
 }

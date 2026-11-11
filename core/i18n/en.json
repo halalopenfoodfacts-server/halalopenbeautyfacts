@@ -1004,5 +1004,9 @@
  "Un produit manque ou une fiche est fausse ? Ajoutez-la ou corrigez-la en quelques minutes.": "A product is missing or a sheet is wrong? Add or correct it in a few minutes.",
  "Une fiche est fausse ? Corrigez-la directement (bouton « Compléter la fiche » sur chaque produit) ou écrivez-nous en indiquant le code-barres.": "A sheet is wrong? Correct it directly (« Complete the sheet » button on each product) or write to us with the barcode.",
  "Voir la fiche d'origine": "View the original sheet",
- "Votre compte contributeur": "Your contributor account"
+ "Votre compte contributeur": "Your contributor account",
+ "Une partie des données provient de": "Part of the data comes from",
+ ", sous licence ODbL.": ", under the ODbL licence.",
+ "Open Beauty Facts": "Open Beauty Facts",
+ "Open Food Facts": "Open Food Facts"
 }

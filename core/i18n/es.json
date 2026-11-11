@@ -1004,5 +1004,9 @@
  "Un produit manque ou une fiche est fausse ? Ajoutez-la ou corrigez-la en quelques minutes.": "¿Falta un producto o una ficha es incorrecta? Añádela o corrígela en pocos minutos.",
  "Une fiche est fausse ? Corrigez-la directement (bouton « Compléter la fiche » sur chaque produit) ou écrivez-nous en indiquant le code-barres.": "¿Una ficha es incorrecta? Corrígela directamente (botón « Completar la ficha » en cada producto) o escríbenos indicando el código de barras.",
  "Voir la fiche d'origine": "Ver la ficha original",
- "Votre compte contributeur": "Tu cuenta de colaborador"
+ "Votre compte contributeur": "Tu cuenta de colaborador",
+ "Une partie des données provient de": "Parte de los datos procede de",
+ ", sous licence ODbL.": ", bajo licencia ODbL.",
+ "Open Beauty Facts": "Open Beauty Facts",
+ "Open Food Facts": "Open Food Facts"
 }

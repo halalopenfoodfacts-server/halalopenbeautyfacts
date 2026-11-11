@@ -152,7 +152,7 @@
         var(--ink);
     color: var(--bg);
 }
-.cta-band h2 { color: var(--bg); }
+.cta-band h2, .cta-band strong { color: var(--bg); }
 .cta-band p { color: color-mix(in srgb, var(--bg) 80%, transparent); }
 .cta-band .btn--ghost { --btn-ink: var(--bg); }
 .cta-band .btn--ghost:hover { background: rgb(255 255 255 / 0.1); }
